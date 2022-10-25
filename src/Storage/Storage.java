@@ -23,7 +23,7 @@ public class Storage {
             e.printStackTrace();
             System.out.println();
         } catch (ClassCastException e) {
-            System.out.println("ew");
+            System.out.println("E3");
         }
     }
 
