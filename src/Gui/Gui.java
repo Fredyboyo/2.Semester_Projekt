@@ -1,36 +1,47 @@
 package Gui;
 
 import javafx.application.Application;
-import javafx.geometry.Insets;
+import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+
 public class Gui extends Application {
+
+    Group group = new Group();
     @Override
     public void start(Stage stage) {
-        Scene scene = new Scene(initialize(),700,500);
+        initialize();
+        Scene scene = new Scene(group,900,600);
 
         stage.setScene(scene);
         stage.setTitle("");
         stage.show();
     }
 
-    private Group initialize() {
-        Rectangle[] rectangles = new Rectangle[30];
-        int rowCount = 8;
-        for (int i = 0; i < rectangles.length / rowCount; i++) {
-            for (int I = 0; I < rowCount; I++) {
-                rectangles[i * rowCount + I] = new Rectangle(50,50);
-                rectangles[i * rowCount + I].setX(20 + I * 52);
-                rectangles[i * rowCount + I].setY(20 + i * 52);
-                rectangles[i * rowCount + I].setFill(Color.GOLD);
+    private void initialize() {
+
+        for (int i = 0; i < 30; i++) {
+            Rectangle rectangle = new Rectangle(75,75);
+            rectangle.setX(20 + (i % 8) * (rectangle.getWidth() + 3));
+            rectangle.setY(20 + (int)(i / 8) * (rectangle.getHeight() + 3));
+            rectangle.setFill(Color.GOLD);
+            group.getChildren().add(rectangle);
+            new Thread(runnable).start();
+        }
+    }
+    private final Runnable runnable = () -> {
+        for (int i = 0; i < 30; i++) {
+            Platform.runLater(() -> );
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
-        return new Group(rectangles);
-    }
+    });
 }

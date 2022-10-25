@@ -4,6 +4,7 @@ import Model.Product;
 import Model.Order;
 
 import java.io.*;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +17,13 @@ public class Storage {
     public Storage() {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))){
             beerlist.addAll(List.of((Product[]) in.readObject()));
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            System.out.println();
+        } catch (ClassCastException e) {
+            System.out.println("ew");
         }
     }
 
