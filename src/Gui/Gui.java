@@ -108,10 +108,12 @@ public class Gui extends Application {
     }
 
     private void Fade(Pane pane, int delay) {
-        double time = 30;
+        double time = 15;
+        //double s = pane.getTranslateY();
         new Thread(() -> {
             for (int[] i = {-delay}; i[0] < time; i[0]++) {
                 Platform.runLater(() -> pane.setOpacity(i[0]/time));
+                //Platform.runLater(() -> pane.setTranslateY(s - (i[0]/time) * 100));
                 try {
                     Thread.sleep((long) (1000 / 60.));
                 } catch (InterruptedException e) {
