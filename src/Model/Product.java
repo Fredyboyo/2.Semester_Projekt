@@ -2,11 +2,11 @@ package Model;
 
 import java.util.ArrayList;
 
-public class Beer {
+public class Product {
     private final String name;
-    private final ArrayList<Integer> priceList = new ArrayList<>();
+    private final ArrayList<Price> priceList = new ArrayList<>();
 
-    public Beer(String name) {
+    public Product(String name) {
         this.name = name;
     }
 
@@ -14,11 +14,11 @@ public class Beer {
         return name;
     }
 
-    public void addPrice(int price) {
+    public void addPrice(Price price) {
         priceList.add(price);
     }
 
-    public ArrayList<Integer> getPriceList() {
+    public ArrayList<Price> getPriceList() {
         return priceList;
     }
 }

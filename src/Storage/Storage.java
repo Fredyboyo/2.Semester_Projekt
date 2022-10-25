@@ -1,39 +1,39 @@
 package Storage;
 
-import Model.Beer;
-import Model.OrderList;
+import Model.Product;
+import Model.Order;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Storage {
-    private final ArrayList<Beer> beerlist = new ArrayList<>();
-    private final ArrayList<OrderList> orderLists = new ArrayList<>();
+    private final ArrayList<Product> beerlist = new ArrayList<>();
+    private final ArrayList<Order> orderLists = new ArrayList<>();
 
     private final String file = "Beers";
 
     public Storage() {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))){
-            beerlist.addAll(List.of((Beer[]) in.readObject()));
+            beerlist.addAll(List.of((Product[]) in.readObject()));
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    public ArrayList<Beer> getBeers() {
+    public ArrayList<Product> getBeers() {
         return beerlist;
     }
 
-    public ArrayList<OrderList> getOrderLists() {
+    public ArrayList<Order> getOrderLists() {
         return orderLists;
     }
 
-    public void addBeer(Beer beer) {
+    public void addBeer(Product beer) {
         beerlist.add(beer);
     }
 
-    public void removeBeer(Beer beer) {
+    public void removeBeer(Product beer) {
         beerlist.remove(beer);
     }
 

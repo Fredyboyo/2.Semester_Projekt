@@ -5,18 +5,18 @@ import Controller.Controller;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class OrderList {
+public class Order {
     private final LocalDateTime date = LocalDateTime.now();
-    private final Hashtable<Beer,Integer> beerTable = new Hashtable<>();
+    private final Hashtable<Product,Integer> beerTable = new Hashtable<>();
     private PaymentMethod paymentMethod = null;
 
-    public OrderList() {
-        for (Beer beer : Controller.getBeer()) {
+    public Order() {
+        for (Product beer : Controller.getBeer()) {
             beerTable.put(beer,0);
         }
     }
 
-    public void order(Beer beer, int count) {
+    public void order(Product beer, int count) {
         beerTable.replace(beer, beerTable.get(beer) + count);
     }
 

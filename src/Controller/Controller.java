@@ -1,6 +1,6 @@
 package Controller;
 
-import Model.Beer;
+import Model.Product;
 import Storage.Storage;
 
 import java.util.ArrayList;
@@ -13,10 +13,10 @@ public class Controller {
     }
 
     public static void createBeer(String name) {
-        storage.addBeer(new Beer(name));
+        storage.addBeer(new Product(name));
     }
 
-    public static ArrayList<Beer> getBeer() {
+    public static ArrayList<Product> getBeer() {
         return storage.getBeers();
     }
 }

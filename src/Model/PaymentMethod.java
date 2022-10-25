@@ -3,4 +3,5 @@ package Model;
 public enum PaymentMethod {
     CARD,IN_CASH,TICKET,MOBILEPAY,BILL
 }
+
 //DANKORT,KONTANT,KLIPPEKORT,MOBILEPAY,REGNING
