@@ -42,7 +42,7 @@ public class Gui extends Application {
             rectangle.setMinSize(120,120);
             rectangle.setTranslateX((i % rowSize) * 123);
             rectangle.setTranslateY((i / rowSize) * 123);
-            rectangle.setBackground(new Background(new BackgroundFill(Color.GOLD, new CornerRadii(20),Insets.EMPTY)));
+            rectangle.setBackground(new Background(new BackgroundFill(Color.GOLDENROD, new CornerRadii(20),Insets.EMPTY)));
             rectangle.setOnMouseClicked(mouseEvent -> {
                 System.out.println(finalI);
             });
@@ -87,24 +87,19 @@ public class Gui extends Application {
             if (toggleButton.isSelected()) {
                 for (Pane rectangle : rects) {
                     rectangle.setDisable(false);
-                    rectangle.setBackground(new Background(new BackgroundFill(Color.GOLDENROD, new CornerRadii(20),Insets.EMPTY)));
+                    rectangle.setBackground(new Background(new BackgroundFill(Color.GOLD, new CornerRadii(20),Insets.EMPTY)));
                 }
                 rectangles.getChildren().add(add);
             } else {
                 for (Pane rectangle : rects) {
                     rectangle.setDisable(true);
-                    rectangle.setBackground(new Background(new BackgroundFill(Color.GOLD, new CornerRadii(20),Insets.EMPTY)));
+                    rectangle.setBackground(new Background(new BackgroundFill(Color.GOLDENROD, new CornerRadii(20),Insets.EMPTY)));
                 }
                 rectangles.getChildren().remove(add);
             }
-            update();
         });
 
         root.getChildren().addAll(scrollPane,button);
-    }
-
-    private void update() {
-
     }
 
     private void Fade(Pane pane, int delay) {

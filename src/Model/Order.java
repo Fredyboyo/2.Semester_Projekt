@@ -7,7 +7,7 @@ import java.util.*;
 
 public class Order {
     private final LocalDateTime date = LocalDateTime.now();
-    private final Hashtable<Product,Integer> beerTable = new Hashtable<>();
+    private final HashMap<Product,Integer> beerTable = new HashMap<>();
     private PaymentMethod paymentMethod = null;
 
     public Order() {

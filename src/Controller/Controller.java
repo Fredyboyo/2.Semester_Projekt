@@ -1,5 +1,6 @@
 package Controller;
 
+import Model.Category;
 import Model.Product;
 import Storage.Storage;
 
@@ -12,8 +13,8 @@ public class Controller {
         storage.saveTheBeers();
     }
 
-    public static void createBeer(String name) {
-        storage.addBeer(new Product(name));
+    public static void createBeer(String name, Category category) {
+        storage.addBeer(new Product(name, category));
     }
 
     public static ArrayList<Product> getBeer() {

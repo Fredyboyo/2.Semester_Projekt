@@ -1,21 +1,20 @@
 package Storage;
 
+import Model.Arrangement;
 import Model.Product;
 import Model.Order;
 
 import java.io.*;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Storage {
     private final ArrayList<Product> beerlist = new ArrayList<>();
     private final ArrayList<Order> orderLists = new ArrayList<>();
-
-    private final String file = "Beers";
+    private final ArrayList<Arrangement> arrangements = new ArrayList<>();
 
     public Storage() {
-        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))){
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream("Beers"))){
             beerlist.addAll(List.of((Product[]) in.readObject()));
         } catch (IOException e) {
             e.printStackTrace();
@@ -23,7 +22,7 @@ public class Storage {
             e.printStackTrace();
             System.out.println();
         } catch (ClassCastException e) {
-            System.out.println("E3");
+            System.out.println("Exception 3");
         }
     }
 
@@ -44,7 +43,7 @@ public class Storage {
     }
 
     public void saveTheBeers() {
-        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file))){
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("Beers"))){
             out.writeObject(beerlist.toArray());
         } catch (IOException e) {
             e.printStackTrace();

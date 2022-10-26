@@ -1,12 +1,15 @@
 package Model;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
 
 public class Product {
     private final String name;
-    private final ArrayList<Price> priceList = new ArrayList<>();
+    private final HashMap<Arrangement,Integer[]> priceTable = new HashMap<>();
+    private Category category;
 
-    public Product(String name) {
+    public Product(String name, Category category) {
+        this.category = category;
         this.name = name;
     }
 
@@ -14,11 +17,14 @@ public class Product {
         return name;
     }
 
-    public void addPrice(Price price) {
-        priceList.add(price);
+    public void setPrice(Arrangement arrangement, Integer price, Integer clip) {
+        Integer[] integers = priceTable.get(arrangement);
+        integers[0] = integers[0] + price;
+        integers[1] = integers[1] + clip;
+        priceTable.replace(arrangement, integers);
     }
 
-    public ArrayList<Price> getPriceList() {
-        return priceList;
+    public HashMap<Arrangement,Integer[]> getPriceTable() {
+        return priceTable;
     }
 }
