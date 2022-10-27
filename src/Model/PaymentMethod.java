@@ -11,5 +11,3 @@ public class PaymentMethod {
         return name;
     }
 }
-
-//DANKORT,KONTANT,KLIPPEKORT,MOBILEPAY,REGNING

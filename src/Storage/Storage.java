@@ -1,6 +1,7 @@
 package Storage;
 
 import Model.Arrangement;
+import Model.Category;
 import Model.Product;
 import Model.Order;
 
@@ -9,13 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Storage {
-    private final ArrayList<Product> beerlist = new ArrayList<>();
-    private final ArrayList<Order> orderLists = new ArrayList<>();
+    private final ArrayList<Product> products = new ArrayList<>();
+    private final ArrayList<Order> orders = new ArrayList<>();
     private final ArrayList<Arrangement> arrangements = new ArrayList<>();
+    private final ArrayList<Category> categories = new ArrayList<>();
 
     public Storage() {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream("Beers"))){
-            beerlist.addAll(List.of((Product[]) in.readObject()));
+            products.addAll(List.of((Product[]) in.readObject()));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -27,24 +29,24 @@ public class Storage {
     }
 
     public ArrayList<Product> getBeers() {
-        return beerlist;
+        return products;
     }
 
-    public ArrayList<Order> getOrderLists() {
-        return orderLists;
+    public ArrayList<Order> getOrders() {
+        return orders;
     }
 
     public void addBeer(Product beer) {
-        beerlist.add(beer);
+        products.add(beer);
     }
 
     public void removeBeer(Product beer) {
-        beerlist.remove(beer);
+        products.remove(beer);
     }
 
-    public void saveTheBeers() {
+    public void saveTheProducts() {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("Beers"))){
-            out.writeObject(beerlist.toArray());
+            out.writeObject(products.toArray());
         } catch (IOException e) {
             e.printStackTrace();
         }

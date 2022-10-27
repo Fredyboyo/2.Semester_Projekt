@@ -9,8 +9,8 @@ import java.util.ArrayList;
 public class Controller {
     private static final Storage storage = new Storage();
 
-    public static void saveTheBeers() {
-        storage.saveTheBeers();
+    public static void saveTheProducts() {
+        storage.saveTheProducts();
     }
 
     public static void createBeer(String name, Category category) {
