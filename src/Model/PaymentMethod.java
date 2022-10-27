@@ -1,7 +1,15 @@
 package Model;
 
-public enum PaymentMethod {
-    CARD,IN_CASH,TICKET,MOBILEPAY,BILL
+public class PaymentMethod {
+    private final String name;
+
+    public PaymentMethod(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 }
 
 //DANKORT,KONTANT,KLIPPEKORT,MOBILEPAY,REGNING
