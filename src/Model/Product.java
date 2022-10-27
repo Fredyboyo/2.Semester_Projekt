@@ -5,7 +5,7 @@ import java.util.Hashtable;
 
 public class Product {
     private final String name;
-    private final HashMap<Arrangement,Integer[]> priceTable = new HashMap<>();
+    private final HashMap<Arrangement,Double[]> priceTable = new HashMap<>();
     private Category category;
 
     public Product(String name, Category category) {
@@ -18,13 +18,13 @@ public class Product {
     }
 
     public void setPrice(Arrangement arrangement, Integer price, Integer clip) {
-        Integer[] integers = priceTable.get(arrangement);
-        integers[0] = integers[0] + price;
-        integers[1] = integers[1] + clip;
-        priceTable.replace(arrangement, integers);
+        Double[] doubles = priceTable.get(arrangement);
+        doubles[0] = doubles[0] + price;
+        doubles[1] = doubles[1] + clip;
+        priceTable.replace(arrangement, doubles);
     }
 
-    public HashMap<Arrangement,Integer[]> getPriceTable() {
+    public HashMap<Arrangement,Double[]> getPriceTable() {
         return priceTable;
     }
 }

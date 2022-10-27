@@ -1,5 +1,6 @@
 package Gui;
 
+import Controller.Controller;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -20,21 +21,23 @@ import java.util.ArrayList;
 public class Gui extends Application {
 
     Group root = new Group();
+    EditWindow editWindow;
     @Override
     public void start(Stage stage) {
         Scene scene = new Scene(root,1100,800);
-        initialize();
+        initContent();
 
         stage.setScene(scene);
-        stage.setTitle("BREWBREW");
+        stage.setTitle("BREWBREW"); //Controller.getBeer().get(finalI)
         stage.show();
+        editWindow = new EditWindow(stage);
     }
 
     private final Group rectangles = new Group();
     private int rowSize = 5;
     private final int size = 39;
 
-    private void initialize() {
+    private void initContent() {
         for (int i = 0; i < size; i++) {
             int finalI = i;
             Pane rectangle = new Pane();
@@ -44,7 +47,6 @@ public class Gui extends Application {
             rectangle.setTranslateY((i / rowSize) * 123);
             rectangle.setBackground(new Background(new BackgroundFill(Color.GOLDENROD, new CornerRadii(20),Insets.EMPTY)));
             rectangle.setOnMouseClicked(mouseEvent -> {
-                System.out.println(finalI);
             });
             Fade(rectangle,i * 5 + 45);
             rectangles.getChildren().add(rectangle);
