@@ -16,6 +16,10 @@ public class Price {
         return price;
     }
 
+    public Arrangement getArrangement() {
+        return arrangement;
+    }
+
     public void setPrice(double price) {
         this.price = price;
     }

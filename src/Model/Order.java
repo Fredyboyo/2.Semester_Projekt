@@ -8,6 +8,7 @@ public class Order {
     private double collectedCost;
     private PaymentMethod paymentMethod;
     private final ArrayList<OrderLine> orderLines = new ArrayList<>();
+    private Arrangement arrangement;
 
     public Order() {
 
@@ -15,12 +16,15 @@ public class Order {
 
     public double calculateCollectedCost() {
         /** Add Code */
+        for (OrderLine orderLine : orderLines) {
+            orderLine.calculateCost();
+        }
 
         return collectedCost;
     }
 
     public OrderLine createOrderLine(ProductComponent product, int count) {
-        OrderLine orderline = new OrderLine(product,count);
+        OrderLine orderline = new OrderLine(product, count, arrangement);
         orderLines.add(orderline);
         return orderline;
     }

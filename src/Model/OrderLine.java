@@ -2,18 +2,22 @@ package Model;
 
 public class OrderLine {
     private final ProductComponent product;
-    private final int count;
+    private final int amount;
     private double cost;
+    private Arrangement arrangement;
 
-    OrderLine(ProductComponent product, int count) {
+    OrderLine(ProductComponent product, int count, Arrangement arrangement) {
         this.product = product;
-        this.count = count;
+        this.amount = count;
+        this.arrangement = arrangement;
     }
 
     public double calculateCost() {
-        /** Add Code */
-
-
+        for (Price price : product.getPrices()) {
+           if (price.getArrangement() == arrangement) {
+               cost = price.getPrice() * amount;
+           }
+        }
         return cost;
     }
 }
