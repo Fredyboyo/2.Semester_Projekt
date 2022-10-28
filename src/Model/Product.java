@@ -1,30 +1,38 @@
 package Model;
 
-import java.util.HashMap;
-import java.util.Hashtable;
+import java.util.ArrayList;
 
-public class Product {
+public class Product implements ProductComponent {
     private final String name;
-    private final HashMap<Arrangement,Double[]> priceTable = new HashMap<>();
-    private Category category;
+    private final Category category;
+    private final ArrayList<Price> prices = new ArrayList<>();
 
-    public Product(String name, Category category) {
+    public Product(
+            String name,
+            Category category) {
         this.category = category;
         this.name = name;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
-    public void setPrice(Arrangement arrangement, Integer price, Integer clip) {
-        Double[] doubles = priceTable.get(arrangement);
-        doubles[0] = doubles[0] + price;
-        doubles[1] = doubles[1] + clip;
-        priceTable.replace(arrangement, doubles);
+    @Override
+    public Category getCategory() {
+        return category;
     }
 
-    public HashMap<Arrangement,Double[]> getPriceTable() {
-        return priceTable;
+    @Override
+    public ArrayList<Price> getPrices() {
+        return new ArrayList<>(prices);
+    }
+
+    @Override
+    public Price createPrice(double kr, Arrangement arrangement) {
+        Price price = new Price(kr, arrangement, this);
+        prices.add(price);
+        return price;
     }
 }

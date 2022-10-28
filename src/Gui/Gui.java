@@ -1,6 +1,5 @@
 package Gui;
 
-import Controller.Controller;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -45,7 +44,7 @@ public class Gui extends Application {
             rectangle.setMinSize(120,120);
             rectangle.setTranslateX((i % rowSize) * 123);
             rectangle.setTranslateY((i / rowSize) * 123);
-            rectangle.setBackground(new Background(new BackgroundFill(Color.GOLDENROD, new CornerRadii(20),Insets.EMPTY)));
+            rectangle.setBackground(new Background(new BackgroundFill(Color.GOLDENROD, new CornerRadii(20), Insets.EMPTY)));
             rectangle.setOnMouseClicked(mouseEvent -> {
             });
             Fade(rectangle,i * 5 + 45);

@@ -1,23 +1,84 @@
 package Controller;
 
-import Model.Category;
-import Model.Product;
+import Model.*;
 import Storage.Storage;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Controller {
     private static final Storage storage = new Storage();
 
-    public static void saveTheProducts() {
-        storage.saveTheProducts();
+    public static Product createProduct(String name, Category category) {
+        Product product = new Product(name, category);
+        storage.storeProduct(product);
+        return product;
     }
 
-    public static void createBeer(String name, Category category) {
-        storage.addBeer(new Product(name, category));
+    public static GiftBasket createGiftBasket(String name, Category category, ArrayList<Price> prices, ArrayList<ProductComponent> products) {
+        GiftBasket giftBasket = new GiftBasket(name, category, prices, products);
+        storage.storeProduct(giftBasket);
+        return giftBasket;
     }
 
-    public static ArrayList<Product> getBeer() {
-        return storage.getBeers();
+    public static Tour createTour(String name, ArrayList<Price> prices, LocalDateTime startTime, LocalDateTime endTime, String person) {
+        Tour tour = new Tour(name, prices, startTime, endTime, person);
+        storage.storeProduct(tour);
+        return tour;
+    }
+
+    public static ArrayList<ProductComponent> getProducts() {
+        return storage.getProducts();
+    }
+
+    public static Category createCategory(String name) {
+        Category category = new Category(name);
+        storage.storeCategory(category);
+        return category;
+    }
+
+    public static ArrayList<Category> getCategories() {
+        return storage.getCategories();
+    }
+
+    public static Arrangement createArrangement(String name) {
+        Arrangement arrangement = new Arrangement(name);
+        storage.storeArrangement(arrangement);
+        return arrangement;
+    }
+
+    public static ArrayList<Arrangement> getArrangements() {
+        return storage.getArrangements();
+    }
+
+    public static Order createOrder() {
+        Order order = new Order();
+        storage.storeOrder(order);
+        return order;
+    }
+
+    public static Rental createRental(LocalDate startDate, LocalDate endDate, String person, double payedMortgage) {
+        Rental rental = new Rental(startDate, endDate, person, payedMortgage);
+        storage.storeOrder(rental);
+        return rental;
+    }
+
+    public static ArrayList<Order> getOrders() {
+        return storage.getOrders();
+    }
+
+    public static OrderLine createOrderline(Order order, ProductComponent product, int count) {
+        return order.createOrderLine(product, count);
+    }
+
+    public static PaymentMethod createPaymentMethod(String name) {
+        PaymentMethod paymentMethod = new PaymentMethod(name);
+        storage.storePaymentMethod(paymentMethod);
+        return paymentMethod;
+    }
+
+    public static ArrayList<PaymentMethod> getPaymentMethods() {
+        return storage.getPaymentMethods();
     }
 }
