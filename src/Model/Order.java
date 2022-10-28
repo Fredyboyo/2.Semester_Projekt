@@ -1,10 +1,10 @@
 package Model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Order {
-    private final LocalDate date = LocalDate.now();
+    private final LocalDateTime date = LocalDateTime.now();
     private double collectedCost;
     private PaymentMethod paymentMethod;
     private final ArrayList<OrderLine> orderLines = new ArrayList<>();
