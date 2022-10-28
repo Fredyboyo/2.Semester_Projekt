@@ -10,16 +10,16 @@ public class Order {
     private final ArrayList<OrderLine> orderLines = new ArrayList<>();
     private Arrangement arrangement;
 
-    public Order() {
-
+    public Order(PaymentMethod paymentMethod, Arrangement arrangement) {
+        this.paymentMethod = paymentMethod;
+        this.arrangement = arrangement;
     }
 
     public double calculateCollectedCost() {
-        /** Add Code */
+        collectedCost = 0;
         for (OrderLine orderLine : orderLines) {
-            orderLine.calculateCost();
+            collectedCost += orderLine.calculateCost();
         }
-
         return collectedCost;
     }
 

@@ -9,6 +9,7 @@ public class Rental extends Order {
     private final double payedMortgage;
 
     public Rental(LocalDate startDate, LocalDate endDate, String person, double payedMortgage) {
+        super(paymentMethod, arrangement);
         this.startDate = startDate;
         this.endDate = endDate;
         this.person = person;

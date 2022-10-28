@@ -52,8 +52,8 @@ public class Controller {
         return storage.getArrangements();
     }
 
-    public static Order createOrder() {
-        Order order = new Order();
+    public static Order createOrder(PaymentMethod paymentMethod, Arrangement arrangement) {
+        Order order = new Order(paymentMethod, arrangement);
         storage.storeOrder(order);
         return order;
     }
