@@ -1,16 +1,17 @@
 package Gui;
 
+import Controller.Controller;
+import Model.Arrangement;
+import Model.Category;
+import Model.Price;
+import Model.Product;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.Pane;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -18,98 +19,70 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 
 public class Gui extends Application {
+    private final Group root = new Group();
 
-    Group root = new Group();
-    EditWindow editWindow;
     @Override
     public void start(Stage stage) {
         Scene scene = new Scene(root,1100,800);
         initContent();
 
         stage.setScene(scene);
-        stage.setTitle("BREWBREW"); //Controller.getBeer().get(finalI)
+        stage.setTitle("BREWBREW");
         stage.show();
-        editWindow = new EditWindow(stage);
     }
 
-    private final Group rectangles = new Group();
-    private int rowSize = 5;
-    private final int size = 39;
-
     private void initContent() {
-        for (int i = 0; i < size; i++) {
-            int finalI = i;
-            Pane rectangle = new Pane();
-            rectangle.setDisable(true);
-            rectangle.setMinSize(120,120);
-            rectangle.setTranslateX((i % rowSize) * 123);
-            rectangle.setTranslateY((i / rowSize) * 123);
-            rectangle.setBackground(new Background(new BackgroundFill(Color.GOLDENROD, new CornerRadii(20), Insets.EMPTY)));
-            rectangle.setOnMouseClicked(mouseEvent -> {
-            });
-            Fade(rectangle,i * 5 + 45);
-            rectangles.getChildren().add(rectangle);
-        }
+        GridPane gridPane = new GridPane();
+        gridPane.setPadding(new Insets(25));
+        gridPane.setVgap(10);
+        gridPane.setHgap(10);
+        Group products = new Group();
+        ComboBox<Arrangement> arrangementComboBox = new ComboBox<>();
+        arrangementComboBox.getItems().addAll(Controller.getArrangements());
+        arrangementComboBox.setMinSize(150,25);
+        arrangementComboBox.setOnAction(event -> {
 
-        ScrollPane scrollPane = new ScrollPane(rectangles);
-        scrollPane.setTranslateX(25);
-        scrollPane.setTranslateY(25);
-        scrollPane.setPrefSize(123 * rowSize, root.getScene().getHeight()-45);
-        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scrollPane.setStyle("-fx-background: transparent;\n -fx-background-color: transparent");
+        });
 
-        Pane add = new Pane();
-        add.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, new CornerRadii(20),Insets.EMPTY)));
-        add.setMinSize(120,120);
-        add.setTranslateX((size % rowSize) * 123);
-        add.setTranslateY((size / rowSize) * 123);
-
-        ToggleButton button = new ToggleButton("EDIT Products");
-        button.setFocusTraversable(false);
-        //button.setBackground(new Background(new BackgroundFill(Color.WHITE,new CornerRadii(10), Insets.EMPTY)));
-        button.setPrefSize(200,50);
-        button.setTranslateX(50 + 123 * rowSize);
-        button.setTranslateY(root.getScene().getHeight()-100);
-        button.setFont(Font.font(24));
-        button.setOnAction(actionEvent -> {
-            ToggleButton toggleButton = (ToggleButton) actionEvent.getSource();
-            ArrayList<Pane> rects = new ArrayList<>();
-
-            try {
-                for (Object o : rectangles.getChildren().toArray()) {
-                    if (o.getClass() == Pane.class && o != add) {
-                        rects.add((Pane) o);
+        ComboBox<Category> categoryComboBox = new ComboBox<>();
+        categoryComboBox.getItems().addAll(Controller.getCategories());
+        categoryComboBox.setMinSize(150,25);
+        categoryComboBox.setOnAction(event -> {
+            if (arrangementComboBox.getSelectionModel().getSelectedItem() == null || categoryComboBox.getSelectionModel().getSelectedItem() != null) {
+                return;
+            }
+            Arrangement arrangement = arrangementComboBox.getSelectionModel().getSelectedItem();
+            Category category = categoryComboBox.getSelectionModel().getSelectedItem();
+            products.getChildren().clear();
+            for (Product product : category.getProducts()) {
+                double price = 0;
+                for (Price price1 : product.getPrices()) {
+                    if (price1.getArrangement() == arrangement) {
+                        price = price1.getPrice();
                     }
                 }
-            } catch (ClassCastException e) {
-                e.printStackTrace();
-            }
+                Button button = new Button(product.getName() + " " + price);
+                button.setOnAction(actionEvent -> {
 
-            if (toggleButton.isSelected()) {
-                for (Pane rectangle : rects) {
-                    rectangle.setDisable(false);
-                    rectangle.setBackground(new Background(new BackgroundFill(Color.GOLD, new CornerRadii(20),Insets.EMPTY)));
-                }
-                rectangles.getChildren().add(add);
-            } else {
-                for (Pane rectangle : rects) {
-                    rectangle.setDisable(true);
-                    rectangle.setBackground(new Background(new BackgroundFill(Color.GOLDENROD, new CornerRadii(20),Insets.EMPTY)));
-                }
-                rectangles.getChildren().remove(add);
+                });
+                products.getChildren().add(button);
             }
         });
 
-        root.getChildren().addAll(scrollPane,button);
+        ScrollPane scrollPane = new ScrollPane(products);
+        scrollPane.setPrefSize(500,500);
+        gridPane.add(arrangementComboBox,1,1);
+        gridPane.add(categoryComboBox,2,1);
+        gridPane.add(scrollPane,1,3,2,1);
+
+        root.getChildren().add(gridPane);
     }
 
     private void Fade(Pane pane, int delay) {
         double time = 15;
-        //double s = pane.getTranslateY();
         new Thread(() -> {
             for (int[] i = {-delay}; i[0] < time; i[0]++) {
                 Platform.runLater(() -> pane.setOpacity(i[0]/time));
-                //Platform.runLater(() -> pane.setTranslateY(s - (i[0]/time) * 100));
                 try {
                     Thread.sleep((long) (1000 / 60.));
                 } catch (InterruptedException e) {

@@ -58,8 +58,8 @@ public class Controller {
         return order;
     }
 
-    public static Rental createRental(LocalDate startDate, LocalDate endDate, String person, double payedMortgage) {
-        Rental rental = new Rental(startDate, endDate, person, payedMortgage);
+    public static Rental createRental(PaymentMethod paymentMethod, Arrangement arrangement, LocalDate startDate, LocalDate endDate, String person, double payedMortgage) {
+        Rental rental = new Rental(paymentMethod, arrangement, startDate, endDate, person, payedMortgage);
         storage.storeOrder(rental);
         return rental;
     }
@@ -68,7 +68,7 @@ public class Controller {
         return storage.getOrders();
     }
 
-    public static OrderLine createOrderline(Order order, ProductComponent product, int count) {
+    public static OrderLine createOrderLine(Order order, ProductComponent product, int count) {
         return order.createOrderLine(product, count);
     }
 
