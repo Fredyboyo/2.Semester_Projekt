@@ -3,12 +3,12 @@ package Model;
 public class Price {
 
     private double price;
-    private Arrangement arrangement;
-    ProductComponent product;
+    private final Arrangement arrangement;
+    private ProductComponent product;
 
-    public Price(double price, Arrangement arrangement, ProductComponent product) {
-        this.price = price;
+    public Price(Arrangement arrangement, double price, ProductComponent product) {
         this.arrangement = arrangement;
+        this.price = price;
         this.product = product;
     }
 

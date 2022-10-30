@@ -3,7 +3,7 @@ package Model;
 import java.util.ArrayList;
 
 public class Arrangement {
-    private String name;
+    private final String name;
     ArrayList<Price> prices = new ArrayList<>();
 
     public Arrangement(String name) {
@@ -20,5 +20,10 @@ public class Arrangement {
 
     public void removePrice(Price price){
         prices.remove(price);
+    }
+
+    @Override
+    public String toString() {
+        return name + "";
     }
 }

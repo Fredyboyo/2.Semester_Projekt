@@ -12,6 +12,7 @@ public class Controller {
 
     public static Product createProduct(String name, Category category) {
         Product product = new Product(name, category);
+        category.addProduct(product);
         storage.storeProduct(product);
         return product;
     }
@@ -80,5 +81,13 @@ public class Controller {
 
     public static ArrayList<PaymentMethod> getPaymentMethods() {
         return storage.getPaymentMethods();
+    }
+
+    public static void init() {
+        Arrangement arrangement = createArrangement("Shop");
+        Category beers = createCategory("Beers");
+        Category flasks = createCategory("Flasks");
+        Product beer = createProduct("Beer",beers);
+        beer.createPrice(arrangement,30);
     }
 }
