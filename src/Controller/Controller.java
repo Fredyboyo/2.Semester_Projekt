@@ -58,8 +58,8 @@ public class Controller {
         return order;
     }
 
-    public static Rental createRental(PaymentMethod paymentMethod, Arrangement arrangement, LocalDate startDate, LocalDate endDate, String person, double payedMortgage) {
-        Rental rental = new Rental(paymentMethod, arrangement, startDate, endDate, person, payedMortgage);
+    public static Rental createRental(LocalDate startDate, LocalDate endDate, String person, double payedMortgage) {
+        Rental rental = new Rental(startDate, endDate, person, payedMortgage);
         storage.storeOrder(rental);
         return rental;
     }

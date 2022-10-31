@@ -20,4 +20,9 @@ public class OrderLine {
         }
         return cost;
     }
+
+    @Override
+    public String toString() {
+        return product + " (" + amount + ")  " + cost + " kr";
+    }
 }
