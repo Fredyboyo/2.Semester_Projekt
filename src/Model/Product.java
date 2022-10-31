@@ -35,4 +35,9 @@ public class Product implements ProductComponent {
         prices.add(price);
         return price;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

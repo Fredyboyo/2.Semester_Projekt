@@ -53,14 +53,14 @@ public class Controller {
         return storage.getArrangements();
     }
 
-    public static Order createOrder(PaymentMethod paymentMethod, Arrangement arrangement) {
-        Order order = new Order(paymentMethod, arrangement);
+    public static Order createOrder(Arrangement arrangement) {
+        Order order = new Order(arrangement);
         storage.storeOrder(order);
         return order;
     }
 
-    public static Rental createRental(PaymentMethod paymentMethod, Arrangement arrangement, LocalDate startDate, LocalDate endDate, String person, double payedMortgage) {
-        Rental rental = new Rental(paymentMethod, arrangement, startDate, endDate, person, payedMortgage);
+    public static Rental createRental(Arrangement arrangement, LocalDate startDate, LocalDate endDate, String person, double payedMortgage) {
+        Rental rental = new Rental(arrangement, startDate, endDate, person, payedMortgage);
         storage.storeOrder(rental);
         return rental;
     }

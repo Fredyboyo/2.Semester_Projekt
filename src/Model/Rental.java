@@ -8,8 +8,8 @@ public class Rental extends Order {
     private final String person;
     private final double payedMortgage;
 
-    public Rental(PaymentMethod paymentMethod, Arrangement arrangement, LocalDate startDate, LocalDate endDate, String person, double payedMortgage) {
-        super(paymentMethod, arrangement);
+    public Rental(Arrangement arrangement, LocalDate startDate, LocalDate endDate, String person, double payedMortgage) {
+        super(arrangement);
         this.startDate = startDate;
         this.endDate = endDate;
         this.person = person;

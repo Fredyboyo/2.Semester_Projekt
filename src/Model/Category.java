@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Category {
     private final String name;
-    private final ArrayList<Product> products = new ArrayList<>();
+    private final ArrayList<ProductComponent> products = new ArrayList<>();
 
     public Category(String name) {
         this.name = name;
@@ -14,7 +14,7 @@ public class Category {
         return name;
     }
 
-    public ArrayList<Product> getProducts() {
+    public ArrayList<ProductComponent> getProducts() {
         return products;
     }
 

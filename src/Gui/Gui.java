@@ -1,12 +1,12 @@
 package Gui;
 
 import Controller.Controller;
-import Model.Arrangement;
-import Model.Category;
-import Model.Price;
-import Model.Product;
+import Model.*;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -44,9 +44,28 @@ public class Gui extends Application {
         ComboBox<Category> categoryComboBox = new ComboBox<>();
         categoryComboBox.getItems().addAll(Controller.getCategories());
         categoryComboBox.setMinSize(150,25);
+
+        ScrollPane scrollPane = new ScrollPane(buttons);
+        scrollPane.setPrefSize(500,300);
+
+        ListView<OrderLine> orderLines = new ListView<>();
+
+        ListView<Order> orders = new ListView<>();
+        orders.getItems().addAll(Controller.getOrders());
+
+        Button newOrder = new Button("+ Order");
+
+        gridPane.add(arrangementComboBox,1,1);
+        gridPane.add(categoryComboBox,2,1);
+        gridPane.add(scrollPane,1,2,2,1);
+        //gridPane.add(orderLines,3,1);
+        gridPane.add(orderLines,3,2);
+        gridPane.add(newOrder,4,1);
+        gridPane.add(orders,4,2);
+
         categoryComboBox.setOnAction(event -> {
             Arrangement arrangement = arrangementComboBox.getSelectionModel().getSelectedItem();
-            ArrayList<Product> products = categoryComboBox.getSelectionModel().getSelectedItem().getProducts();
+            ArrayList<ProductComponent> products = categoryComboBox.getSelectionModel().getSelectedItem().getProducts();
             buttons.getChildren().clear();
             for (int i = 0; i < products.size(); i++) {
                 double price = 0;
@@ -55,12 +74,19 @@ public class Gui extends Application {
                         price = price1.getPrice();
                     }
                 }
+                ProductComponent[] product = {products.get(i)};
                 Button button = new Button(products.get(i).getName() + " " + price);
-
                 button.setPrefSize(75,75);
                 button.setTranslateX(83 * i);
                 button.setTranslateY(0);
-                button.setOnAction(actionEvent -> {});
+                button.setOnAction(actionEvent -> {
+                    Order order = orders.getSelectionModel().getSelectedItem();
+                    if (order == null) {
+                        return;
+                    }
+                    OrderLine orderLine = Controller.createOrderLine(order,product[0],1);
+                    orderLines.getItems().add(orderLine);
+                });
                 button.setOpacity(0);
                 buttons.getChildren().add(button);
                 Fade(button,i * 30);
@@ -68,12 +94,22 @@ public class Gui extends Application {
             System.out.println(buttons.getChildren());
         });
 
-        ScrollPane scrollPane = new ScrollPane(buttons);
-        scrollPane.setPrefSize(500,500);
+        orders.setOnMouseClicked(mouseEvent -> {
+            Order order = orders.getSelectionModel().getSelectedItem();
+            if (order == null) {
+                return;
+            }
+            orderLines.getItems().addAll(order.getOrderLines());
+        });
 
-        gridPane.add(arrangementComboBox,1,1);
-        gridPane.add(categoryComboBox,2,1);
-        gridPane.add(scrollPane,1,3,2,1);
+        newOrder.setOnAction(event -> {
+            Arrangement arrangement = arrangementComboBox.getValue();
+            if (arrangement == null) {
+                return;
+            }
+            Order order = Controller.createOrder(arrangement);
+            orders.getItems().add(order);
+        });
 
         root.getChildren().add(gridPane);
     }
