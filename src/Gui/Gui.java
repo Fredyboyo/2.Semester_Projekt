@@ -4,9 +4,6 @@ import Controller.Controller;
 import Model.*;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -36,6 +33,7 @@ public class Gui extends Application {
         gridPane.setHgap(10);
 
         Group buttons = new Group();
+        Order[] order = {null};
 
         ComboBox<Arrangement> arrangementComboBox = new ComboBox<>();
         arrangementComboBox.getItems().addAll(Controller.getArrangements());
@@ -50,18 +48,13 @@ public class Gui extends Application {
 
         ListView<OrderLine> orderLines = new ListView<>();
 
-        ListView<Order> orders = new ListView<>();
-        orders.getItems().addAll(Controller.getOrders());
-
         Button newOrder = new Button("+ Order");
 
         gridPane.add(arrangementComboBox,1,1);
         gridPane.add(categoryComboBox,2,1);
         gridPane.add(scrollPane,1,2,2,1);
-        //gridPane.add(orderLines,3,1);
         gridPane.add(orderLines,3,2);
-        gridPane.add(newOrder,4,1);
-        gridPane.add(orders,4,2);
+        gridPane.add(newOrder,3,1);
 
         categoryComboBox.setOnAction(event -> {
             Arrangement arrangement = arrangementComboBox.getSelectionModel().getSelectedItem();
@@ -80,11 +73,10 @@ public class Gui extends Application {
                 button.setTranslateX(83 * i);
                 button.setTranslateY(0);
                 button.setOnAction(actionEvent -> {
-                    Order order = orders.getSelectionModel().getSelectedItem();
-                    if (order == null) {
+                    if (order[0] == null) {
                         return;
                     }
-                    OrderLine orderLine = Controller.createOrderLine(order,product[0],1);
+                    OrderLine orderLine = Controller.createOrderLine(order[0],product[0],1);
                     orderLines.getItems().add(orderLine);
                 });
                 button.setOpacity(0);
@@ -94,21 +86,12 @@ public class Gui extends Application {
             System.out.println(buttons.getChildren());
         });
 
-        orders.setOnMouseClicked(mouseEvent -> {
-            Order order = orders.getSelectionModel().getSelectedItem();
-            if (order == null) {
-                return;
-            }
-            orderLines.getItems().addAll(order.getOrderLines());
-        });
-
         newOrder.setOnAction(event -> {
             Arrangement arrangement = arrangementComboBox.getValue();
             if (arrangement == null) {
                 return;
             }
-            Order order = Controller.createOrder(arrangement);
-            orders.getItems().add(order);
+            order[0] = Controller.createOrder(arrangement);
         });
 
         root.getChildren().add(gridPane);
