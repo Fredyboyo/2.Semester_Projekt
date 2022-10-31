@@ -12,9 +12,14 @@ public class Storage {
     private final ArrayList<Arrangement> arrangements = new ArrayList<>();
     private final ArrayList<Category> categories = new ArrayList<>();
     private final ArrayList<PaymentMethod> paymentMethods = new ArrayList<>();
+    private final ArrayList<Price> prices = new ArrayList<>();
 
     public void storeProduct(ProductComponent product) {
         products.add(product);
+    }
+
+    public void removeProduct(ProductComponent product) {
+        products.remove(product);
     }
 
     public ArrayList<ProductComponent> getProducts() {
@@ -51,5 +56,13 @@ public class Storage {
 
     public ArrayList<PaymentMethod> getPaymentMethods() {
         return new ArrayList<>(paymentMethods);
+    }
+
+    public void storePrice(Price price) {
+        prices.add(price);
+    }
+
+    public ArrayList<Price> getPrices() {
+        return new ArrayList<>(prices);
     }
 }

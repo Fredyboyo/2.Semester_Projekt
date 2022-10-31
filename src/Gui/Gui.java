@@ -4,13 +4,12 @@ import Controller.Controller;
 import Model.*;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
@@ -18,6 +17,7 @@ import java.util.ArrayList;
 
 public class Gui extends Application {
     private final Group root = new Group();
+    private AdministrationScene administationScene;
 
     @Override
     public void start(Stage stage) {
@@ -27,6 +27,8 @@ public class Gui extends Application {
         stage.setScene(scene);
         stage.setTitle("BREW-BREW");
         stage.show();
+
+        administationScene = new AdministrationScene("Administration", stage);
     }
 
     private void initContent() {
@@ -55,6 +57,8 @@ public class Gui extends Application {
 
         Button newOrder = new Button("+ Order");
 
+        Button administration = new Button("Administration");
+
         gridPane.add(arrangementComboBox,1,1);
         gridPane.add(categoryComboBox,2,1);
         gridPane.add(scrollPane,1,2,2,1);
@@ -62,6 +66,7 @@ public class Gui extends Application {
         gridPane.add(orderLines,3,2);
         gridPane.add(newOrder,4,1);
         gridPane.add(orders,4,2);
+        gridPane.add(administration, 4, 0);
 
         categoryComboBox.setOnAction(event -> {
             Arrangement arrangement = arrangementComboBox.getSelectionModel().getSelectedItem();
@@ -112,6 +117,8 @@ public class Gui extends Application {
         });
 
         root.getChildren().add(gridPane);
+
+        administration.setOnAction(event -> administrationAction());
     }
 
     private void Fade(Control pane, int delay) {
@@ -126,5 +133,9 @@ public class Gui extends Application {
                 }
             }
         }).start();
+    }
+
+    public void administrationAction(){
+        administationScene.show();
     }
 }

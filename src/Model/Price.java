@@ -4,7 +4,7 @@ public class Price {
 
     private double price;
     private final Arrangement arrangement;
-    private ProductComponent product;
+    ProductComponent product;
 
     public Price(Arrangement arrangement, double price, ProductComponent product) {
         this.arrangement = arrangement;
@@ -24,7 +24,8 @@ public class Price {
         this.price = price;
     }
 
-
-
-
+    @Override
+    public String toString() {
+        return price + " kr i " + arrangement;
+    }
 }

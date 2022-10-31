@@ -11,6 +11,7 @@ public class Product implements ProductComponent {
             String name,
             Category category) {
         this.category = category;
+        category.addProduct(this);
         this.name = name;
     }
 
@@ -32,12 +33,13 @@ public class Product implements ProductComponent {
     @Override
     public Price createPrice(Arrangement arrangement, double kr) {
         Price price = new Price(arrangement, kr, this);
+        price.product = this;
         prices.add(price);
         return price;
     }
 
     @Override
     public String toString() {
-        return name;
+        return name + " " + category + " " + prices;
     }
 }

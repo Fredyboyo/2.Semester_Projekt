@@ -1,5 +1,6 @@
 package Controller;
 
+import Gui.PricePane;
 import Model.*;
 import Storage.Storage;
 
@@ -28,6 +29,10 @@ public class Controller {
         return tour;
     }
 
+    public static void deleteProduct(ProductComponent product){
+        storage.removeProduct(product);
+    }
+
     public static ArrayList<ProductComponent> getProducts() {
         return storage.getProducts();
     }
@@ -52,14 +57,14 @@ public class Controller {
         return storage.getArrangements();
     }
 
-    public static Order createOrder(PaymentMethod paymentMethod, Arrangement arrangement) {
-        Order order = new Order(paymentMethod, arrangement);
+    public static Order createOrder(Arrangement arrangement) {
+        Order order = new Order(arrangement);
         storage.storeOrder(order);
         return order;
     }
 
-    public static Rental createRental(LocalDate startDate, LocalDate endDate, String person, double payedMortgage) {
-        Rental rental = new Rental(startDate, endDate, person, payedMortgage);
+    public static Rental createRental(Arrangement arrangement, LocalDate startDate, LocalDate endDate, String person, double payedMortgage) {
+        Rental rental = new Rental(arrangement, startDate, endDate, person, payedMortgage);
         storage.storeOrder(rental);
         return rental;
     }
@@ -68,7 +73,7 @@ public class Controller {
         return storage.getOrders();
     }
 
-    public static OrderLine createOrderline(Order order, ProductComponent product, int count) {
+    public static OrderLine createOrderLine(Order order, ProductComponent product, int count) {
         return order.createOrderLine(product, count);
     }
 
@@ -80,5 +85,15 @@ public class Controller {
 
     public static ArrayList<PaymentMethod> getPaymentMethods() {
         return storage.getPaymentMethods();
+    }
+
+    public static Price createPrice(ProductComponent product, Arrangement arrangement, double kr){
+        Price price =  product.createPrice(arrangement, kr);
+        storage.storePrice(price);
+        return price;
+    }
+
+    public static void init() {
+
     }
 }
