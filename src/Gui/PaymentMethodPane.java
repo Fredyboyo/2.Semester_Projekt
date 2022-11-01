@@ -5,6 +5,7 @@ import Model.PaymentMethod;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
 
@@ -19,6 +20,7 @@ public class PaymentMethodPane extends GridPane {
 
         this.add(lvwPaymentMethods, 1, 1,1,2);
         lvwPaymentMethods.getItems().addAll(Controller.getPaymentMethods());
+        lvwPaymentMethods.setPrefHeight(150);
         
         Button btnDelete = new Button("Slet");
         btnDelete.setOnAction(event -> deleteAction());
@@ -27,6 +29,9 @@ public class PaymentMethodPane extends GridPane {
         Button btnAdd = new Button("Tilføj");
         btnAdd.setOnAction(event -> addAction());
         this.add(btnAdd, 2, 2);
+
+        Label lblTicketCoupon = new Label("Noget med klippekort og brugte klip her?");
+        this.add(lblTicketCoupon, 1, 6);
     }
 
     private void deleteAction() {

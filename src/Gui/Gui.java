@@ -221,20 +221,19 @@ public class Gui extends Application {
     }
 
     private void initContentAdministrationScene() {
-        root.getChildren().clear();
         GridPane gridPane = new GridPane();
+        gridPane.setHgap(10);
+
+        root.getChildren().clear();
         root.getChildren().add(gridPane);
-
-        Button btnBack = new Button("<");
-        btnBack.setOnAction(event -> backAction());
-
-        BorderPane pane = new BorderPane();
 
         TabPane tabPane = new TabPane();
         this.initTabPane(tabPane);
-        pane.setCenter(tabPane);
+        gridPane.add(tabPane, 0, 0, 1, 2);
+        tabPane.setPrefWidth(670);
 
-        gridPane.add(pane, 0, 0);
+        Button btnBack = new Button("<");
+        btnBack.setOnAction(event -> backAction());
         gridPane.add(btnBack, 1, 0);
     }
 

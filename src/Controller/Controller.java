@@ -1,11 +1,9 @@
 package Controller;
 
-import Gui.PaymentMethodPane;
 import Model.*;
 import Storage.Storage;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Controller {
@@ -13,7 +11,6 @@ public class Controller {
 
     public static Product createProduct(String name, Category category) {
         Product product = new Product(name, category);
-        category.addProduct(product);
         storage.storeProduct(product);
         return product;
     }
