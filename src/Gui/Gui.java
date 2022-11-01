@@ -7,11 +7,14 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventType;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -222,12 +225,26 @@ public class Gui extends Application {
 
     private void initContentAdministrationScene() {
         root.getChildren().clear();
+        GridPane gridPane = new GridPane();
+        root.getChildren().add(gridPane);
+
+        Button btnBack = new Button("<");
+        btnBack.setOnAction(event -> backAction());
+
         BorderPane pane = new BorderPane();
-        root.getChildren().add(pane);
 
         TabPane tabPane = new TabPane();
         this.initTabPane(tabPane);
         pane.setCenter(tabPane);
+
+        gridPane.add(pane, 0, 0);
+        gridPane.add(btnBack, 1, 0);
+    }
+
+    private void backAction() {
+        root.getChildren().clear();
+        initContentOrderScene();
+        // root.getChildren().add();
     }
 
     private void initTabPane(TabPane tabPane) {

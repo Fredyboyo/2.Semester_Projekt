@@ -14,7 +14,6 @@ import javafx.scene.layout.GridPane;
 
 public class ProductPane extends GridPane {
 
-    private AddOrUpdateProductWindow addOrUpdateWindow;
     ComboBox<Category> cbCategories = new ComboBox<>();
     ComboBox<Arrangement> cbArrangements = new ComboBox<>();
     private ListView<ProductComponent> lvwProducts = new ListView<>();
@@ -51,9 +50,6 @@ public class ProductPane extends GridPane {
         this.add(btnUpdate, 4, 2);
         this.add(btnDelete, 4, 3);
         this.add(btnAdd, 4, 4);
-
-        ProductComponent product = lvwProducts.getSelectionModel().getSelectedItem();
-        addOrUpdateWindow = new AddOrUpdateProductWindow(product);
     }
 
     private void selectionChangedCategory() {
@@ -72,6 +68,8 @@ public class ProductPane extends GridPane {
     }
 
     private void addOrUpdateAction() {
+        ProductComponent product = lvwProducts.getSelectionModel().getSelectedItem();
+        AddOrUpdateProductWindow addOrUpdateWindow = new AddOrUpdateProductWindow(product);
         addOrUpdateWindow.showAndWait();
         lvwProducts.getItems().clear();
         lvwProducts.getItems().addAll(Controller.getProducts());
@@ -83,6 +81,7 @@ public class ProductPane extends GridPane {
         alert.showAndWait();
         ProductComponent product = lvwProducts.getSelectionModel().getSelectedItem();
         Controller.deleteProduct(product);
+        lvwProducts.getItems().clear();
         lvwProducts.getItems().addAll(Controller.getProducts());
     }
 }

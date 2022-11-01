@@ -68,10 +68,10 @@ public class AddOrUpdateProductWindow extends Stage {
         btnOK.setOnAction(event -> okAction());
 
         if (product != null) {
-            lblName.setText(product.getName());
-            lblCategory.setText(product.getCategory().getName());
-            lblPrice.setText(Double.toString(product.getPrices().get(0).getPrice()));
-            lblContext.setText(product.getPrices().get(0).getArrangement().getName());
+            txfName.setText(product.getName());
+            cbCategories.getSelectionModel().select(product.getCategory());
+            txfPrice.setText(Double.toString(product.getPrices().get(0).getPrice()));
+            cbArrangements.getSelectionModel().select(product.getPrices().get(0).getArrangement());
         }
     }
 

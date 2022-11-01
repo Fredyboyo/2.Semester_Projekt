@@ -41,6 +41,10 @@ public class OrderLine {
         return amount;
     }
 
+    public ProductComponent getProduct() {
+        return product;
+    }
+
     @Override
     public String toString() {
         return product + " (" + amount + ")";
