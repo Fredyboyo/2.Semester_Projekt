@@ -16,6 +16,9 @@ public class AddOrUpdateProductWindow extends Stage {
     private ComboBox<Category> cbCategories = new ComboBox<>();
     private TextField txfPrice = new TextField();
     private ComboBox<Arrangement> cbArrangements = new ComboBox<>();
+    private Button btnAddPrice = new Button("Tilføj endnu en pris");
+    private TextField txfSecondPrice = new TextField();
+    private ComboBox<Arrangement> cbArrangementsSecondPrice = new ComboBox<>();
     private ProductComponent product;
 
     public AddOrUpdateProductWindow(ProductComponent product) {
@@ -46,18 +49,17 @@ public class AddOrUpdateProductWindow extends Stage {
         pane.add(lblCategory, 1, 2);
         pane.add(cbCategories, 2, 2);
         cbCategories.getItems().addAll(Controller.getCategories());
+        cbCategories.setPromptText("Vælg kategori");
 
         Label lblPrice = new Label("Pris");
         pane.add(lblPrice, 1, 3);
         pane.add(txfPrice, 2, 3);
-
-        Label lblContext = new Label("Salgssituation");
-        pane.add(lblContext, 1, 4);
-        pane.add(cbArrangements, 2, 4);
+        pane.add(cbArrangements, 3, 3, 2, 1);
         cbArrangements.getItems().addAll(Controller.getArrangements());
+        cbArrangements.setPromptText("Salgssituation");
 
-        Button btnAddPrice = new Button("Tilføj endnu en pris");
-        pane.add(btnAddPrice, 2, 5);
+        pane.add(btnAddPrice, 2, 4);
+        btnAddPrice.setOnAction(event -> addPriceAction(pane));
 
         Button btnCancel = new Button("Annuller");
         pane.add(btnCancel, 3, 6);
@@ -75,17 +77,37 @@ public class AddOrUpdateProductWindow extends Stage {
         }
     }
 
+    private void addPriceAction(GridPane pane) {
+        Label lblPrice = new Label("Pris");
+        pane.add(lblPrice, 1, 4);
+        pane.add(txfSecondPrice, 2, 4);
+        pane.add(cbArrangementsSecondPrice, 3, 4, 2, 1);
+        cbArrangementsSecondPrice.getItems().addAll(Controller.getArrangements());
+        cbArrangementsSecondPrice.setPromptText("Salgssituation");
+        btnAddPrice.setVisible(false);
+    }
+
     private void okAction() {
         String productName = txfName.getText();
         Category category = cbCategories.getSelectionModel().getSelectedItem();
         double priceFromTextField = Double.parseDouble(txfPrice.getText());
         Arrangement arrangement = cbArrangements.getSelectionModel().getSelectedItem();
+        double secondPriceFromTextField = Double.parseDouble(txfSecondPrice.getText());
+        Arrangement arrangementSecondPrice = cbArrangementsSecondPrice.getSelectionModel().getSelectedItem();
 
         if (product == null) {
             ProductComponent newProduct = Controller.createProduct(productName, category);
             Controller.createPrice(newProduct, arrangement, priceFromTextField);
+
+            if(secondPriceFromTextField != 0 && arrangementSecondPrice != null){
+                Controller.createPrice(newProduct, arrangementSecondPrice, secondPriceFromTextField);
+            }
+
         } else {
             Controller.updateProduct(product, productName, category);
+            if(secondPriceFromTextField != 0 && arrangementSecondPrice != null){
+                Controller.createPrice(product, arrangementSecondPrice, secondPriceFromTextField);
+            }
         }
         this.close();
 

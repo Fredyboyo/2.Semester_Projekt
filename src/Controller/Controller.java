@@ -1,5 +1,6 @@
 package Controller;
 
+import Gui.PaymentMethodPane;
 import Model.*;
 import Storage.Storage;
 
@@ -82,10 +83,18 @@ public class Controller {
         return order.createOrderLine(product, amount);
     }
 
+    public static void removerOrderLine(Order order, OrderLine orderLine) {
+        order.removeOrderLine(orderLine);
+    }
+
     public static PaymentMethod createPaymentMethod(String name) {
         PaymentMethod paymentMethod = new PaymentMethod(name);
         storage.storePaymentMethod(paymentMethod);
         return paymentMethod;
+    }
+
+    public static void deletPaymentMethod(PaymentMethod paymentMethod){
+        storage.removePaymentMethod(paymentMethod);
     }
 
     public static ArrayList<PaymentMethod> getPaymentMethods() {
@@ -123,9 +132,7 @@ public class Controller {
         Order order3 = createOrder(butik);
         createOrderLine(order3, whisky, 2);
         createOrderLine(order3, klosterbrygfl, 10);
-    }
 
-    public static void removerOrderLine(Order order, OrderLine orderLine) {
-        order.removeOrderLine(orderLine);
+        PaymentMethod mobilePay = createPaymentMethod("MobilePay");
     }
 }

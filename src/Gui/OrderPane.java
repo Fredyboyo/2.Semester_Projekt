@@ -12,8 +12,6 @@ import javafx.scene.layout.GridPane;
 import java.time.LocalDate;
 
 public class OrderPane extends GridPane {
-
-    private OrderWindow orderWindow;
     DatePicker datePicker = new DatePicker();
     ComboBox<Category> cbCategories = new ComboBox<>();
     ComboBox<Arrangement> cbArrangements = new ComboBox<>();
@@ -42,7 +40,8 @@ public class OrderPane extends GridPane {
             if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
                 if(mouseEvent.getClickCount() == 2){
                     Order order = lvwOrders.getSelectionModel().getSelectedItem();
-                    orderWindow = new OrderWindow(order);
+                    OrderWindow orderWindow = new OrderWindow(order);
+                    orderWindow.show();
                 }
             }
         });

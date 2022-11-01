@@ -4,9 +4,6 @@ import Controller.Controller;
 import Model.*;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventType;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -244,7 +241,6 @@ public class Gui extends Application {
     private void backAction() {
         root.getChildren().clear();
         initContentOrderScene();
-        // root.getChildren().add();
     }
 
     private void initTabPane(TabPane tabPane) {
@@ -265,9 +261,10 @@ public class Gui extends Application {
         RentalPane rentalPane = new RentalPane();
         rentalListTab.setContent(rentalPane);
 
-        Tab ticketCouponTab = new Tab("Klip og klippekort?");
-        tabPane.getTabs().add(ticketCouponTab);
-        ticketCouponTab.setContent(null);
+        Tab paymentMethodTab = new Tab("Betalingsmetoder");
+        tabPane.getTabs().add(paymentMethodTab);
+        PaymentMethodPane paymentMethodPane = new PaymentMethodPane();
+        paymentMethodTab.setContent(paymentMethodPane);
 
         Tab statsTab = new Tab("Statistik");
         tabPane.getTabs().add(statsTab);

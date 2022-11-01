@@ -2,6 +2,7 @@ package Storage;
 
 import Model.*;
 
+import javax.crypto.interfaces.PBEKey;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +53,10 @@ public class Storage {
 
     public void storePaymentMethod(PaymentMethod paymentMethod) {
         paymentMethods.add(paymentMethod);
+    }
+
+    public void removePaymentMethod(PaymentMethod paymentMethod){
+        paymentMethods.remove(paymentMethod);
     }
 
     public ArrayList<PaymentMethod> getPaymentMethods() {
