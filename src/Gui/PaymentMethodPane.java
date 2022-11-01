@@ -2,7 +2,6 @@ package Gui;
 
 import Controller.Controller;
 import Model.PaymentMethod;
-import Model.ProductComponent;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
