@@ -25,6 +25,7 @@ public class Order {
     public OrderLine createOrderLine(ProductComponent product, int count) {
         OrderLine orderline = new OrderLine(product, count, arrangement);
         orderLines.add(orderline);
+        calculateCollectedCost();
         return orderline;
     }
 
@@ -55,6 +56,6 @@ public class Order {
 
     @Override
     public String toString() {
-        return arrangement + " - " + collectedCost;
+        return date + " - " + arrangement + " - " + collectedCost;
     }
 }

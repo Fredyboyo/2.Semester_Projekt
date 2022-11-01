@@ -1,6 +1,5 @@
 package Controller;
 
-import Gui.PricePane;
 import Model.*;
 import Storage.Storage;
 
@@ -23,14 +22,19 @@ public class Controller {
         return giftBasket;
     }
 
-    public static Tour createTour(String name, ArrayList<Price> prices, LocalDateTime startTime, LocalDateTime endTime, String person) {
-        Tour tour = new Tour(name, prices, startTime, endTime, person);
+    public static Tour createTour(String name, ArrayList<Price> prices, LocalDate date, String person) {
+        Tour tour = new Tour(name, prices, date, person);
         storage.storeProduct(tour);
         return tour;
     }
 
     public static void deleteProduct(ProductComponent product){
         storage.removeProduct(product);
+    }
+
+    public static void updateProduct(ProductComponent product, String newName, Category newCategory){
+        product.setName(newName);
+        product.setCategory(newCategory);
     }
 
     public static ArrayList<ProductComponent> getProducts() {
@@ -94,6 +98,29 @@ public class Controller {
     }
 
     public static void init() {
+        Category fadøl = createCategory("Fadøl");
+        Category flaske = createCategory("Flaske");
+        Category spriritus = createCategory("Spiritus");
 
+        Arrangement fredagsbar = createArrangement("Fredagsbar");
+        Arrangement butik = createArrangement("Butik");
+
+        ProductComponent klosterbryg = createProduct("Klosterbryg", fadøl);
+        createPrice(klosterbryg, fredagsbar,38);
+        ProductComponent klosterbrygfl = createProduct("Klosterbryg", flaske);
+        createPrice(klosterbrygfl, fredagsbar,70);
+        createPrice(klosterbrygfl, butik,36);
+        ProductComponent whisky = createProduct("Whisky 45% 50 cl rør", spriritus);
+        createPrice(whisky, butik,599);
+
+        Order order1 = createOrder(fredagsbar);
+        createOrderLine(order1, klosterbryg, 4);
+
+        Order order2 = createOrder(fredagsbar);
+        createOrderLine(order2, klosterbrygfl, 2);
+
+        Order order3 = createOrder(butik);
+        createOrderLine(order3, whisky, 2);
+        createOrderLine(order3, klosterbrygfl, 10);
     }
 }

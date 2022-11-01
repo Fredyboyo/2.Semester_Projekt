@@ -3,8 +3,8 @@ package Model;
 import java.util.ArrayList;
 
 public class Product implements ProductComponent {
-    private final String name;
-    private final Category category;
+    private String name;
+    private Category category;
     private final ArrayList<Price> prices = new ArrayList<>();
 
     public Product(
@@ -21,8 +21,18 @@ public class Product implements ProductComponent {
     }
 
     @Override
+    public void setName(String newName) {
+        this.name = newName;
+    }
+
+    @Override
     public Category getCategory() {
         return category;
+    }
+
+    @Override
+    public void setCategory(Category newCategory) {
+        this.category = newCategory;
     }
 
     @Override

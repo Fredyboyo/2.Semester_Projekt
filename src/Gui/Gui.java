@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class Gui extends Application {
     private final Group root = new Group();
-    private AdministrationScene administationScene;
+    private AdministrationWindow administationScene;
 
     @Override
     public void start(Stage stage) {
@@ -28,7 +28,7 @@ public class Gui extends Application {
         stage.setTitle("BREW-BREW");
         stage.show();
 
-        administationScene = new AdministrationScene("Administration", stage);
+        administationScene = new AdministrationWindow("Administration", stage);
     }
 
     private void initContent() {

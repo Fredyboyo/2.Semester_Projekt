@@ -4,23 +4,21 @@ import Controller.Controller;
 import Model.*;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-public class AddOrUpdateWindow extends Stage {
+public class AddOrUpdateProductWindow extends Stage {
 
     private TextField txfName = new TextField();
-    private TextField txfCategory = new TextField();
+    private ComboBox<Category> cbCategories = new ComboBox<>();
     private TextField txfPrice = new TextField();
-    private TextField txfContext = new TextField();
+    private ComboBox<Arrangement> cbArrangements = new ComboBox<>();
     private ProductComponent product;
 
-    public AddOrUpdateWindow(ProductComponent product) {
+    public AddOrUpdateProductWindow(ProductComponent product) {
         this.product = product;
         this.initStyle(StageStyle.UTILITY);
         this.initModality(Modality.APPLICATION_MODAL);
@@ -46,7 +44,8 @@ public class AddOrUpdateWindow extends Stage {
 
         Label lblCategory = new Label("Produkt kategori");
         pane.add(lblCategory, 1, 2);
-        pane.add(txfCategory, 2, 2);
+        pane.add(cbCategories, 2, 2);
+        cbCategories.getItems().addAll(Controller.getCategories());
 
         Label lblPrice = new Label("Pris");
         pane.add(lblPrice, 1, 3);
@@ -54,7 +53,8 @@ public class AddOrUpdateWindow extends Stage {
 
         Label lblContext = new Label("Salgssituation");
         pane.add(lblContext, 1, 4);
-        pane.add(txfContext, 2, 4);
+        pane.add(cbArrangements, 2, 4);
+        cbArrangements.getItems().addAll(Controller.getArrangements());
 
         Button btnAddPrice = new Button("Tilføj endnu en pris");
         pane.add(btnAddPrice, 2, 5);
@@ -67,7 +67,7 @@ public class AddOrUpdateWindow extends Stage {
         pane.add(btnOK, 4, 6);
         btnOK.setOnAction(event -> okAction());
 
-        if(product != null){
+        if (product != null) {
             lblName.setText(product.getName());
             lblCategory.setText(product.getCategory().getName());
             lblPrice.setText(Double.toString(product.getPrices().get(0).getPrice()));
@@ -77,29 +77,18 @@ public class AddOrUpdateWindow extends Stage {
 
     private void okAction() {
         String productName = txfName.getText();
-        String categoryName = txfCategory.getText();
+        Category category = cbCategories.getSelectionModel().getSelectedItem();
         double priceFromTextField = Double.parseDouble(txfPrice.getText());
-        String contextName = txfContext.getText();
+        Arrangement arrangement = cbArrangements.getSelectionModel().getSelectedItem();
 
-        ProductComponent product;
-
-        Category category = new Category(categoryName);
-        if(Controller.getCategories().contains(category)){
-            product = Controller.createProduct(productName,category);
-        } else{
-            Category newCategory = Controller.createCategory(categoryName);
-            product = Controller.createProduct(productName, newCategory);
+        if (product == null) {
+            ProductComponent newProduct = Controller.createProduct(productName, category);
+            Controller.createPrice(newProduct, arrangement, priceFromTextField);
+        } else {
+            Controller.updateProduct(product, productName, category);
         }
-
-        Arrangement arrangement = new Arrangement(contextName);
-        if(Controller.getArrangements().contains(arrangement)){
-            Controller.createPrice(product, arrangement, priceFromTextField);
-        } else{
-            Arrangement newArrangement = Controller.createArrangement(contextName);
-            Controller.createPrice(product, newArrangement, priceFromTextField);
-        }
-
         this.close();
+
     }
 
     private void cancelAction() {

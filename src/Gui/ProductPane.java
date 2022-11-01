@@ -11,12 +11,12 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
 
-public class PricePane extends GridPane {
+public class ProductPane extends GridPane {
 
-    private AddOrUpdateWindow addOrUpdateWindow;
+    private AddOrUpdateProductWindow addOrUpdateWindow;
     private ListView<ProductComponent> lvwProducts = new ListView<>();
 
-    public PricePane() {
+    public ProductPane() {
         this.setPadding(new Insets(25));
         this.setVgap(10);
         this.setHgap(10);
@@ -32,13 +32,13 @@ public class PricePane extends GridPane {
         lvwProducts.getItems().addAll(Controller.getProducts());
 
         Button btnUpdate = new Button("Opdater");
-        btnUpdate.setOnAction(event -> updateAction());
+        btnUpdate.setOnAction(event -> addOrUpdateAction());
 
         Button btnDelete = new Button("Slet");
         btnDelete.setOnAction(event -> deleteAction());
 
         Button btnAdd = new Button("Opret");
-        btnAdd.setOnAction(event -> addAction());
+        btnAdd.setOnAction(event -> addOrUpdateAction());
 
         this.add(arrangementComboBox,1,1);
         this.add(categoryComboBox,2,1);
@@ -48,11 +48,12 @@ public class PricePane extends GridPane {
         this.add(btnAdd, 4, 4);
 
         ProductComponent product = lvwProducts.getSelectionModel().getSelectedItem();
-        addOrUpdateWindow = new AddOrUpdateWindow(product);
+        addOrUpdateWindow = new AddOrUpdateProductWindow(product);
     }
 
-    private void updateAction() {
+    private void addOrUpdateAction() {
         addOrUpdateWindow.showAndWait();
+        lvwProducts.getItems().clear();
         lvwProducts.getItems().addAll(Controller.getProducts());
     }
 
@@ -62,11 +63,6 @@ public class PricePane extends GridPane {
         alert.showAndWait();
         ProductComponent product = lvwProducts.getSelectionModel().getSelectedItem();
         Controller.deleteProduct(product);
-        lvwProducts.getItems().addAll(Controller.getProducts());
-    }
-
-    private void addAction() {
-        addOrUpdateWindow.showAndWait();
         lvwProducts.getItems().addAll(Controller.getProducts());
     }
 }

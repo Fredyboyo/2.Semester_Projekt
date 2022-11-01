@@ -1,27 +1,25 @@
 package Model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Tour implements ProductComponent {
-    private final String name;
-    private final Category category;
+    private String name;
+    private Category category;
     private final ArrayList<Price> prices;
-    private final LocalDateTime startTime;
-    private final LocalDateTime endTime;
+    private final LocalDate date;
     private final String person;
 
     public Tour(
             String name,
             ArrayList<Price> prices,
-            LocalDateTime startTime,
-            LocalDateTime endTime,
+            LocalDate date,
             String person) {
         this.name = name;
         this.prices = prices;
         this.category = new Category("Tour");
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.date = date;
         this.person = person;
     }
 
@@ -31,8 +29,18 @@ public class Tour implements ProductComponent {
     }
 
     @Override
+    public void setName(String newName) {
+        this.name = newName;
+    }
+
+    @Override
     public Category getCategory() {
         return category;
+    }
+
+    @Override
+    public void setCategory(Category newCategory) {
+        this.category = newCategory;
     }
 
     @Override

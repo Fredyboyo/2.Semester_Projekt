@@ -3,8 +3,8 @@ package Model;
 import java.util.ArrayList;
 
 public class GiftBasket implements ProductComponent {
-    private final String name;
-    private final Category category;
+    private String name;
+    private Category category;
     private final ArrayList<Price> prices;
     private final ArrayList<ProductComponent> products;
 
@@ -25,8 +25,18 @@ public class GiftBasket implements ProductComponent {
     }
 
     @Override
+    public void setName(String newName) {
+        this.name = newName;
+    }
+
+    @Override
     public Category getCategory() {
         return category;
+    }
+
+    @Override
+    public void setCategory(Category newCategory) {
+        this.category = newCategory;
     }
 
     @Override
