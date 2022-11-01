@@ -2,14 +2,15 @@ package Model;
 
 public class OrderLine {
     private final ProductComponent product;
-    private final int amount;
+    private int amount;
     private double cost;
-    private Arrangement arrangement;
+    private final Arrangement arrangement;
 
-    OrderLine(ProductComponent product, int count, Arrangement arrangement) {
+    OrderLine(ProductComponent product, int amount, Arrangement arrangement) {
         this.product = product;
-        this.amount = count;
+        this.amount = amount;
         this.arrangement = arrangement;
+        calculateCost();
     }
 
     public double calculateCost() {
@@ -24,5 +25,17 @@ public class OrderLine {
     @Override
     public String toString() {
         return product + " (" + amount + ")  " + cost + " kr";
+    }
+
+    public void append() {
+        amount++;
+        calculateCost();
+    }
+
+    public void deduct() {
+        if (amount <= 1)
+            return;
+        amount--;
+        calculateCost();
     }
 }

@@ -69,8 +69,8 @@ public class Controller {
         return storage.getOrders();
     }
 
-    public static OrderLine createOrderLine(Order order, ProductComponent product, int count) {
-        return order.createOrderLine(product, count);
+    public static OrderLine createOrderLine(Order order, ProductComponent product, int amount) {
+        return order.createOrderLine(product, amount);
     }
 
     public static PaymentMethod createPaymentMethod(String name) {
