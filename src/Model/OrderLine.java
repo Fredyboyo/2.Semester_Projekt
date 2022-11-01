@@ -13,18 +13,12 @@ public class OrderLine {
         calculateCost();
     }
 
-    public double calculateCost() {
+    private void calculateCost() {
         for (Price price : product.getPrices()) {
            if (price.getArrangement() == arrangement) {
                cost = price.getPrice() * amount;
            }
         }
-        return cost;
-    }
-
-    @Override
-    public String toString() {
-        return product + " (" + amount + ")  " + cost + " kr";
     }
 
     public void append() {
@@ -37,5 +31,22 @@ public class OrderLine {
             return;
         amount--;
         calculateCost();
+    }
+
+    public double getCost() {
+        return cost;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    @Override
+    public String toString() {
+        return product + " (" + amount + ")";
+    }
+
+    public void setCost(double cost) {
+        this.cost = cost;
     }
 }

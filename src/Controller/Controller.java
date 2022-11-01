@@ -90,4 +90,8 @@ public class Controller {
         Product beer = createProduct("Beer",beers);
         beer.createPrice(arrangement,30);
     }
+
+    public static void removerOrderLine(Order order, OrderLine orderLine) {
+        order.removeOrderLine(orderLine);
+    }
 }

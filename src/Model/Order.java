@@ -17,7 +17,7 @@ public class Order {
     public double calculateCollectedCost() {
         collectedCost = 0;
         for (OrderLine orderLine : orderLines) {
-            collectedCost += orderLine.calculateCost();
+            collectedCost += orderLine.getCost();
         }
         return collectedCost;
     }
@@ -26,6 +26,10 @@ public class Order {
         OrderLine orderline = new OrderLine(product, count, arrangement);
         orderLines.add(orderline);
         return orderline;
+    }
+
+    public void removeOrderLine(OrderLine orderLine) {
+        orderLines.remove(orderLine);
     }
 
     public void setPaymentMethod(PaymentMethod paymentMethod) {
@@ -57,4 +61,5 @@ public class Order {
     public String toString() {
         return arrangement + " - " + collectedCost;
     }
+
 }

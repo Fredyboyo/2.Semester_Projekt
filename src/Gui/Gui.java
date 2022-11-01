@@ -11,6 +11,8 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -30,62 +32,66 @@ public class Gui extends Application {
 
     private void initContent() {
         GridPane gridPane = new GridPane();
-        //gridPane.setGridLinesVisible(true);
         gridPane.setPadding(new Insets(25));
         gridPane.setVgap(10);
         gridPane.setHgap(10);
+        //gridPane.setGridLinesVisible(true);
 
         Group productCompGroup = new Group();
-        Group orderLineGroups = new Group();
-        int[] Y = {0};
+        Group orderLineGroups = new Group(new Text());
 
         Order[] order = {null};
+        int[] yHeight = {0};
 
-        ComboBox<Arrangement> arrangementComboBox = new ComboBox<>();
-        arrangementComboBox.getItems().addAll(Controller.getArrangements());
-        arrangementComboBox.setMinSize(150,25);
+        ComboBox<Arrangement> cbArrangement = new ComboBox<>();
+        cbArrangement.getItems().addAll(Controller.getArrangements());
+        cbArrangement.setPrefSize(150,25);
 
-        ComboBox<Category> categoryComboBox = new ComboBox<>();
-        categoryComboBox.getItems().addAll(Controller.getCategories());
-        categoryComboBox.setMinSize(150,25);
+        ComboBox<Category> cbCategory = new ComboBox<>();
+        cbCategory.getItems().addAll(Controller.getCategories());
+        cbCategory.setPrefSize(150,25);
 
-        ScrollPane scrollPane = new ScrollPane(productCompGroup);
-        scrollPane.setPrefSize(500,300);
-        scrollPane.setFocusTraversable(false);
-        scrollPane.setBorder(Border.EMPTY);
+        ScrollPane spProductComps = new ScrollPane(productCompGroup);
+        spProductComps.setPrefSize(300,400);
+        spProductComps.setFocusTraversable(false);
 
-        ScrollPane orderLinePanes = new ScrollPane(orderLineGroups);
-        orderLinePanes.setPrefSize(320,300);
-        orderLinePanes.setFocusTraversable(false);
+        ScrollPane spOrderLines = new ScrollPane(orderLineGroups);
+        spOrderLines.setPrefSize(340,300);
+        spOrderLines.setFocusTraversable(false);
 
         Button bNewOrder = new Button("+ Order");
-        bNewOrder.setMinSize(150,25);
+        bNewOrder.setPrefSize(150,25);
 
         Button bAdministration = new Button("Administration");
-        bAdministration.setMinSize(150,25);
+        bAdministration.setPrefSize(150,25);
 
-        TextField tfTotalPrice = new TextField();
-        tfTotalPrice.setMinSize(150,25);
+        Label lTotalPrice = new Label("Total Cost :");
+
+        TextField tfTotalPrice = new TextField("* * *");
+        tfTotalPrice.setPrefSize(150,25);
         tfTotalPrice.setEditable(false);
+        tfTotalPrice.setAlignment(Pos.CENTER);
 
-        Button done = new Button("Done");
-        done.setMinSize(150,25);
+        Button bDone = new Button("Done");
+        bDone.setPrefSize(150,25);
 
-        gridPane.add(arrangementComboBox,1,1);
-        gridPane.add(categoryComboBox,2,1);
+        gridPane.add(cbArrangement,1,1);
+        gridPane.add(cbCategory,2,1);
         gridPane.add(bNewOrder,3,1);
         gridPane.add(bAdministration,4,1);
-        gridPane.add(scrollPane,1,2,2,1);
-        gridPane.add(orderLinePanes,3,2,2,1);
+        gridPane.add(spProductComps,1,2,2,1);
+        gridPane.add(spOrderLines,3,2,2,1);
+        gridPane.add(lTotalPrice,2,3);
         gridPane.add(tfTotalPrice,3,3);
-        gridPane.add(done,4,3);
+        gridPane.add(bDone,4,3);
 
         GridPane.setHalignment(bAdministration, HPos.RIGHT);
-        GridPane.setHalignment(done, HPos.RIGHT);
-
-        categoryComboBox.setOnAction(actionEvent -> {
-            Arrangement arrangement = arrangementComboBox.getSelectionModel().getSelectedItem();
-            ArrayList<ProductComponent> products = categoryComboBox.getSelectionModel().getSelectedItem().getProducts();
+        GridPane.setHalignment(lTotalPrice, HPos.RIGHT);
+        GridPane.setHalignment(bDone, HPos.RIGHT);
+        
+        cbCategory.setOnAction(actionEvent -> {
+            Arrangement arrangement = cbArrangement.getSelectionModel().getSelectedItem();
+            ArrayList<ProductComponent> products = cbCategory.getSelectionModel().getSelectedItem().getProducts();
             productCompGroup.getChildren().clear();
             for (int i = 0; i < products.size(); i++) {
                 double price = 0;
@@ -104,36 +110,72 @@ public class Gui extends Application {
                         return;
                     }
                     OrderLine orderLine = Controller.createOrderLine(order[0],productComponents[0],1);
-                    TextField tfOrderLine = new TextField(orderLine.toString());
-                    tfOrderLine.setTranslateY(31 * Y[0]);
-                    tfOrderLine.setEditable(false);
-                    tfOrderLine.setMinSize(250,30);
+
+                    int y = 30 * yHeight[0] - 10;
+
+                    Label tfOrderLine = new Label("\t" + orderLine);
+                    tfOrderLine.setTranslateY(y);
+                    tfOrderLine.setPrefSize(150,30);
+
+                    TextField tfPrice = new TextField(orderLine.getCost() + "");
+                    tfPrice.setTranslateY(y);
+                    tfPrice.setTranslateX(150);
+                    tfPrice.setPrefSize(60,30);
+                    tfPrice.setAlignment(Pos.CENTER_RIGHT);
+                    tfPrice.setOnAction(enterEvent -> {
+                        try {
+                            orderLine.setCost(Double.parseDouble(tfPrice.getText()));
+                            System.out.println(orderLine.getCost());
+                            tfTotalPrice.setText(order[0].calculateCollectedCost() + " kr");
+                        } catch (NumberFormatException e) {
+                            System.out.println("Not a number");
+                        }
+                        gridPane.requestFocus();
+                    });
+
+                    Label tfKr = new Label(" kr");
+                    tfKr.setTranslateY(y);
+                    tfKr.setTranslateX(210);
+                    tfKr.setPrefSize(30,30);
 
                     Button bAppend = new Button("+");
-                    bAppend.setTranslateY(31 * Y[0]);
-                    bAppend.setTranslateX(250);
-                    bAppend.setMinSize(30,30);
+                    bAppend.setTranslateY(y);
+                    bAppend.setTranslateX(240);
+                    bAppend.setPrefSize(30,30);
                     bAppend.setOnAction(appendEvent -> {
                         orderLine.append();
-                        tfOrderLine.setText(orderLine.toString());
-                        tfTotalPrice.setText("Total Cost: " + order[0].calculateCollectedCost() + " kr");
+                        tfOrderLine.setText("\t" + orderLine);
+                        tfPrice.setText(orderLine.getCost()+"");
+                        tfTotalPrice.setText(order[0].calculateCollectedCost() + " kr");
                     });
 
                     Button bDeduct = new Button("-");
-                    bDeduct.setTranslateY(31 * Y[0]);
-                    bDeduct.setTranslateX(280);
-                    bDeduct.setMinSize(30,30);
+                    bDeduct.setTranslateY(y);
+                    bDeduct.setTranslateX(272);
+                    bDeduct.setPrefSize(30,30);
                     bDeduct.setOnAction(deductEvent -> {
                         orderLine.deduct();
-                        tfOrderLine.setText(orderLine.toString());
-                        tfTotalPrice.setText("Total Cost: " + order[0].calculateCollectedCost() + " kr");
+                        tfOrderLine.setText("\t" + orderLine);
+                        tfPrice.setText(orderLine.getCost()+"");
+                        tfTotalPrice.setText(order[0].calculateCollectedCost() + " kr");
                     });
 
-                    Y[0]++;
+                    Button bRemove = new Button("X");
+                    bRemove.setTranslateY(y);
+                    bRemove.setTranslateX(304);
+                    bRemove.setPrefSize(30,30);
+                    bRemove.setOnAction(removeEvent -> {
+                        yHeight[0]--;
+                        bProductComponent.setDisable(false);
+                        Controller.removerOrderLine(order[0],orderLine);
+                        orderLineGroups.getChildren().removeAll(tfOrderLine,tfPrice,tfKr,bAppend,bDeduct,bRemove);
+                    });
 
-                    tfTotalPrice.setText("Total Cost: " + order[0].calculateCollectedCost() + " kr");
-                    orderLineGroups.getChildren().addAll(tfOrderLine,bAppend,bDeduct);
-                    bProductComponent.setDisable(true);
+                    yHeight[0]++;
+
+                    tfTotalPrice.setText(order[0].calculateCollectedCost() + " kr");
+                    orderLineGroups.getChildren().addAll(tfOrderLine,tfPrice,tfKr,bAppend,bDeduct,bRemove);
+                    Platform.runLater(() -> bProductComponent.setDisable(true));
                 });
 
                 bProductComponent.setOpacity(0);
@@ -144,7 +186,7 @@ public class Gui extends Application {
         });
 
         bNewOrder.setOnAction(actionEvent -> {
-            Arrangement arrangement = arrangementComboBox.getValue();
+            Arrangement arrangement = cbArrangement.getValue();
             if (arrangement == null) {
                 return;
             }
@@ -155,6 +197,12 @@ public class Gui extends Application {
         });
 
         bAdministration.setOnAction(actionEvent -> {});
+
+        if (cbArrangement.getItems().size() > 0)
+            Platform.runLater(() -> cbArrangement.setValue(cbArrangement.getItems().get(0)));
+
+        if (cbCategory.getItems().size() > 0)
+            Platform.runLater(() -> cbCategory.setValue(cbCategory.getItems().get(0)));
 
         root.getChildren().add(gridPane);
     }
