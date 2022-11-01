@@ -21,6 +21,10 @@ public class OrderLine {
         return cost;
     }
 
+    public int getAmount() {
+        return amount;
+    }
+
     @Override
     public String toString() {
         return product + " (" + amount + ")  " + cost + " kr";
