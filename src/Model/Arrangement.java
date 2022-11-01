@@ -22,6 +22,10 @@ public class Arrangement {
         prices.remove(price);
     }
 
+    public ArrayList<Price> getPrices() {
+        return new ArrayList<>(prices);
+    }
+
     @Override
     public String toString() {
         return name + "";

@@ -41,8 +41,8 @@ public class Product implements ProductComponent {
     }
 
     @Override
-    public Price createPrice(Arrangement arrangement, double kr) {
-        Price price = new Price(arrangement, kr, this);
+    public Price createPrice(Arrangement arrangement, double priceInDkk) {
+        Price price = new Price(arrangement, priceInDkk, this);
         price.product = this;
         prices.add(price);
         return price;

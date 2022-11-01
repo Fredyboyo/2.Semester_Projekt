@@ -6,8 +6,9 @@ public class Price {
     private final Arrangement arrangement;
     ProductComponent product;
 
-    public Price(Arrangement arrangement, double price, ProductComponent product) {
+    Price(Arrangement arrangement, double price, ProductComponent product) {
         this.arrangement = arrangement;
+        arrangement.prices.add(this);
         this.price = price;
         this.product = product;
     }
@@ -22,6 +23,10 @@ public class Price {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public ProductComponent getProduct() {
+        return product;
     }
 
     @Override

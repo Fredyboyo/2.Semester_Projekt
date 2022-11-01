@@ -3,6 +3,7 @@ package Gui;
 import Controller.Controller;
 import Model.Arrangement;
 import Model.Category;
+import Model.Price;
 import Model.ProductComponent;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
@@ -14,6 +15,8 @@ import javafx.scene.layout.GridPane;
 public class ProductPane extends GridPane {
 
     private AddOrUpdateProductWindow addOrUpdateWindow;
+    ComboBox<Category> cbCategories = new ComboBox<>();
+    ComboBox<Arrangement> cbArrangements = new ComboBox<>();
     private ListView<ProductComponent> lvwProducts = new ListView<>();
 
     public ProductPane() {
@@ -21,13 +24,15 @@ public class ProductPane extends GridPane {
         this.setVgap(10);
         this.setHgap(10);
 
-        ComboBox<Arrangement> arrangementComboBox = new ComboBox<>();
-        arrangementComboBox.getItems().addAll(Controller.getArrangements());
-        arrangementComboBox.setMinSize(150,25);
+        cbArrangements.setPromptText("Salgssituation");
+        cbArrangements.getItems().addAll(Controller.getArrangements());
+        cbArrangements.setMinSize(150,25);
+        cbArrangements.setOnAction(event -> selectionChangedArrangement());
 
-        ComboBox<Category> categoryComboBox = new ComboBox<>();
-        categoryComboBox.getItems().addAll(Controller.getCategories());
-        categoryComboBox.setMinSize(150,25);
+        cbCategories.setPromptText("Produkt kategori");
+        cbCategories.getItems().addAll(Controller.getCategories());
+        cbCategories.setMinSize(150,25);
+        cbCategories.setOnAction(event -> selectionChangedCategory());
 
         lvwProducts.getItems().addAll(Controller.getProducts());
 
@@ -40,8 +45,8 @@ public class ProductPane extends GridPane {
         Button btnAdd = new Button("Opret");
         btnAdd.setOnAction(event -> addOrUpdateAction());
 
-        this.add(arrangementComboBox,1,1);
-        this.add(categoryComboBox,2,1);
+        this.add(cbArrangements,1,1);
+        this.add(cbCategories,2,1);
         this.add(lvwProducts,1,2, 3, 3);
         this.add(btnUpdate, 4, 2);
         this.add(btnDelete, 4, 3);
@@ -49,6 +54,21 @@ public class ProductPane extends GridPane {
 
         ProductComponent product = lvwProducts.getSelectionModel().getSelectedItem();
         addOrUpdateWindow = new AddOrUpdateProductWindow(product);
+    }
+
+    private void selectionChangedCategory() {
+        lvwProducts.getItems().clear();
+        Category selectedCategory = cbCategories.getSelectionModel().getSelectedItem();
+        lvwProducts.getItems().addAll(selectedCategory.getProducts());
+    }
+
+    private void selectionChangedArrangement() {
+        lvwProducts.getItems().clear();
+        Arrangement selectedArrangement = cbArrangements.getSelectionModel().getSelectedItem();
+
+        for(Price price : selectedArrangement.getPrices()){
+            lvwProducts.getItems().add(price.getProduct());
+        }
     }
 
     private void addOrUpdateAction() {
