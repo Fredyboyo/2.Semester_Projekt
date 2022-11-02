@@ -12,14 +12,14 @@ import javafx.stage.StageStyle;
 
 public class AddOrUpdateProductWindow extends Stage {
 
-    private TextField txfName = new TextField();
-    private ComboBox<Category> cbCategories = new ComboBox<>();
-    private TextField txfPrice = new TextField();
-    private ComboBox<Arrangement> cbArrangements = new ComboBox<>();
-    private Button btnAddPrice = new Button("Tilføj endnu en pris");
-    private TextField txfSecondPrice = new TextField();
-    private ComboBox<Arrangement> cbArrangementsSecondPrice = new ComboBox<>();
-    private ProductComponent product;
+    private final TextField txfName = new TextField();
+    private final ComboBox<Category> cbCategories = new ComboBox<>();
+    private final TextField txfPrice = new TextField();
+    private final ComboBox<Arrangement> cbArrangements = new ComboBox<>();
+    private final Button btnAddPrice = new Button("Tilføj endnu en pris");
+    private final TextField txfSecondPrice = new TextField();
+    private final ComboBox<Arrangement> cbArrangementsSecondPrice = new ComboBox<>();
+    private final ProductComponent product;
 
     public AddOrUpdateProductWindow(ProductComponent product) {
         this.product = product;

@@ -18,7 +18,7 @@ public class Category {
         return products;
     }
 
-    public void addProduct(Product product) {
+    public void addProduct(ProductComponent product) {
         products.add(product);
     }
 

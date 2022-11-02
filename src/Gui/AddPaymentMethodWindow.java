@@ -13,7 +13,7 @@ import javafx.stage.StageStyle;
 
 public class AddPaymentMethodWindow extends Stage {
 
-    private TextField txfName = new TextField();
+    private final TextField txfName = new TextField();
 
     public AddPaymentMethodWindow(){
         this.initStyle(StageStyle.UTILITY);

@@ -12,9 +12,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class OrderWindow extends Stage {
-
-    private Order order;
-    private ListView<OrderLine> lvwOrderLines = new ListView<>();
+    private final Order order;
+    private final ListView<OrderLine> lvwOrderLines = new ListView<>();
 
     public OrderWindow(Order order){
         this.order = order;

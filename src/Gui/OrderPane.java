@@ -12,10 +12,10 @@ import javafx.scene.layout.GridPane;
 import java.time.LocalDate;
 
 public class OrderPane extends GridPane {
-    DatePicker datePicker = new DatePicker();
-    ComboBox<Category> cbCategories = new ComboBox<>();
-    ComboBox<Arrangement> cbArrangements = new ComboBox<>();
-    private ListView<Order> lvwOrders = new ListView<>();
+    private final DatePicker datePicker = new DatePicker();
+    private final ComboBox<Category> cbCategories = new ComboBox<>();
+    private final ComboBox<Arrangement> cbArrangements = new ComboBox<>();
+    private final ListView<Order> lvwOrders = new ListView<>();
 
     public OrderPane() {
         this.setPadding(new Insets(25));

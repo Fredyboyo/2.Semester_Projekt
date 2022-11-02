@@ -13,10 +13,9 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
 
 public class ProductPane extends GridPane {
-
-    ComboBox<Category> cbCategories = new ComboBox<>();
-    ComboBox<Arrangement> cbArrangements = new ComboBox<>();
-    private ListView<ProductComponent> lvwProducts = new ListView<>();
+    private final ComboBox<Category> cbCategories = new ComboBox<>();
+    private final ComboBox<Arrangement> cbArrangements = new ComboBox<>();
+    private final ListView<ProductComponent> lvwProducts = new ListView<>();
 
     public ProductPane() {
         this.setPadding(new Insets(25));
