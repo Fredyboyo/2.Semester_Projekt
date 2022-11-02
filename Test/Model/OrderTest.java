@@ -48,7 +48,7 @@ public class OrderTest {
         product1.createPrice(arrangement, 50);
         order.createOrderLine(product1, 10);
 
-        order.calculateCollectedCost();
+        order.getUpdatedPrice();
 
         assertEquals(order.getCollectedCost(), 1100);
     }

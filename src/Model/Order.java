@@ -1,5 +1,7 @@
 package Model;
 
+import Model.DiscountStrategy.NoDiscountStrategy;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -9,24 +11,34 @@ public class Order {
     private PaymentMethod paymentMethod;
     private final ArrayList<OrderLine> orderLines = new ArrayList<>();
     private final Arrangement arrangement;
+    private Discount discountStrategy = new NoDiscountStrategy();
 
     public Order(Arrangement arrangement) {
         this.arrangement = arrangement;
     }
 
-    public double calculateCollectedCost() {
-        collectedCost = 0;
-        for (OrderLine orderLine : orderLines) {
-            collectedCost += orderLine.getCost();
-        }
+    public double getUpdatedPrice() {
+        updateCollectedCost();
         return collectedCost;
     }
 
     public OrderLine createOrderLine(ProductComponent product, int count) {
         OrderLine orderline = new OrderLine(product, count, arrangement);
         orderLines.add(orderline);
-        calculateCollectedCost();
+        getUpdatedPrice();
         return orderline;
+    }
+
+    public double getPrice(){
+        return collectedCost;
+    }
+
+    public void updateCollectedCost(){
+        collectedCost = 0;
+        for (OrderLine orderLine : orderLines) {
+            collectedCost += orderLine.getCost();
+        }
+        collectedCost = discountStrategy.discount(collectedCost);
     }
 
     public void removeOrderLine(OrderLine orderLine) {
@@ -35,10 +47,6 @@ public class Order {
 
     public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
-    }
-
-    public double getCollectedCost() {
-        return collectedCost;
     }
 
     public LocalDateTime getDate() {

@@ -5,36 +5,43 @@ public class OrderLine {
     private int amount;
     private double cost;
     private final Arrangement arrangement;
+    private Discount discountStrategy;
 
     OrderLine(ProductComponent product, int amount, Arrangement arrangement) {
         this.product = product;
         this.amount = amount;
         this.arrangement = arrangement;
-        calculateCost();
+        updateCost();
     }
 
-    private void calculateCost() {
+    private double getUpdatedPrice(){
+        updateCost();
+        return cost;
+    }
+
+    private void updateCost() {
         for (Price price : product.getPrices()) {
            if (price.getArrangement() == arrangement) {
                cost = price.getPrice() * amount;
            }
         }
+        cost = discountStrategy.discount(cost);
+    }
+
+    public double getCost() {
+        return cost;
     }
 
     public void append() {
         amount++;
-        calculateCost();
+        updateCost();
     }
 
     public void deduct() {
         if (amount <= 1)
             return;
         amount--;
-        calculateCost();
-    }
-
-    public double getCost() {
-        return cost;
+        updateCost();
     }
 
     public int getAmount() {

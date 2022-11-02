@@ -125,7 +125,7 @@ public class Gui extends Application {
                         try {
                             orderLine.setCost(Double.parseDouble(tfPrice.getText()));
                             System.out.println(orderLine.getCost());
-                            tfTotalPrice.setText(order[0].calculateCollectedCost() + " kr");
+                            tfTotalPrice.setText(order[0].getUpdatedPrice() + " kr");
                         } catch (NumberFormatException e) {
                             System.out.println("Not a number");
                         }
@@ -145,7 +145,7 @@ public class Gui extends Application {
                         orderLine.append();
                         tfOrderLine.setText("\t" + orderLine);
                         tfPrice.setText(orderLine.getCost()+"");
-                        tfTotalPrice.setText(order[0].calculateCollectedCost() + " kr");
+                        tfTotalPrice.setText(order[0].getUpdatedPrice() + " kr");
                     });
 
                     Button bDeduct = new Button("-");
@@ -156,7 +156,7 @@ public class Gui extends Application {
                         orderLine.deduct();
                         tfOrderLine.setText("\t" + orderLine);
                         tfPrice.setText(orderLine.getCost()+"");
-                        tfTotalPrice.setText(order[0].calculateCollectedCost() + " kr");
+                        tfTotalPrice.setText(order[0].getUpdatedPrice() + " kr");
                     });
 
                     Button bRemove = new Button("X");
@@ -172,7 +172,7 @@ public class Gui extends Application {
 
                     yHeight[0]++;
 
-                    tfTotalPrice.setText(order[0].calculateCollectedCost() + " kr");
+                    tfTotalPrice.setText(order[0].getUpdatedPrice() + " kr");
                     orderLineGroups.getChildren().addAll(tfOrderLine,tfPrice,tfKr,bAppend,bDeduct,bRemove);
                     Platform.runLater(() -> bProductComponent.setDisable(true));
                 });
