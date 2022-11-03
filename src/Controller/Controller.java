@@ -1,13 +1,13 @@
 package Controller;
 
 import Model.*;
-import Storage.Storage;
+import Storage.ListStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class Controller {
-    private static final Storage storage = new Storage();
+public abstract class Controller {
+    private static final ListStorage storage = new ListStorage();
 
     public static Product createProduct(String name, Category category) {
         Product product = new Product(name, category);

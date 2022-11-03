@@ -77,7 +77,7 @@ public class Gui extends Application {
         spProductComps.setPickOnBounds(false);
         spProductComps.setFocusTraversable(false);
 
-        spOrderLines.setPrefSize(440,300);
+        spOrderLines.setPrefSize(540,300);
         spOrderLines.setFocusTraversable(false);
         spOrderLines.setPickOnBounds(false);
         spOrderLines.setFocusTraversable(false);
@@ -279,34 +279,47 @@ public class Gui extends Application {
         OrderLine orderLine = Controller.createOrderLine(selectedOrder,p,1);
 
         Label lName = new Label("  (" + orderLine.getAmount() + ") " + orderLine.getProduct().getName());
-        lName.setPrefSize(250,30);
+        lName.setPrefSize(spOrderLines.getWidth()-284,30);
 
         TextField tfPrice = new TextField(orderLine.getCost() + "");
-        tfPrice.setTranslateX(250);
+        tfPrice.setTranslateX(spOrderLines.getWidth()-284);
         tfPrice.setPrefSize(60,30);
         tfPrice.setAlignment(Pos.CENTER_RIGHT);
         tfPrice.setOnAction(event -> changePrice(tfPrice,orderLine));
 
         Label lKr = new Label(" kr");
-        lKr.setTranslateX(310);
+        lKr.setTranslateX(spOrderLines.getWidth()-222);
         lKr.setPrefSize(30,30);
 
+        /*
+        TextField tf = new TextField("Discond");
+        tf.setTranslateX(spOrderLines.getWidth()-192);
+        tf.setPrefSize(60,30);
+        tf.setAlignment(Pos.CENTER_RIGHT);
+        tf.setOnAction(event -> changePrice(tfPrice,orderLine));
+         */
+
+        ComboBox<Discount> cbDiscounts = new ComboBox<>();
+        cbDiscounts.setTranslateX(spOrderLines.getWidth()-190);
+        cbDiscounts.setPrefSize(90,30);
+        cbDiscounts.setOnAction(event -> setDiscount(cbDiscounts,orderLine));
+
         Button bAppend = new Button("+");
-        bAppend.setTranslateX(340);
+        bAppend.setTranslateX(spOrderLines.getWidth()-98);
         bAppend.setPrefSize(30,30);
         bAppend.setOnAction(event -> appendProduct(lName,tfPrice,orderLine));
 
         Button bDeduct = new Button("-");
-        bDeduct.setTranslateX(372);
+        bDeduct.setTranslateX(spOrderLines.getWidth()-66);
         bDeduct.setPrefSize(30,30);
         bDeduct.setOnAction(event -> deductProduct(lName,tfPrice,orderLine));
 
         Button bRemove = new Button("X");
-        bRemove.setTranslateX(404);
+        bRemove.setTranslateX(spOrderLines.getWidth()-34);
         bRemove.setPrefSize(30,30);
-        bRemove.setOnAction(event -> removeProduct(addButton,orderLine,lName,tfPrice,lKr,bAppend,bDeduct,bRemove));
+        bRemove.setOnAction(event -> removeProduct(addButton,orderLine,lName,tfPrice,lKr,cbDiscounts,bAppend,bDeduct,bRemove));
 
-        ArrayList<Control> control = new ArrayList<>(List.of(lName,tfPrice,lKr,bAppend,bDeduct,bRemove));
+        ArrayList<Control> control = new ArrayList<>(List.of(lName,tfPrice,lKr,cbDiscounts,bAppend,bDeduct,bRemove));
         controls.put(orderLine,control);
         updateList();
 
@@ -325,6 +338,12 @@ public class Gui extends Application {
         shop.requestFocus();
     }
 
+    private void setDiscount(ComboBox<Discount> cbDiscounts, OrderLine orderLine) {
+        Discount discount = cbDiscounts.getSelectionModel().getSelectedItem();
+        orderLine.setDiscountStrategy(discount);
+    }
+
+
     private void appendProduct(Label lName, TextField tfPrice, OrderLine orderLine) {
         orderLine.append();
         lName.setText("  (" + orderLine.getAmount() + ") " + orderLine.getProduct().getName());
@@ -339,12 +358,12 @@ public class Gui extends Application {
         tfTotalPrice.setText(selectedOrder.getUpdatedPrice() + " kr");
     }
 
-    private void removeProduct(ToggleButton addButton, OrderLine orderLine, Label lName, TextField tfPrice, Label lKr, Button bAppend, Button bDeduct, Button bRemove) {
+    private void removeProduct(ToggleButton addButton, OrderLine orderLine, Label lName, TextField tfPrice, Label lKr, ComboBox<Discount> cbDiscounts, Button bAppend, Button bDeduct, Button bRemove) {
         addButton.setDisable(false);
         addButton.setSelected(false);
         Controller.removeOrderLine(selectedOrder,orderLine);
         selectedOrder.getOrderLines().remove(orderLine);
-        gOrderLineDisplay.getChildren().removeAll(lName,tfPrice,lKr,bAppend,bDeduct,bRemove);
+        gOrderLineDisplay.getChildren().removeAll(lName,tfPrice,lKr,cbDiscounts,bAppend,bDeduct,bRemove);
         updateList();
     }
 
@@ -358,6 +377,7 @@ public class Gui extends Application {
             control.get(3).setTranslateY(y);
             control.get(4).setTranslateY(y);
             control.get(5).setTranslateY(y);
+            control.get(6).setTranslateY(y);
         }
     }
     private void cancelOrder() {

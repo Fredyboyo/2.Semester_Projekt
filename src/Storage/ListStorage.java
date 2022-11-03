@@ -1,13 +1,12 @@
 package Storage;
 
+import Controller.Storage;
 import Model.*;
 
-import javax.crypto.interfaces.PBEKey;
-import java.io.*;
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
-public class Storage {
+public class ListStorage implements Storage, Serializable {
     private final ArrayList<ProductComponent> products = new ArrayList<>();
     private final ArrayList<Order> orders = new ArrayList<>();
     private final ArrayList<Arrangement> arrangements = new ArrayList<>();
@@ -15,58 +14,74 @@ public class Storage {
     private final ArrayList<PaymentMethod> paymentMethods = new ArrayList<>();
     private final ArrayList<Price> prices = new ArrayList<>();
 
+    // -------------------------------------------------------------------------
+
+    public static ListStorage loadStorage() {
+
+        return null;
+    }
+
+    public static void saveStorage(Storage storage) {
+
+    }
+
+    // -------------------------------------------------------------------------
+
+    @Override
     public void storeProduct(ProductComponent product) {
         products.add(product);
     }
 
+    @Override
     public void removeProduct(ProductComponent product) {
         products.remove(product);
     }
-
-    public ArrayList<ProductComponent> getProducts() {
-        return products;
-    }
-
+    @Override
     public void storeOrder(Order order) {
         orders.add(order);
     }
-
-    public ArrayList<Order> getOrders() {
-        return orders;
-    }
-
-    public void storeArrangement(Arrangement arrangement) {
-        arrangements.add(arrangement);
-    }
-
-    public ArrayList<Arrangement> getArrangements() {
-        return arrangements;
-    }
-
+    @Override
     public void storeCategory(Category category) {
         categories.add(category);
     }
-
-    public ArrayList<Category> getCategories() {
-        return categories;
+    @Override
+    public void storeArrangement(Arrangement arrangement) {
+        arrangements.add(arrangement);
     }
-
+    @Override
+    public void storePrice(Price price) {
+        prices.add(price);
+    }
+    @Override
     public void storePaymentMethod(PaymentMethod paymentMethod) {
         paymentMethods.add(paymentMethod);
     }
-
+    @Override
     public void removePaymentMethod(PaymentMethod paymentMethod){
         paymentMethods.remove(paymentMethod);
     }
 
+    @Override
+    public ArrayList<ProductComponent> getProducts() {
+        return products;
+    }
+    @Override
+    public ArrayList<Order> getOrders() {
+        return orders;
+    }
+    @Override
+    public ArrayList<Arrangement> getArrangements() {
+        return arrangements;
+    }
+    @Override
+    public ArrayList<Category> getCategories() {
+        return categories;
+    }
+    @Override
     public ArrayList<PaymentMethod> getPaymentMethods() {
         return paymentMethods;
     }
-
-    public void storePrice(Price price) {
-        prices.add(price);
-    }
-
+    @Override
     public ArrayList<Price> getPrices() {
         return prices;
     }
