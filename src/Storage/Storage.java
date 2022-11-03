@@ -14,6 +14,7 @@ public class Storage {
     private final ArrayList<Category> categories = new ArrayList<>();
     private final ArrayList<PaymentMethod> paymentMethods = new ArrayList<>();
     private final ArrayList<Price> prices = new ArrayList<>();
+    private final ArrayList<Discount> discounts = new ArrayList<>();
 
     public void storeProduct(ProductComponent product) {
         products.add(product);
@@ -70,4 +71,17 @@ public class Storage {
     public ArrayList<Price> getPrices() {
         return prices;
     }
+
+    public void storeDiscount(Discount discount){
+        discounts.add(discount);
+    }
+
+    public void deleteDiscount(Discount discount){
+        discounts.remove(discount);
+    }
+
+    public ArrayList<Discount> getDiscounts() {
+        return new ArrayList<>(discounts);
+    }
+
 }
