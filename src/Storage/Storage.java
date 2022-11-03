@@ -24,7 +24,7 @@ public class Storage {
     }
 
     public ArrayList<ProductComponent> getProducts() {
-        return new ArrayList<>(products);
+        return products;
     }
 
     public void storeOrder(Order order) {
@@ -32,7 +32,7 @@ public class Storage {
     }
 
     public ArrayList<Order> getOrders() {
-        return new ArrayList<>(orders);
+        return orders;
     }
 
     public void storeArrangement(Arrangement arrangement) {
@@ -40,7 +40,7 @@ public class Storage {
     }
 
     public ArrayList<Arrangement> getArrangements() {
-        return new ArrayList<>(arrangements);
+        return arrangements;
     }
 
     public void storeCategory(Category category) {
@@ -48,7 +48,7 @@ public class Storage {
     }
 
     public ArrayList<Category> getCategories() {
-        return new ArrayList<>(categories);
+        return categories;
     }
 
     public void storePaymentMethod(PaymentMethod paymentMethod) {
@@ -60,7 +60,7 @@ public class Storage {
     }
 
     public ArrayList<PaymentMethod> getPaymentMethods() {
-        return new ArrayList<>(paymentMethods);
+        return paymentMethods;
     }
 
     public void storePrice(Price price) {
@@ -68,6 +68,6 @@ public class Storage {
     }
 
     public ArrayList<Price> getPrices() {
-        return new ArrayList<>(prices);
+        return prices;
     }
 }

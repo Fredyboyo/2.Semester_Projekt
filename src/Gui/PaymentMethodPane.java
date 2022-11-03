@@ -10,8 +10,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
 
 public class PaymentMethodPane extends GridPane {
-
-    private ListView<PaymentMethod> lvwPaymentMethods = new ListView<>();
+    private final ListView<PaymentMethod> lvwPaymentMethods = new ListView<>();
 
     public PaymentMethodPane(){
         this.setPadding(new Insets(25));

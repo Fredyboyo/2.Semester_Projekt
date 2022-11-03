@@ -80,7 +80,7 @@ public class Controller {
         return order.createOrderLine(product, amount);
     }
 
-    public static void removerOrderLine(Order order, OrderLine orderLine) {
+    public static void removeOrderLine(Order order, OrderLine orderLine) {
         order.removeOrderLine(orderLine);
     }
 
@@ -105,19 +105,42 @@ public class Controller {
     }
 
     public static void init() {
+        Arrangement butik = createArrangement("Butik");
+        Arrangement fredagsbar = createArrangement("Fredagsbar");
+
         Category fadøl = createCategory("Fadøl");
         Category flaske = createCategory("Flaske");
         Category spriritus = createCategory("Spiritus");
 
-        Arrangement fredagsbar = createArrangement("Fredagsbar");
-        Arrangement butik = createArrangement("Butik");
+        ProductComponent beer = createProduct("Beer",fadøl);
+        ProductComponent beerII = createProduct("Beer 2 (The sequel)",fadøl);
+        ProductComponent drink = createProduct("Drink",fadøl);
+        ProductComponent beverage = createProduct("Beverage",fadøl);
+        ProductComponent liquid = createProduct("Liquid",fadøl);
+        ProductComponent brew = createProduct("Brew",fadøl);
+        ProductComponent glass = createProduct("Glass",fadøl);
+        ProductComponent cup = createProduct("Cup",fadøl);
+        ProductComponent booze = createProduct("Booze",fadøl);
+        ProductComponent liquor = createProduct("Liquor",fadøl);
 
         ProductComponent klosterbryg = createProduct("Klosterbryg", fadøl);
+        ProductComponent klosterbrygfl = createProduct("Klosterbryg flaske", flaske);
+        ProductComponent whisky = createProduct("Whisky 45% 50 cl rør", spriritus);
+
+        beer.createPrice(butik,30);
+        beerII.createPrice(butik,50);
+        drink.createPrice(butik,30);
+        beverage.createPrice(butik,50);
+        liquid.createPrice(butik,100);
+        brew.createPrice(butik,80);
+        glass.createPrice(butik,20);
+        cup.createPrice(butik,35);
+        booze.createPrice(butik,45);
+        liquor.createPrice(butik,55);
+
         createPrice(klosterbryg, fredagsbar,38);
-        ProductComponent klosterbrygfl = createProduct("Klosterbryg", flaske);
         createPrice(klosterbrygfl, fredagsbar,70);
         createPrice(klosterbrygfl, butik,36);
-        ProductComponent whisky = createProduct("Whisky 45% 50 cl rør", spriritus);
         createPrice(whisky, butik,599);
 
         Order order1 = createOrder(fredagsbar);
@@ -129,6 +152,10 @@ public class Controller {
         Order order3 = createOrder(butik);
         createOrderLine(order3, whisky, 2);
         createOrderLine(order3, klosterbrygfl, 10);
+
+        Rental order4 = createRental(butik,LocalDate.now(),LocalDate.now(),"bob",0.95);
+        createOrderLine(order4, whisky, 2);
+        createOrderLine(order4, klosterbrygfl, 10);
 
         PaymentMethod mobilePay = createPaymentMethod("MobilePay");
     }

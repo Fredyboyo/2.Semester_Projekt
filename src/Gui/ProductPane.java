@@ -13,10 +13,9 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
 
 public class ProductPane extends GridPane {
-
-    ComboBox<Category> cbCategories = new ComboBox<>();
-    ComboBox<Arrangement> cbArrangements = new ComboBox<>();
-    private ListView<ProductComponent> lvwProducts = new ListView<>();
+    private final ComboBox<Category> cbCategories = new ComboBox<>();
+    private final ComboBox<Arrangement> cbArrangements = new ComboBox<>();
+    private final ListView<ProductComponent> lvwProducts = new ListView<>();
 
     public ProductPane() {
         this.setPadding(new Insets(25));
@@ -55,15 +54,37 @@ public class ProductPane extends GridPane {
     private void selectionChangedCategory() {
         lvwProducts.getItems().clear();
         Category selectedCategory = cbCategories.getSelectionModel().getSelectedItem();
-        lvwProducts.getItems().addAll(selectedCategory.getProducts());
+
+        Arrangement selectedArrangment = cbArrangements.getSelectionModel().getSelectedItem();
+        if(selectedArrangment != null){
+            for(ProductComponent product : selectedCategory.getProducts()){
+                for(Price price : product.getPrices()){
+                    if(price.getArrangement() == selectedArrangment){
+                        lvwProducts.getItems().add(product);
+                    }
+                }
+            }
+        } else{
+            lvwProducts.getItems().addAll(selectedCategory.getProducts());
+        }
     }
 
     private void selectionChangedArrangement() {
         lvwProducts.getItems().clear();
         Arrangement selectedArrangement = cbArrangements.getSelectionModel().getSelectedItem();
 
-        for(Price price : selectedArrangement.getPrices()){
-            lvwProducts.getItems().add(price.getProduct());
+        Category selectedCategory = cbCategories.getSelectionModel().getSelectedItem();
+        if(selectedCategory != null){
+            for(Price price : selectedArrangement.getPrices()){
+                ProductComponent product = price.getProduct();
+                if(product.getCategory() == selectedCategory){
+                    lvwProducts.getItems().add(product);
+                }
+            }
+        } else {
+            for(Price price : selectedArrangement.getPrices()){
+                lvwProducts.getItems().add(price.getProduct());
+            }
         }
     }
 
