@@ -310,7 +310,7 @@ public class Gui extends Application {
         controls.put(orderLine,control);
         updateList();
 
-        tfTotalPrice.setText(selectedOrder.calculateCollectedCost() + " kr");
+        tfTotalPrice.setText(selectedOrder.getUpdatedPrice() + " kr");
         gOrderLineDisplay.getChildren().addAll(control);
         Platform.runLater(() -> addButton.setDisable(true));
     }
@@ -318,7 +318,7 @@ public class Gui extends Application {
     private void changePrice(TextField tfPrice, OrderLine orderLine) {
         try {
             orderLine.setCost(Double.parseDouble(tfPrice.getText()));
-            tfTotalPrice.setText(selectedOrder.calculateCollectedCost() + " kr");
+            tfTotalPrice.setText(selectedOrder.getUpdatedPrice() + " kr");
         } catch (NumberFormatException e) {
             System.out.println("Not a number");
         }
@@ -329,14 +329,14 @@ public class Gui extends Application {
         orderLine.append();
         lName.setText("  (" + orderLine.getAmount() + ") " + orderLine.getProduct().getName());
         tfPrice.setText(orderLine.getCost()+"");
-        tfTotalPrice.setText(selectedOrder.calculateCollectedCost() + " kr");
+        tfTotalPrice.setText(selectedOrder.getUpdatedPrice() + " kr");
     }
 
     private void deductProduct(Label lName, TextField tfPrice, OrderLine orderLine) {
         orderLine.deduct();
         lName.setText("  (" + orderLine.getAmount() + ") " + orderLine.getProduct().getName());
         tfPrice.setText(orderLine.getCost()+"");
-        tfTotalPrice.setText(selectedOrder.calculateCollectedCost() + " kr");
+        tfTotalPrice.setText(selectedOrder.getUpdatedPrice() + " kr");
     }
 
     private void removeProduct(ToggleButton addButton, OrderLine orderLine, Label lName, TextField tfPrice, Label lKr, Button bAppend, Button bDeduct, Button bRemove) {
@@ -378,7 +378,7 @@ public class Gui extends Application {
 
     private void finishOrder() {
         if (selectedOrder != null) {
-            selectedOrder.calculateCollectedCost();
+            selectedOrder.getUpdatedPrice();
             selectedOrder = null;
         }
         cbArrangement.setDisable(false);
