@@ -81,7 +81,7 @@ public class Order {
 
     @Override
     public String toString() {
-        return date + " - " + arrangement + " - " + collectedCost;
+        return date + " - " + arrangement + " - " + collectedCost + " " + paymentMethod;
     }
 
 }

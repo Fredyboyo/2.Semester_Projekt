@@ -92,8 +92,8 @@ public class Controller {
         return storage.getPaymentMethods();
     }
 
-    public static Price createPrice(ProductComponent product, Arrangement arrangement, double price, String priceType){
-        Price p =  product.createPrice(arrangement, price, priceType);
+    public static Price createPrice(ProductComponent product, Arrangement arrangement, double price){
+        Price p =  product.createPrice(arrangement, price);
         storage.storePrice(p);
         return p;
     }
@@ -121,30 +121,31 @@ public class Controller {
         ProductComponent klosterbrygfl = createProduct("Klosterbryg flaske", flaske);
         ProductComponent whisky = createProduct("Whisky 45% 50 cl rør", spriritus);
 
-        beer.createPrice(butik,30, "kr");
-        beerII.createPrice(butik,50, "kr");
-        drink.createPrice(butik,30, "kr");
-        beverage.createPrice(butik,50, "kr");
-        liquid.createPrice(butik,100, "kr");
-        brew.createPrice(butik,80, "kr");
-        glass.createPrice(butik,20, "kr");
-        cup.createPrice(butik,35, "kr");
-        booze.createPrice(butik,45, "kr");
-        liquor.createPrice(butik,55, "kr");
+        beer.createPrice(butik,30);
+        beerII.createPrice(butik,50);
+        drink.createPrice(butik,30);
+        beverage.createPrice(butik,50);
+        liquid.createPrice(butik,100);
+        brew.createPrice(butik,80);
+        glass.createPrice(butik,20);
+        cup.createPrice(butik,35);
+        booze.createPrice(butik,45);
+        liquor.createPrice(butik,55);
 
-        createPrice(klosterbryg, fredagsbar,38, "kr");
-        createPrice(klosterbrygfl, fredagsbar,70, "kr");
-        createPrice(klosterbrygfl, butik,36, "kr");
-        createPrice(whisky, butik,599, "kr");
+        createPrice(klosterbryg, fredagsbar,38);
+        createPrice(klosterbrygfl, fredagsbar,70);
+        createPrice(klosterbrygfl, fredagsbar,2);
+        createPrice(klosterbrygfl, butik,36);
+        createPrice(whisky, butik,599);
 
         Order order1 = createOrder(fredagsbar);
         createOrderLine(order1, klosterbryg, 4);
 
-        Order order2 = createOrder(fredagsbar);
+        Order order2 = createOrder(butik);
+        createOrderLine(order2, whisky, 2);
         createOrderLine(order2, klosterbrygfl, 2);
 
-        Order order3 = createOrder(butik);
-        createOrderLine(order3, whisky, 2);
+        Order order3 = createOrder(fredagsbar);
         createOrderLine(order3, klosterbrygfl, 10);
 
         Rental order4 = createRental(butik,LocalDate.now(),LocalDate.now(),"bob",0.95);
@@ -157,5 +158,7 @@ public class Controller {
         order5.setIsCompletedToTrue();
 
         PaymentMethod mobilePay = createPaymentMethod("MobilePay");
+        PaymentMethod klippekort = createPaymentMethod("Klippekort");
+        order3.setPaymentMethod(klippekort);
     }
 }

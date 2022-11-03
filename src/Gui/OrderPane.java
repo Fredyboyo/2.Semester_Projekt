@@ -27,7 +27,9 @@ public class OrderPane extends GridPane {
         dateChanged();
 
         cbArrangements.setPromptText("Salgssituation");
+        cbArrangements.getItems().add(new Arrangement("Alle"));
         cbArrangements.getItems().addAll(Controller.getArrangements());
+        cbArrangements.getItems().add(new Arrangement("Tilføj ny salgssituation"));
         cbArrangements.setMinSize(150,25);
         cbArrangements.setOnAction(event -> selectionChangedArrangement());
 
@@ -83,10 +85,21 @@ public class OrderPane extends GridPane {
         lvwOrders.getItems().clear();
         Arrangement selectedArrangement = cbArrangements.getSelectionModel().getSelectedItem();
 
-        for(Order order : Controller.getOrders()) {
-            if (!(order instanceof Rental)) {
-                if (order.getArrangement() == selectedArrangement) {
+        if(selectedArrangement.getName().equals("Alle")) {
+            for (Order order : Controller.getOrders()) {
+                if (!(order instanceof Rental)) {
                     lvwOrders.getItems().add(order);
+                }
+            }
+        } else if(selectedArrangement.getName().equals("Tilføj ny salgssituaion")){
+            AddArrangementWindow addArrangement = new AddArrangementWindow();
+            addArrangement.showAndWait();
+        } else {
+            for(Order order : Controller.getOrders()) {
+                if (!(order instanceof Rental)) {
+                    if (order.getArrangement() == selectedArrangement) {
+                        lvwOrders.getItems().add(order);
+                    }
                 }
             }
         }

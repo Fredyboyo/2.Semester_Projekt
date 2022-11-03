@@ -20,7 +20,7 @@ public class OrderTest {
         order = new Order(arrangement);
         category = new Category("Fadøl");
         product = new Product("Klosterbryg", category);
-        price = product.createPrice(arrangement,75, "kr");
+        price = product.createPrice(arrangement,75);
         orderLine = order.createOrderLine(product, 8);
     }
 
@@ -45,7 +45,7 @@ public class OrderTest {
     @Test
     public void shouldCalculateCost(){
         Product product1 = new Product("Flaske", category);
-        product1.createPrice(arrangement, 50, "kr");
+        product1.createPrice(arrangement, 50);
         order.createOrderLine(product1, 10);
 
         order.getUpdatedPrice();
