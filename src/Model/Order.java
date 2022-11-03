@@ -7,10 +7,10 @@ import java.util.ArrayList;
 
 public class Order {
     private final LocalDateTime date = LocalDateTime.now();
-    private double collectedCost;
-    private PaymentMethod paymentMethod;
     private final ArrayList<OrderLine> orderLines = new ArrayList<>();
     private final Arrangement arrangement;
+    private double collectedCost;
+    private PaymentMethod paymentMethod;
     private Discount discountStrategy = new NoDiscountStrategy();
 
     public Order(Arrangement arrangement) {

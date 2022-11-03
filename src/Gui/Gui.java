@@ -126,7 +126,7 @@ public class Gui extends Application {
         bNewRental.     setOnAction(actionEvent -> createRental());
         bAdministration.setOnAction(actionEvent -> shopWindow());
         tbShowRentals.  setOnAction(actionEvent -> viewRentalOrders());
-        bRemove.        setOnAction(actionEvent -> removeRental());
+        bRemove.        setOnAction(actionEvent -> finishRental());
         bDone.          setOnAction(actionEvent -> finishOrder());
         bCancel.        setOnAction(actionEvent -> cancelOrder());
 
@@ -201,7 +201,7 @@ public class Gui extends Application {
 
             lvRentals.getItems().clear();
             for (Order soonToBeRental : Controller.getOrders()) {
-                if (soonToBeRental.getClass() == Rental.class) {
+                if (soonToBeRental.getClass() == Rental.class && !((Rental) soonToBeRental).isFinished()) {
                     lvRentals.getItems().add((Rental) soonToBeRental);
                 }
             }
@@ -223,12 +223,10 @@ public class Gui extends Application {
         }
     }
 
-    private void removeRental() {
+    private void finishRental() {
         Rental rental = lvRentals.getSelectionModel().getSelectedItem();
-        if (rental == null)
-            return;
-
-        /** Do rental Code ??? */
+        if (rental == null) return;
+        rental.finish();
     }
 
     private void createNewOrder() {
@@ -252,13 +250,12 @@ public class Gui extends Application {
 
     private void createRental() {
         Arrangement arrangement = cbArrangement.getValue();
-        if (arrangement == null) {
-            return;
-        }
+        if (arrangement == null) return;
+
         selectedOrder = Controller.createRental(arrangement,null,null,null,0);
-        bNewOrder.setText("Order : " + arrangement);
-        bNewOrder.setDisable(true);
+        bNewRental.setText("Rental : " + arrangement);
         bNewRental.setDisable(true);
+        bNewOrder.setDisable(true);
         bAdministration.setDisable(true);
         tbShowRentals.setDisable(true);
         cbArrangement.setDisable(true);
@@ -273,9 +270,8 @@ public class Gui extends Application {
     private final HashMap<OrderLine,ArrayList<Control>> controls = new HashMap<>();
 
     private void createOrderLine(ToggleButton addButton, ProductComponent p) {
-        if (selectedOrder == null) {
-            return;
-        }
+        if (selectedOrder == null) return;
+
         OrderLine orderLine = Controller.createOrderLine(selectedOrder,p,1);
 
         Label lName = new Label("  (" + orderLine.getAmount() + ") " + orderLine.getProduct().getName());
@@ -319,12 +315,16 @@ public class Gui extends Application {
         bRemove.setPrefSize(30,30);
         bRemove.setOnAction(event -> removeProduct(addButton,orderLine,lName,tfPrice,lKr,cbDiscounts,bAppend,bDeduct,bRemove));
 
-        ArrayList<Control> control = new ArrayList<>(List.of(lName,tfPrice,lKr,cbDiscounts,bAppend,bDeduct,bRemove));
-        controls.put(orderLine,control);
+        ArrayList<Control> controls = new ArrayList<>(List.of(lName,tfPrice,lKr,cbDiscounts,bAppend,bDeduct,bRemove));
+        this.controls.put(orderLine,controls);
         updateList();
 
+        for (Control control : controls) {
+            fadeIn(control,5);
+        }
+
         tfTotalPrice.setText(selectedOrder.getUpdatedPrice() + " kr");
-        gOrderLineDisplay.getChildren().addAll(control);
+        gOrderLineDisplay.getChildren().addAll(controls);
         Platform.runLater(() -> addButton.setDisable(true));
     }
 
@@ -370,14 +370,9 @@ public class Gui extends Application {
     private void updateList() {
         for (OrderLine orderLine : selectedOrder.getOrderLines()) {
             int y = 30 * selectedOrder.getOrderLines().indexOf(orderLine) - 10;
-            ArrayList<Control> control = controls.get(orderLine);
-            control.get(0).setTranslateY(y);
-            control.get(1).setTranslateY(y);
-            control.get(2).setTranslateY(y);
-            control.get(3).setTranslateY(y);
-            control.get(4).setTranslateY(y);
-            control.get(5).setTranslateY(y);
-            control.get(6).setTranslateY(y);
+            for (Control control : controls.get(orderLine)) {
+                control.setTranslateY(y);
+            }
         }
     }
     private void cancelOrder() {
@@ -398,7 +393,7 @@ public class Gui extends Application {
 
     private void finishOrder() {
         if (selectedOrder != null) {
-            selectedOrder.getUpdatedPrice();
+            selectedOrder.updateCollectedCost();
             selectedOrder = null;
         }
         cbArrangement.setDisable(false);

@@ -7,6 +7,7 @@ public class Rental extends Order {
     private final LocalDate endDate;
     private final String person;
     private final double payedMortgage;
+    private boolean finished = false;
 
     public Rental(Arrangement arrangement, LocalDate startDate, LocalDate endDate, String person, double payedMortgage) {
         super(arrangement);
@@ -14,6 +15,14 @@ public class Rental extends Order {
         this.endDate = endDate;
         this.person = person;
         this.payedMortgage = payedMortgage;
+    }
+
+    public boolean isFinished() {
+        return finished;
+    }
+
+    public void finish() {
+        this.finished = true;
     }
 
     public LocalDate getStartDate() {
