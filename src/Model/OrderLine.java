@@ -1,11 +1,13 @@
 package Model;
 
+import Model.DiscountStrategy.NoDiscountStrategy;
+
 public class OrderLine {
     private final ProductComponent product;
     private int amount;
     private double cost;
     private final Arrangement arrangement;
-    private Discount discountStrategy;
+    private Discount discountStrategy = new NoDiscountStrategy();
 
     OrderLine(ProductComponent product, int amount, Arrangement arrangement) {
         this.product = product;

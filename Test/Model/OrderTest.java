@@ -50,7 +50,7 @@ public class OrderTest {
 
         order.getUpdatedPrice();
 
-        assertEquals(order.getCollectedCost(), 1100);
+        assertEquals(order.getUpdatedPrice(), 1100);
     }
 
     @Test
