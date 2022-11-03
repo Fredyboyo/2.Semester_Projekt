@@ -8,5 +8,5 @@ public interface ProductComponent {
     Category getCategory();
     void setCategory(Category newCategory);
     ArrayList<Price> getPrices();
-    Price createPrice(Arrangement arrangement, double kr);
+    Price createPrice(Arrangement arrangement, double price, String priceType);
 }

@@ -45,10 +45,10 @@ public class GiftBasket implements ProductComponent {
     }
 
     @Override
-    public Price createPrice(Arrangement arrangement, double kr) {
-        Price price = new Price(arrangement, kr, this);
-        prices.add(price);
-        return price;
+    public Price createPrice(Arrangement arrangement, double price, String priceType) {
+        Price p = new Price(arrangement, price, priceType,this);
+        prices.add(p);
+        return p;
     }
 
     public ProductComponent getChild(int i) {

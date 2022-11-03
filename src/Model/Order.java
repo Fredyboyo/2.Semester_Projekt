@@ -11,10 +11,12 @@ public class Order {
     private PaymentMethod paymentMethod;
     private final ArrayList<OrderLine> orderLines = new ArrayList<>();
     private final Arrangement arrangement;
+    private boolean isCompleted;
     private Discount discountStrategy = new NoDiscountStrategy();
 
     public Order(Arrangement arrangement) {
         this.arrangement = arrangement;
+        this.isCompleted = false;
     }
 
     public double getUpdatedPrice() {
@@ -49,6 +51,14 @@ public class Order {
         this.paymentMethod = paymentMethod;
     }
 
+    public void setIsCompletedToTrue(){
+        this.isCompleted = true;
+    }
+
+    public double getCollectedCost() {
+        return collectedCost;
+    }
+
     public LocalDateTime getDate() {
         return date;
     }
@@ -61,9 +71,12 @@ public class Order {
         return paymentMethod;
     }
 
-
     public ArrayList<OrderLine> getOrderLines() {
         return orderLines;
+    }
+
+    public boolean isCompleted() {
+        return isCompleted;
     }
 
     @Override

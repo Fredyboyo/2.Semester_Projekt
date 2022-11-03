@@ -56,8 +56,10 @@ public class OrderPane extends GridPane {
         lvwOrders.getItems().clear();
         LocalDate selectedDate = datePicker.getValue();
         for(Order order : Controller.getOrders()){
-            if(order.getDate().toLocalDate().isEqual(selectedDate)){
-                lvwOrders.getItems().add(order);
+            if(!(order instanceof Rental)){
+                if(order.getDate().toLocalDate().isEqual(selectedDate)){
+                    lvwOrders.getItems().add(order);
+                }
             }
         }
     }
@@ -68,8 +70,10 @@ public class OrderPane extends GridPane {
 
         for(Order order : Controller.getOrders()){
             for(OrderLine orderLine : order.getOrderLines()){
-                if(orderLine.getProduct().getCategory() == selectedCategory){
-                    lvwOrders.getItems().add(order);
+                if(!(order instanceof Rental)) {
+                    if (orderLine.getProduct().getCategory() == selectedCategory) {
+                        lvwOrders.getItems().add(order);
+                    }
                 }
             }
         }
@@ -79,9 +83,11 @@ public class OrderPane extends GridPane {
         lvwOrders.getItems().clear();
         Arrangement selectedArrangement = cbArrangements.getSelectionModel().getSelectedItem();
 
-        for(Order order : Controller.getOrders()){
-            if(order.getArrangement() == selectedArrangement){
-                lvwOrders.getItems().add(order);
+        for(Order order : Controller.getOrders()) {
+            if (!(order instanceof Rental)) {
+                if (order.getArrangement() == selectedArrangement) {
+                    lvwOrders.getItems().add(order);
+                }
             }
         }
     }

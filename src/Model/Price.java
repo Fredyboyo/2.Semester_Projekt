@@ -3,13 +3,15 @@ package Model;
 public class Price {
 
     private double price;
+    private String priceType;
     private final Arrangement arrangement;
-    ProductComponent product;
+    private final ProductComponent product;
 
-    Price(Arrangement arrangement, double price, ProductComponent product) {
+    Price(Arrangement arrangement, double price, String priceType, ProductComponent product) {
         this.arrangement = arrangement;
         arrangement.prices.add(this);
         this.price = price;
+        this.priceType = priceType;
         this.product = product;
     }
 

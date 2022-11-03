@@ -15,9 +15,11 @@ public class AddOrUpdateProductWindow extends Stage {
     private final TextField txfName = new TextField();
     private final ComboBox<Category> cbCategories = new ComboBox<>();
     private final TextField txfPrice = new TextField();
+    private final TextField txfPriceType = new TextField();
     private final ComboBox<Arrangement> cbArrangements = new ComboBox<>();
     private final Button btnAddPrice = new Button("Tilføj endnu en pris");
     private final TextField txfSecondPrice = new TextField();
+    private final TextField txfSecondPriceType = new TextField();
     private final ComboBox<Arrangement> cbArrangementsSecondPrice = new ComboBox<>();
     private final ProductComponent product;
 
@@ -54,19 +56,20 @@ public class AddOrUpdateProductWindow extends Stage {
         Label lblPrice = new Label("Pris");
         pane.add(lblPrice, 1, 3);
         pane.add(txfPrice, 2, 3);
-        pane.add(cbArrangements, 3, 3, 2, 1);
+        pane.add(txfPriceType, 3, 3);
+        pane.add(cbArrangements, 4, 3, 2, 1);
         cbArrangements.getItems().addAll(Controller.getArrangements());
         cbArrangements.setPromptText("Salgssituation");
 
-        pane.add(btnAddPrice, 2, 4);
+        pane.add(btnAddPrice, 2, 5);
         btnAddPrice.setOnAction(event -> addPriceAction(pane));
 
         Button btnCancel = new Button("Annuller");
-        pane.add(btnCancel, 3, 6);
+        pane.add(btnCancel, 3, 8);
         btnCancel.setOnAction(event -> cancelAction());
 
         Button btnOK = new Button("Bekræft");
-        pane.add(btnOK, 4, 6);
+        pane.add(btnOK, 4, 8);
         btnOK.setOnAction(event -> okAction());
 
         if (product != null) {
@@ -81,7 +84,8 @@ public class AddOrUpdateProductWindow extends Stage {
         Label lblPrice = new Label("Pris");
         pane.add(lblPrice, 1, 4);
         pane.add(txfSecondPrice, 2, 4);
-        pane.add(cbArrangementsSecondPrice, 3, 4, 2, 1);
+        pane.add(txfSecondPriceType, 3, 4);
+        pane.add(cbArrangementsSecondPrice, 4, 4, 2, 1);
         cbArrangementsSecondPrice.getItems().addAll(Controller.getArrangements());
         cbArrangementsSecondPrice.setPromptText("Salgssituation");
         btnAddPrice.setVisible(false);
@@ -91,22 +95,24 @@ public class AddOrUpdateProductWindow extends Stage {
         String productName = txfName.getText();
         Category category = cbCategories.getSelectionModel().getSelectedItem();
         double priceFromTextField = Double.parseDouble(txfPrice.getText());
+        String priceType = txfPriceType.getText();
         Arrangement arrangement = cbArrangements.getSelectionModel().getSelectedItem();
         double secondPriceFromTextField = Double.parseDouble(txfSecondPrice.getText());
+        String secondPriceType = txfSecondPriceType.getText();
         Arrangement arrangementSecondPrice = cbArrangementsSecondPrice.getSelectionModel().getSelectedItem();
 
         if (product == null) {
             ProductComponent newProduct = Controller.createProduct(productName, category);
-            Controller.createPrice(newProduct, arrangement, priceFromTextField);
+            Controller.createPrice(newProduct, arrangement, priceFromTextField, priceType);
 
             if(secondPriceFromTextField != 0 && arrangementSecondPrice != null){
-                Controller.createPrice(newProduct, arrangementSecondPrice, secondPriceFromTextField);
+                Controller.createPrice(newProduct, arrangementSecondPrice, secondPriceFromTextField, secondPriceType);
             }
 
         } else {
             Controller.updateProduct(product, productName, category);
             if(secondPriceFromTextField != 0 && arrangementSecondPrice != null){
-                Controller.createPrice(product, arrangementSecondPrice, secondPriceFromTextField);
+                Controller.createPrice(product, arrangementSecondPrice, secondPriceFromTextField, priceType);
             }
         }
         this.close();

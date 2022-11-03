@@ -31,4 +31,9 @@ public class Rental extends Order {
     public double getPayedMortgage() {
         return payedMortgage;
     }
+
+    @Override
+    public String toString() {
+        return startDate + " - " + endDate + " (" + person + " har betalt " + payedMortgage + ")";
+    }
 }
