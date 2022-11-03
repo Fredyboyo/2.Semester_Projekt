@@ -64,20 +64,23 @@ public class Gui extends Application {
 
         cbArrangement.getItems().addAll(Controller.getArrangements());
         cbArrangement.setPrefSize(150,25);
+        cbArrangement.setFocusTraversable(false);
 
         cbCategory.getItems().add(all);
         cbCategory.getItems().addAll(Controller.getCategories());
         cbCategory.setPrefSize(150,25);
+        cbCategory.setFocusTraversable(false);
 
         ScrollPane spProductComps = new ScrollPane(gProductDisplay);
         spProductComps.setPrefSize(360,500);
         spProductComps.setFocusTraversable(false);
         spProductComps.setPickOnBounds(false);
-
+        spProductComps.setFocusTraversable(false);
 
         spOrderLines.setPrefSize(440,300);
         spOrderLines.setFocusTraversable(false);
         spOrderLines.setPickOnBounds(false);
+        spOrderLines.setFocusTraversable(false);
 
         Label lTotalPrice = new Label("Total Cost :");
 
@@ -92,6 +95,7 @@ public class Gui extends Application {
         tfTotalPrice.setPrefSize(100,25);
         tfTotalPrice.setEditable(false);
         tfTotalPrice.setAlignment(Pos.CENTER);
+        tfTotalPrice.setFocusTraversable(false);
 
         gridPane.add(bAdministration,6,1);
 
