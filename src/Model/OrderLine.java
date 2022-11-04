@@ -4,9 +4,9 @@ import Model.DiscountStrategy.NoDiscountStrategy;
 
 public class OrderLine {
     private final ProductComponent product;
+    private final Arrangement arrangement;
     private int amount;
     private double cost;
-    private final Arrangement arrangement;
     private Discount discountStrategy = new NoDiscountStrategy();
 
     OrderLine(ProductComponent product, int amount, Arrangement arrangement) {
@@ -28,6 +28,18 @@ public class OrderLine {
            }
         }
         cost = discountStrategy.discount(cost);
+    }
+
+    public Discount getDiscountStrategy() {
+        return discountStrategy;
+    }
+
+    public Arrangement getArrangement() {
+        return arrangement;
+    }
+
+    public void setDiscountStrategy(Discount discountStrategy) {
+        this.discountStrategy = discountStrategy;
     }
 
     public double getCost() {

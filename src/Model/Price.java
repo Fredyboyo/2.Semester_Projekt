@@ -1,7 +1,6 @@
 package Model;
 
 public class Price {
-
     private double price;
     private final Arrangement arrangement;
     private final ProductComponent product;
