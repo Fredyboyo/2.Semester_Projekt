@@ -7,17 +7,28 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public abstract class Controller {
-    private static final ListStorage storage = new ListStorage();
+
+    private static Storage storage;
+
+    public static Storage getStorage() {
+        return storage;
+    }
+
+    public static void setStorage(Storage storage) {
+        Controller.storage = storage;
+    }
 
     public static Product createProduct(String name, Category category) {
         Product product = new Product(name, category);
         storage.storeProduct(product);
+        notifyObservers();
         return product;
     }
 
     public static GiftBasket createGiftBasket(String name, Category category, ArrayList<Price> prices, ArrayList<ProductComponent> products) {
         GiftBasket giftBasket = new GiftBasket(name, category, prices, products);
         storage.storeProduct(giftBasket);
+        notifyObservers();
         return giftBasket;
     }
 
@@ -37,6 +48,7 @@ public abstract class Controller {
     public static Category createCategory(String name) {
         Category category = new Category(name);
         storage.storeCategory(category);
+        notifyObservers();
         return category;
     }
 
@@ -47,6 +59,7 @@ public abstract class Controller {
     public static Arrangement createArrangement(String name) {
         Arrangement arrangement = new Arrangement(name);
         storage.storeArrangement(arrangement);
+        notifyObservers();
         return arrangement;
     }
 
@@ -57,12 +70,14 @@ public abstract class Controller {
     public static Order createOrder(Arrangement arrangement) {
         Order order = new Order(arrangement);
         storage.storeOrder(order);
+        notifyObservers();
         return order;
     }
 
     public static Rental createRental(Arrangement arrangement, LocalDate startDate, LocalDate endDate, String person, double payedMortgage) {
         Rental rental = new Rental(arrangement, startDate, endDate, person, payedMortgage);
         storage.storeOrder(rental);
+        notifyObservers();
         return rental;
     }
 
@@ -71,16 +86,21 @@ public abstract class Controller {
     }
 
     public static OrderLine createOrderLine(Order order, ProductComponent product, int amount) {
-        return order.createOrderLine(product, amount);
+        OrderLine orderLine = order.createOrderLine(product, amount);
+        notifyObservers();
+        return orderLine;
+
     }
 
     public static void removeOrderLine(Order order, OrderLine orderLine) {
         order.removeOrderLine(orderLine);
+        notifyObservers();
     }
 
     public static PaymentMethod createPaymentMethod(String name) {
         PaymentMethod paymentMethod = new PaymentMethod(name);
         storage.storePaymentMethod(paymentMethod);
+        notifyObservers();
         return paymentMethod;
     }
 
@@ -93,8 +113,9 @@ public abstract class Controller {
     }
 
     public static Price createPrice(ProductComponent product, Arrangement arrangement, double price){
-        Price p =  product.createPrice(arrangement, price);
+        Price p = product.createPrice(arrangement, price);
         storage.storePrice(p);
+        notifyObservers();
         return p;
     }
 
@@ -134,7 +155,6 @@ public abstract class Controller {
 
         createPrice(klosterbryg, fredagsbar,38);
         createPrice(klosterbrygfl, fredagsbar,70);
-        createPrice(klosterbrygfl, fredagsbar,2);
         createPrice(klosterbrygfl, butik,36);
         createPrice(whisky, butik,599);
 
@@ -158,7 +178,17 @@ public abstract class Controller {
         order5.setIsCompletedToTrue();
 
         PaymentMethod mobilePay = createPaymentMethod("MobilePay");
-        PaymentMethod klippekort = createPaymentMethod("Klippekort");
-        order3.setPaymentMethod(klippekort);
+    }
+
+    private static final List<Observer> observers = new ArrayList<>();
+
+    public static void addObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    private static void notifyObservers() {
+        for (Observer observer : observers) {
+            observer.update();
+        }
     }
 }
