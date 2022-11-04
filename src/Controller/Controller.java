@@ -1,34 +1,49 @@
 package Controller;
 
+import Gui.Observer;
 import Model.*;
 import Storage.ListStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Controller {
-    private static final ListStorage storage = new ListStorage();
+
+    private static Storage storage;
+
+    public static Storage getStorage() {
+        return storage;
+    }
+
+    public static void setStorage(Storage storage) {
+        Controller.storage = storage;
+    }
 
     public static Product createProduct(String name, Category category) {
         Product product = new Product(name, category);
         storage.storeProduct(product);
+        notifyObservers();
         return product;
     }
 
     public static GiftBasket createGiftBasket(String name, Category category, ArrayList<Price> prices, ArrayList<ProductComponent> products) {
         GiftBasket giftBasket = new GiftBasket(name, category, prices, products);
         storage.storeProduct(giftBasket);
+        notifyObservers();
         return giftBasket;
     }
 
     public static Tour createTour(String name, ArrayList<Price> prices, LocalDate date, String person) {
         Tour tour = new Tour(name, prices, date, person);
         storage.storeProduct(tour);
+        notifyObservers();
         return tour;
     }
 
     public static void deleteProduct(ProductComponent product){
         storage.removeProduct(product);
+        notifyObservers();
     }
 
     public static void updateProduct(ProductComponent product, String newName, Category newCategory){
@@ -43,6 +58,7 @@ public abstract class Controller {
     public static Category createCategory(String name) {
         Category category = new Category(name);
         storage.storeCategory(category);
+        notifyObservers();
         return category;
     }
 
@@ -53,6 +69,7 @@ public abstract class Controller {
     public static Arrangement createArrangement(String name) {
         Arrangement arrangement = new Arrangement(name);
         storage.storeArrangement(arrangement);
+        notifyObservers();
         return arrangement;
     }
 
@@ -63,12 +80,14 @@ public abstract class Controller {
     public static Order createOrder(Arrangement arrangement) {
         Order order = new Order(arrangement);
         storage.storeOrder(order);
+        notifyObservers();
         return order;
     }
 
     public static Rental createRental(Arrangement arrangement, LocalDate startDate, LocalDate endDate, String person, double payedMortgage) {
         Rental rental = new Rental(arrangement, startDate, endDate, person, payedMortgage);
         storage.storeOrder(rental);
+        notifyObservers();
         return rental;
     }
 
@@ -77,16 +96,21 @@ public abstract class Controller {
     }
 
     public static OrderLine createOrderLine(Order order, ProductComponent product, int amount) {
-        return order.createOrderLine(product, amount);
+        OrderLine orderLine = order.createOrderLine(product, amount);
+        notifyObservers();
+        return orderLine;
+
     }
 
     public static void removeOrderLine(Order order, OrderLine orderLine) {
         order.removeOrderLine(orderLine);
+        notifyObservers();
     }
 
     public static PaymentMethod createPaymentMethod(String name) {
         PaymentMethod paymentMethod = new PaymentMethod(name);
         storage.storePaymentMethod(paymentMethod);
+        notifyObservers();
         return paymentMethod;
     }
 
@@ -99,8 +123,9 @@ public abstract class Controller {
     }
 
     public static Price createPrice(ProductComponent product, Arrangement arrangement, double kr){
-        Price price =  product.createPrice(arrangement, kr);
+        Price price = product.createPrice(arrangement, kr);
         storage.storePrice(price);
+        notifyObservers();
         return price;
     }
 
@@ -158,5 +183,17 @@ public abstract class Controller {
         createOrderLine(order4, klosterbrygfl, 10);
 
         PaymentMethod mobilePay = createPaymentMethod("MobilePay");
+    }
+
+    private static final List<Observer> observers = new ArrayList<>();
+
+    public static void addObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    private static void notifyObservers() {
+        for (Observer observer : observers) {
+            observer.update();
+        }
     }
 }

@@ -2,6 +2,7 @@ package Gui;
 
 import Controller.Controller;
 import Model.*;
+import Storage.ListStorage;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Gui extends Application {
+public class Gui extends Application implements Observer {
     private GridPane shop;
     private GridPane administration;
     private Scene scene;
@@ -33,6 +34,16 @@ public class Gui extends Application {
         stage.setScene(scene);
         stage.setTitle("BREW-BREW");
         stage.show();
+    }
+
+    @Override
+    public void init() {
+        Controller.addObserver(this);
+    }
+
+    @Override
+    public void stop() {
+        ListStorage.saveStorage(Controller.getStorage());
     }
 
     private Order selectedOrder = null;
@@ -480,5 +491,10 @@ public class Gui extends Application {
 
     private void shopWindow() {
         scene.setRoot(administration);
+    }
+
+    @Override
+    public void update() {
+
     }
 }
