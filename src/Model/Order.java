@@ -71,7 +71,6 @@ public class Order {
         return paymentMethod;
     }
 
-
     public ArrayList<OrderLine> getOrderLines() {
         return orderLines;
     }
@@ -82,7 +81,7 @@ public class Order {
 
     @Override
     public String toString() {
-        return arrangement + " - " + collectedCost + " " + paymentMethod;
+        return arrangement + " - " + collectedCost + " - " + paymentMethod;
     }
 
 }

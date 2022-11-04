@@ -1,6 +1,7 @@
 package Gui;
 
 import Controller.Controller;
+import Gui.Administration.Order.OrderWindow;
 import Model.Order;
 import Model.Rental;
 import javafx.geometry.Insets;
@@ -11,7 +12,7 @@ import javafx.scene.layout.GridPane;
 
 public class RentalPane extends GridPane {
 
-    private final CheckBox cbIsCompleted = new CheckBox("Vis kun udlejnigner, som endnu ikke er afleveret");
+    private final CheckBox cbIsCompleted = new CheckBox("Vis kun udlejninger, som endnu ikke er afleveret");
     private final ListView<Order> lvwRentals = new ListView<>();
 
     public RentalPane() {
@@ -30,6 +31,7 @@ public class RentalPane extends GridPane {
                 }
             }
         });
+        lvwRentals.setPrefWidth(500);
 
         this.add(cbIsCompleted, 2,1);
         this.add(lvwRentals,1,2, 3, 3);

@@ -1,10 +1,12 @@
 package Controller;
 
+import Gui.Observer;
 import Model.*;
 import Storage.ListStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Controller {
 
@@ -21,7 +23,6 @@ public abstract class Controller {
     public static Product createProduct(String name, Category category) {
         Product product = new Product(name, category);
         storage.storeProduct(product);
-        notifyObservers();
         return product;
     }
 
@@ -155,6 +156,7 @@ public abstract class Controller {
 
         createPrice(klosterbryg, fredagsbar,38);
         createPrice(klosterbrygfl, fredagsbar,70);
+        createPrice(klosterbrygfl, fredagsbar,2);
         createPrice(klosterbrygfl, butik,36);
         createPrice(whisky, butik,599);
 
@@ -178,6 +180,8 @@ public abstract class Controller {
         order5.setIsCompletedToTrue();
 
         PaymentMethod mobilePay = createPaymentMethod("MobilePay");
+        PaymentMethod klippekort = createPaymentMethod("Klippekort");
+        order3.setPaymentMethod(klippekort);
     }
 
     private static final List<Observer> observers = new ArrayList<>();

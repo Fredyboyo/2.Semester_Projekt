@@ -1,4 +1,4 @@
-package Gui;
+package Gui.Administration.PaymentMethod;
 
 import Controller.Controller;
 import Model.*;
@@ -14,31 +14,36 @@ import javafx.scene.text.Text;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public class PaymentMethodPane extends GridPane {
     private final ListView<PaymentMethod> lvwPaymentMethods = new ListView<>();
     private DateCell iniCell;
     private DateCell endCell;
-    private DatePicker datePicker = new DatePicker();
-    private Text boughtTicketCouponCount = new Text("0");
-    private Text usedTicketCouponCount = new Text("0");
+    private final DatePicker datePicker = new DatePicker();
+    private final Text boughtTicketCouponCount = new Text("0");
+    private final Text usedTicketCouponCount = new Text("0");
 
     public PaymentMethodPane() {
         this.setPadding(new Insets(25));
         this.setVgap(10);
         this.setHgap(10);
 
-        this.add(lvwPaymentMethods, 1, 1, 1, 2);
-        lvwPaymentMethods.getItems().addAll(Controller.getPaymentMethods());
-        lvwPaymentMethods.setPrefHeight(150);
-
         Button btnDelete = new Button("Slet");
         btnDelete.setOnAction(event -> deleteAction());
         this.add(btnDelete, 2, 1);
+        btnDelete.setDisable(true);
 
         Button btnAdd = new Button("Tilføj");
         btnAdd.setOnAction(event -> addAction());
         this.add(btnAdd, 2, 2);
+
+        this.add(lvwPaymentMethods, 1, 1, 1, 2);
+        lvwPaymentMethods.getItems().addAll(Controller.getPaymentMethods());
+        lvwPaymentMethods.setPrefHeight(150);
+        lvwPaymentMethods.setOnMouseClicked(event -> {
+            btnDelete.setDisable(false);
+        });
 
         Label lblTicketCoupon = new Label("Købte og brugte klip");
         lblTicketCoupon.setFont(new Font(15));
@@ -46,7 +51,7 @@ public class PaymentMethodPane extends GridPane {
 
         this.add(datePicker, 1, 5);
         datePicker.setValue(LocalDate.now());
-        datePicker.showingProperty().addListener((obs, b, b1) -> setDatePicker(obs, b, b1));
+        datePicker.showingProperty().addListener(this::setDatePicker);
 
         Label lblBoughtTicketCoupons = new Label("Antal købte klippekort i perioden:");
         this.add(lblBoughtTicketCoupons, 1, 6);
@@ -59,11 +64,13 @@ public class PaymentMethodPane extends GridPane {
     private void deleteAction() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setContentText("Er du sikker på, at du vil slette denne betalingsmetode?");
-        alert.showAndWait();
-        PaymentMethod paymentMethod = lvwPaymentMethods.getSelectionModel().getSelectedItem();
-        Controller.deletPaymentMethod(paymentMethod);
-        lvwPaymentMethods.getItems().clear();
-        lvwPaymentMethods.getItems().addAll(Controller.getPaymentMethods());
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            PaymentMethod paymentMethod = lvwPaymentMethods.getSelectionModel().getSelectedItem();
+            Controller.deletPaymentMethod(paymentMethod);
+            lvwPaymentMethods.getItems().clear();
+            lvwPaymentMethods.getItems().addAll(Controller.getPaymentMethods());
+        }
     }
 
     private void addAction() {
@@ -155,7 +162,7 @@ public class PaymentMethodPane extends GridPane {
         for (Order order : Controller.getOrders()) {
             for (OrderLine orderLine : order.getOrderLines()) {
                 if (orderLine.getProduct().getCategory() == ticketCouponCategory) {
-                    if(order.getDate().toLocalDate().isAfter(start) && order.getDate().toLocalDate().isBefore(end)) {
+                    if (order.getDate().toLocalDate().isAfter(start) && order.getDate().toLocalDate().isBefore(end)) {
                         boughtCount += orderLine.getAmount() * 4;
                     }
                 }

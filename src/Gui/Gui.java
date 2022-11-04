@@ -1,6 +1,9 @@
 package Gui;
 
 import Controller.Controller;
+import Gui.Administration.Order.OrderPane;
+import Gui.Administration.PaymentMethod.PaymentMethodPane;
+import Gui.Administration.Product.ProductPane;
 import Model.*;
 import Storage.ListStorage;
 import javafx.application.Application;
@@ -444,7 +447,7 @@ public class Gui extends Application implements Observer {
         TabPane tabPane = new TabPane();
         this.initTabPane(tabPane);
         gridPane.add(tabPane, 0, 0, 1, 2);
-        tabPane.setPrefWidth(670);
+        tabPane.setPrefWidth(850);
 
         Button btnBack = new Button("<");
         btnBack.setOnAction(event -> administrationWindow());

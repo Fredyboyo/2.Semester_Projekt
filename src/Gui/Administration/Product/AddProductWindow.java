@@ -1,7 +1,9 @@
-package Gui;
+package Gui.Administration.Product;
 
 import Controller.Controller;
-import Model.*;
+import Model.Arrangement;
+import Model.Category;
+import Model.ProductComponent;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -10,7 +12,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-public class AddOrUpdateProductWindow extends Stage {
+public class AddProductWindow extends Stage {
 
     private final TextField txfName = new TextField();
     private final ComboBox<Category> cbCategories = new ComboBox<>();
@@ -19,10 +21,8 @@ public class AddOrUpdateProductWindow extends Stage {
     private final Button btnAddPrice = new Button("Tilføj endnu en pris");
     private final TextField txfSecondPrice = new TextField();
     private final ComboBox<Arrangement> cbArrangementsSecondPrice = new ComboBox<>();
-    private final ProductComponent product;
 
-    public AddOrUpdateProductWindow(ProductComponent product) {
-        this.product = product;
+    public AddProductWindow() {
         this.initStyle(StageStyle.UTILITY);
         this.initModality(Modality.APPLICATION_MODAL);
         this.setMinHeight(100);
@@ -68,13 +68,6 @@ public class AddOrUpdateProductWindow extends Stage {
         Button btnOK = new Button("Bekræft");
         pane.add(btnOK, 4, 6);
         btnOK.setOnAction(event -> okAction());
-
-        if (product != null) {
-            txfName.setText(product.getName());
-            cbCategories.getSelectionModel().select(product.getCategory());
-            txfPrice.setText(Double.toString(product.getPrices().get(0).getPrice()));
-            cbArrangements.getSelectionModel().select(product.getPrices().get(0).getArrangement());
-        }
     }
 
     private void addPriceAction(GridPane pane) {
@@ -90,27 +83,53 @@ public class AddOrUpdateProductWindow extends Stage {
     private void okAction() {
         String productName = txfName.getText();
         Category category = cbCategories.getSelectionModel().getSelectedItem();
-        double priceFromTextField = Double.parseDouble(txfPrice.getText());
+        String priceFromTextField = txfPrice.getText();
         Arrangement arrangement = cbArrangements.getSelectionModel().getSelectedItem();
-        double secondPriceFromTextField = Double.parseDouble(txfSecondPrice.getText());
+        String secondPriceFromTextField = txfSecondPrice.getText();
         Arrangement arrangementSecondPrice = cbArrangementsSecondPrice.getSelectionModel().getSelectedItem();
+        double price;
 
-        if (product == null) {
-            ProductComponent newProduct = Controller.createProduct(productName, category);
-            Controller.createPrice(newProduct, arrangement, priceFromTextField);
-
-            if(secondPriceFromTextField != 0 && arrangementSecondPrice != null){
-                Controller.createPrice(newProduct, arrangementSecondPrice, secondPriceFromTextField);
-            }
-
-        } else {
-            Controller.updateProduct(product, productName, category);
-            if(secondPriceFromTextField != 0 && arrangementSecondPrice != null){
-                Controller.createPrice(product, arrangementSecondPrice, secondPriceFromTextField);
-            }
+        try {
+            price = Double.parseDouble(priceFromTextField);
+        } catch (NumberFormatException ex) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText("Fejl");
+            alert.setContentText("Prisen skal være et tal");
+            alert.showAndWait();
+            return;
         }
-        this.close();
 
+        if (productName.isEmpty() || category == null || priceFromTextField.isEmpty() || arrangement == null) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText("Fejl");
+            alert.setContentText("Alle felterne skal udfyldes");
+            alert.showAndWait();
+        } else {
+            ProductComponent newProduct = Controller.createProduct(productName, category);
+            Controller.createPrice(newProduct, arrangement, price);
+            secondPriceAdded(secondPriceFromTextField, arrangementSecondPrice, newProduct);
+        }
+
+        this.close();
+    }
+
+    private void secondPriceAdded(
+            String secondPriceFromTextField,
+            Arrangement arrangementSecondPrice,
+            ProductComponent product) {
+        if (!secondPriceFromTextField.isEmpty() && arrangementSecondPrice != null) {
+            double secondPrice;
+            try {
+                secondPrice = Double.parseDouble(secondPriceFromTextField);
+            } catch (NumberFormatException ex) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setHeaderText("Fejl");
+                alert.setContentText("Prisen skal være et tal");
+                alert.showAndWait();
+                return;
+            }
+            Controller.createPrice(product, arrangementSecondPrice, secondPrice);
+        }
     }
 
     private void cancelAction() {

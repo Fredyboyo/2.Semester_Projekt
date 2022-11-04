@@ -1,8 +1,9 @@
-package Gui;
+package Gui.Administration.PaymentMethod;
 
 import Controller.Controller;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -46,7 +47,14 @@ public class AddPaymentMethodWindow extends Stage {
 
     private void okAction() {
         String name = txfName.getText();
-        Controller.createPaymentMethod(name);
-        this.close();
+        if(name.isEmpty()){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText("Fejl");
+            alert.setContentText("Betalingsmetoden skal have en beskrivelse");
+            alert.showAndWait();
+        } else{
+            Controller.createPaymentMethod(name);
+            this.close();
+        }
     }
 }

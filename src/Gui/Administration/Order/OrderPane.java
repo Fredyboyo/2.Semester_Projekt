@@ -1,4 +1,4 @@
-package Gui;
+package Gui.Administration.Order;
 
 import Controller.Controller;
 import Model.*;
@@ -16,6 +16,8 @@ public class OrderPane extends GridPane {
     private final ComboBox<Category> cbCategories = new ComboBox<>();
     private final ComboBox<Arrangement> cbArrangements = new ComboBox<>();
     private final ListView<Order> lvwOrders = new ListView<>();
+    private final Arrangement allArrangements = new Arrangement("Alle");
+    private final Category allCategories = new Category("Alle");
 
     public OrderPane() {
         this.setPadding(new Insets(25));
@@ -27,13 +29,13 @@ public class OrderPane extends GridPane {
         dateChanged();
 
         cbArrangements.setPromptText("Salgssituation");
-        cbArrangements.getItems().add(new Arrangement("Alle"));
+        cbArrangements.getItems().add(allArrangements);
         cbArrangements.getItems().addAll(Controller.getArrangements());
-        cbArrangements.getItems().add(new Arrangement("Tilføj ny salgssituation"));
         cbArrangements.setMinSize(150,25);
         cbArrangements.setOnAction(event -> selectionChangedArrangement());
 
         cbCategories.setPromptText("Produkt kategori");
+        cbCategories.getItems().add(allCategories);
         cbCategories.getItems().addAll(Controller.getCategories());
         cbCategories.setMinSize(150,25);
         cbCategories.setOnAction(event -> selectionChangedCategory());
@@ -69,12 +71,28 @@ public class OrderPane extends GridPane {
     private void selectionChangedCategory() {
         lvwOrders.getItems().clear();
         Category selectedCategory = cbCategories.getSelectionModel().getSelectedItem();
+        Arrangement selectedArrangement = cbArrangements.getSelectionModel().getSelectedItem();
 
-        for(Order order : Controller.getOrders()){
-            for(OrderLine orderLine : order.getOrderLines()){
-                if(!(order instanceof Rental)) {
-                    if (orderLine.getProduct().getCategory() == selectedCategory) {
-                        lvwOrders.getItems().add(order);
+        if(selectedArrangement != null){
+            for(Order order : Controller.getOrders()){
+                for(OrderLine orderLine : order.getOrderLines()){
+                    if(!(order instanceof Rental)) {
+                        ProductComponent product = orderLine.getProduct();
+                        for(Price price : product.getPrices()){
+                            if (product.getCategory() == selectedCategory && price.getArrangement() == selectedArrangement) {
+                                lvwOrders.getItems().add(order);
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            for(Order order : Controller.getOrders()){
+                for(OrderLine orderLine : order.getOrderLines()){
+                    if(!(order instanceof Rental)) {
+                        if (orderLine.getProduct().getCategory() == selectedCategory) {
+                            lvwOrders.getItems().add(order);
+                        }
                     }
                 }
             }
@@ -84,16 +102,18 @@ public class OrderPane extends GridPane {
     private void selectionChangedArrangement() {
         lvwOrders.getItems().clear();
         Arrangement selectedArrangement = cbArrangements.getSelectionModel().getSelectedItem();
+        Category selectedCategory = cbCategories.getSelectionModel().getSelectedItem();
 
-        if(selectedArrangement.getName().equals("Alle")) {
+        if(selectedCategory != null){
+
+        }
+
+        if(selectedArrangement == allArrangements) {
             for (Order order : Controller.getOrders()) {
                 if (!(order instanceof Rental)) {
                     lvwOrders.getItems().add(order);
                 }
             }
-        } else if(selectedArrangement.getName().equals("Tilføj ny salgssituaion")){
-            AddArrangementWindow addArrangement = new AddArrangementWindow();
-            addArrangement.showAndWait();
         } else {
             for(Order order : Controller.getOrders()) {
                 if (!(order instanceof Rental)) {
