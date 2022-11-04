@@ -2,7 +2,6 @@ package Gui;
 
 import Controller.Controller;
 import Model.*;
-import Model.DiscountStrategy.PercentageDiscountStrategy;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
@@ -54,8 +53,8 @@ public class Gui extends Application implements Observer {
     private final Button bDone = new Button("Done");
     private final Button bFinishRental = new Button("Remove");
 
-    private final Group gProductDisplay = new Group(new Text());
-    private final Group gOrderLineDisplay = new Group(new Text());
+    private final GridPane gProductDisplay = new GridPane();
+    private final GridPane gOrderLineDisplay = new GridPane();
     private final TextField tfTotalPrice = new TextField("* * *");
     private final ScrollPane spOrderLines = new ScrollPane(gOrderLineDisplay);
 
@@ -77,6 +76,12 @@ public class Gui extends Application implements Observer {
         cbCategory.setPrefSize(150,25);
         cbCategory.setFocusTraversable(false);
 
+        gOrderLineDisplay.setHgap(2);
+        gOrderLineDisplay.setPadding(new Insets(2));
+        gProductDisplay.setHgap(2);
+        gProductDisplay.setVgap(2);
+        gProductDisplay.setPadding(new Insets(2));
+
         ScrollPane spProductComps = new ScrollPane(gProductDisplay);
         spProductComps.setPrefSize(360,500);
         spProductComps.setFocusTraversable(false);
@@ -90,13 +95,13 @@ public class Gui extends Application implements Observer {
 
         Label lTotalPrice = new Label("Total Cost :");
 
-        bNewRental.setPrefSize(100,25);
-        bNewOrder.setPrefSize(100,25);
+        bNewRental.     setPrefSize(100,25);
+        bNewOrder.      setPrefSize(100,25);
         bAdministration.setPrefSize(100,25);
-        tbShowRentals.setPrefSize(150,25);
-        bCancel.setPrefSize(100,25);
-        bDone.setPrefSize(100,25);
-        bFinishRental.setPrefSize(100,25);
+        tbShowRentals.  setPrefSize(150,25);
+        bCancel.        setPrefSize(100,25);
+        bDone.          setPrefSize(100,25);
+        bFinishRental.  setPrefSize(100,25);
 
         tfTotalPrice.setPrefSize(100,25);
         tfTotalPrice.setEditable(false);
@@ -132,7 +137,7 @@ public class Gui extends Application implements Observer {
         bNewRental.     setOnAction(actionEvent -> createRental());
         bAdministration.setOnAction(actionEvent -> shopWindow());
         tbShowRentals.  setOnAction(actionEvent -> viewRentalOrders());
-        bFinishRental.        setOnAction(actionEvent -> finishRental());
+        bFinishRental.  setOnAction(actionEvent -> finishRental());
         bDone.          setOnAction(actionEvent -> finishOrder());
         bCancel.        setOnAction(actionEvent -> cancelOrder());
 
@@ -175,20 +180,16 @@ public class Gui extends Application implements Observer {
         if (category == null)
             return;
         gProductDisplay.getChildren().clear();
-        gProductDisplay.getChildren().add(new Text());
-
         if (!hmCategoryProducts.containsKey(category)) {
             return;
         }
 
         ArrayList<ToggleButton> buttons = hmCategoryProducts.get(category);
         for (int i = 0; i < buttons.size(); i++) {
-            buttons.get(i).setTranslateX(177 * (i % 2.) + 2);
-            buttons.get(i).setTranslateY(52 * (i / 2) - 10);
             buttons.get(i).setOpacity(0);
             buttons.get(i).setFocusTraversable(false);
             buttons.get(i).setDisable(selectedOrder == null);
-            gProductDisplay.getChildren().add(buttons.get(i));
+            gProductDisplay.add(buttons.get(i),(int)(i % 2.),i / 2);
             fadeIn(buttons.get(i),i * 5);
         }
     }
@@ -279,51 +280,58 @@ public class Gui extends Application implements Observer {
         });
     }
 
+    //----------------------- OrderLine --------------------------------------------------------------------------------
+
     private final HashMap<OrderLine,ArrayList<Control>> controls = new HashMap<>();
 
-    private void createOrderLine(ToggleButton addButton, ProductComponent p) {
+    private void createOrderLine(ToggleButton addButton, ProductComponent product) {
         if (selectedOrder == null) return;
 
-        OrderLine orderLine = Controller.createOrderLine(selectedOrder,p,1);
+        OrderLine orderLine = Controller.createOrderLine(selectedOrder,product,1);
 
         Label lName = new Label("  (" + orderLine.getAmount() + ") " + orderLine.getProduct().getName());
-        lName.setPrefSize(spOrderLines.getWidth()-284,30);
+        lName.setPrefSize(200,30);
+        lName.setOpacity(0);
 
         TextField tfPrice = new TextField(orderLine.getCost() + "");
-        tfPrice.setTranslateX(spOrderLines.getWidth()-284);
         tfPrice.setPrefSize(60,30);
         tfPrice.setAlignment(Pos.CENTER_RIGHT);
+        tfPrice.setOpacity(0);
 
-        Label lKr = new Label(" kr");
-        lKr.setTranslateX(spOrderLines.getWidth()-222);
-        lKr.setPrefSize(30,30);
+        Label lKr = new Label(" Kr.");
+        lKr.setPrefSize(20,30);
+        lKr.setOpacity(0);
 
         ComboBox<Discount> cbDiscounts = new ComboBox<>();
-        cbDiscounts.setTranslateX(spOrderLines.getWidth()-190);
         cbDiscounts.setPrefSize(90,30);
+        cbDiscounts.setOpacity(0);
 
-        TextField tfPercent = new TextField(orderLine.getCost() + "");
-        tfPercent.setTranslateX(spOrderLines.getWidth()-284);
+        TextField tfPercent = new TextField();
         tfPercent.setPrefSize(60,30);
         tfPercent.setAlignment(Pos.CENTER_RIGHT);
+        tfPercent.setOpacity(0);
+
+        Label lPercent = new Label(" %");
+        lPercent.setPrefSize(20,30);
+        lPercent.setOpacity(0);
 
         Button bAppend = new Button("+");
-        bAppend.setTranslateX(spOrderLines.getWidth()-98);
         bAppend.setPrefSize(30,30);
+        bAppend.setOpacity(0);
 
         Button bDeduct = new Button("-");
-        bDeduct.setTranslateX(spOrderLines.getWidth()-66);
         bDeduct.setPrefSize(30,30);
+        bDeduct.setOpacity(0);
 
         Button bRemove = new Button("X");
-        bRemove.setTranslateX(spOrderLines.getWidth()-34);
         bRemove.setPrefSize(30,30);
+        bRemove.setOpacity(0);
 
-        ArrayList<Control> controls = new ArrayList<>(List.of(lName,tfPrice,lKr,cbDiscounts,bAppend,bDeduct,bRemove));
+        ArrayList<Control> controls = new ArrayList<>(List.of(lName,tfPrice,lKr,cbDiscounts,tfPercent,lPercent,bAppend,bDeduct,bRemove));
 
         tfPrice.    setOnAction(event -> changePrice(tfPrice,orderLine));
-        cbDiscounts.setOnAction(event -> setDiscount(cbDiscounts,orderLine));
-        tfPercent.  setOnAction(event -> changePercent(cbDiscounts,tfPercent,orderLine));
+        cbDiscounts.setOnAction(event -> setDiscount(cbDiscounts,orderLine,tfPercent));
+        tfPercent.  setOnAction(event -> changePercent(tfPercent,cbDiscounts));
         bAppend.    setOnAction(event -> appendProduct(lName,tfPrice,orderLine));
         bDeduct.    setOnAction(event -> deductProduct(lName,tfPrice,orderLine));
         bRemove.    setOnAction(event -> removeProduct(addButton,orderLine,controls));
@@ -336,7 +344,7 @@ public class Gui extends Application implements Observer {
         }
 
         tfTotalPrice.setText(selectedOrder.getUpdatedPrice() + " kr");
-        gOrderLineDisplay.getChildren().addAll(controls);
+
         Platform.runLater(() -> addButton.setDisable(true));
     }
 
@@ -350,19 +358,20 @@ public class Gui extends Application implements Observer {
         shop.requestFocus();
     }
 
-    private void setDiscount(ComboBox<Discount> cbDiscounts, OrderLine orderLine) {
+    private void setDiscount(ComboBox<Discount> cbDiscounts, OrderLine orderLine, TextField tfPercent) {
         Discount discount = cbDiscounts.getSelectionModel().getSelectedItem();
         if (discount == null) return;
         orderLine.setDiscountStrategy(discount);
+        tfPercent.clear();
     }
 
-    private void changePercent(ComboBox<Discount> cbDiscounts, TextField tfPercent, OrderLine orderLine) {
-        PercentageDiscountStrategy discountStrategy = new PercentageDiscountStrategy(0);
+    private void changePercent(TextField tfPercent, ComboBox<Discount> cbDiscounts) {
         Discount discount = cbDiscounts.getSelectionModel().getSelectedItem();
         if (discount == null) return;
 
         double percent = Double.parseDouble(tfPercent.getText());
-        ((PercentageDiscountStrategy)discount).setPercentage(percent);
+        discount.setValue(percent);
+        shop.requestFocus();
     }
 
     private void appendProduct(Label lName, TextField tfPrice, OrderLine orderLine) {
@@ -389,13 +398,17 @@ public class Gui extends Application implements Observer {
     }
 
     private void updateList() {
+        gOrderLineDisplay.getChildren().clear();
         for (OrderLine orderLine : selectedOrder.getOrderLines()) {
-            int y = 30 * selectedOrder.getOrderLines().indexOf(orderLine) - 10;
-            for (Control control : controls.get(orderLine)) {
-                control.setTranslateY(y);
+            int y = selectedOrder.getOrderLines().indexOf(orderLine);
+            ArrayList<Control> controls = this.controls.get(orderLine);
+            for (int x = 0; x < controls.size(); x++) {
+                gOrderLineDisplay.add(controls.get(x),x,y);
             }
         }
     }
+
+    //------------------------------------------------------------------------------------------------------------------
 
     private void cancelOrder() {
         Controller.getOrders().remove(selectedOrder);
@@ -434,15 +447,16 @@ public class Gui extends Application implements Observer {
     private void fadeIn(Control pane, int delay) {
         double time = 15;
         new Thread(() -> {
-            for (int[] i = {-delay}; i[0] < time; i[0]++) {
-                Platform.runLater(() -> pane.setOpacity(i[0]/time));
-                try {
+            try {
+                for (int[] i = {-delay}; i[0] < time; i[0]++) {
+                    Platform.runLater(() -> pane.setOpacity(i[0]/time));
                     Thread.sleep((long) (1000 / 60.));
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }).start();
+
     }
 
     //------------------------------------------------------------------------------------------------------------------
