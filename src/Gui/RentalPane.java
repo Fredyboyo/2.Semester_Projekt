@@ -23,8 +23,8 @@ public class RentalPane extends GridPane {
         cbIsCompleted.setOnAction(event -> checkBoxChanged());
 
         lvwRentals.setOnMouseClicked(mouseEvent -> {
-            if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-                if(mouseEvent.getClickCount() == 2){
+            if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
+                if (mouseEvent.getClickCount() == 2) {
                     Order order = lvwRentals.getSelectionModel().getSelectedItem();
                     OrderWindow orderWindow = new OrderWindow(order);
                     orderWindow.show();
@@ -33,28 +33,22 @@ public class RentalPane extends GridPane {
         });
         lvwRentals.setPrefWidth(500);
 
-        this.add(cbIsCompleted, 2,1);
-        this.add(lvwRentals,1,2, 3, 3);
+        this.add(cbIsCompleted, 2, 1);
+        this.add(lvwRentals, 1, 2, 3, 3);
         updateRentalList();
     }
 
     private void updateRentalList() {
         lvwRentals.getItems().clear();
-        for(Order order : Controller.getOrders()){
-            if(order instanceof Rental){
-                lvwRentals.getItems().add(order);
-            }
-        }
+        lvwRentals.getItems().addAll(Controller.getRentals());
     }
 
     private void checkBoxChanged() {
-        if(cbIsCompleted.isSelected()){
+        if (cbIsCompleted.isSelected()) {
             lvwRentals.getItems().clear();
-            for(Order order : Controller.getOrders()){
-                if(order instanceof Rental){
-                    if(!order.isCompleted()){
-                        lvwRentals.getItems().add(order);
-                    }
+            for (Order order : Controller.getRentals()) {
+                if (!order.isCompleted()) {
+                    lvwRentals.getItems().add(order);
                 }
             }
         } else {

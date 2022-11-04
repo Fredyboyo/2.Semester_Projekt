@@ -9,6 +9,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.skin.DatePickerSkin;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
@@ -18,9 +19,8 @@ import java.util.Optional;
 
 public class PaymentMethodPane extends GridPane {
     private final ListView<PaymentMethod> lvwPaymentMethods = new ListView<>();
-    private DateCell iniCell;
-    private DateCell endCell;
-    private final DatePicker datePicker = new DatePicker();
+    private final DatePicker datePickerStart = new DatePicker();
+    private final DatePicker datePickerEnd = new DatePicker();
     private final Text boughtTicketCouponCount = new Text("0");
     private final Text usedTicketCouponCount = new Text("0");
 
@@ -49,16 +49,31 @@ public class PaymentMethodPane extends GridPane {
         lblTicketCoupon.setFont(new Font(15));
         this.add(lblTicketCoupon, 1, 4);
 
-        this.add(datePicker, 1, 5);
-        datePicker.setValue(LocalDate.now());
-        datePicker.showingProperty().addListener(this::setDatePicker);
+        HBox boxStart = new HBox();
+        this.add(boxStart,1,5);
+        boxStart.setSpacing(16);
+        Label lblFromDate = new Label("Startdato:");
+        boxStart.getChildren().add(lblFromDate);
+        boxStart.getChildren().add(datePickerStart);
+        datePickerStart.setValue(LocalDate.now().minusDays(7));
+        datePickerStart.setOnAction(event -> dateChanged());
 
-        Label lblBoughtTicketCoupons = new Label("Antal købte klippekort i perioden:");
-        this.add(lblBoughtTicketCoupons, 1, 6);
-        this.add(boughtTicketCouponCount, 2, 6);
-        Label lblUsedTicketCoupons = new Label("Antal brugte klippekort i perioden:");
-        this.add(lblUsedTicketCoupons, 1, 7);
-        this.add(usedTicketCouponCount, 2, 7);
+        HBox boxEnd = new HBox();
+        this.add(boxEnd, 1, 6);
+        boxEnd.setSpacing(20);
+        Label lblToDate = new Label("Slutdato:");
+        boxEnd.getChildren().add(lblToDate);
+        boxEnd.getChildren().add(datePickerEnd);
+        datePickerEnd.setValue(LocalDate.now());
+        datePickerEnd.setOnAction(event -> dateChanged());
+        dateChanged();
+
+        Label lblBoughtTicketCoupons = new Label("Antal købte klip på klippekort i den valgte periode:");
+        this.add(lblBoughtTicketCoupons, 1, 8);
+        this.add(boughtTicketCouponCount, 2, 8);
+        Label lblUsedTicketCoupons = new Label("Antal brugte klip i den valgte periode:");
+        this.add(lblUsedTicketCoupons, 1, 9);
+        this.add(usedTicketCouponCount, 2, 9);
     }
 
     private void deleteAction() {
@@ -80,57 +95,21 @@ public class PaymentMethodPane extends GridPane {
         lvwPaymentMethods.getItems().addAll(Controller.getPaymentMethods());
     }
 
-    private void setDatePicker(ObservableValue<? extends Boolean> obs, boolean b, boolean b1) {
-        if (b1) {
-            DatePickerContent content = (DatePickerContent) ((DatePickerSkin) datePicker.getSkin()).getPopupContent();
+    private void dateChanged() {
+        LocalDate start = datePickerStart.getValue();
+        LocalDate end = datePickerEnd.getValue();
 
-            List<DateCell> cells = content.lookupAll(".day-cell").stream()
-                    .filter(ce -> !ce.getStyleClass().contains("next-month"))
-                    .map(n -> (DateCell) n).toList();
-
-            content.setOnMouseDragged(e -> {
-                Node n = e.getPickResult().getIntersectedNode();
-                DateCell c = null;
-                if (n instanceof DateCell) {
-                    c = (DateCell) n;
-                } else if (n instanceof Text) {
-                    c = (DateCell) (n.getParent());
-                }
-                if (c != null && c.getStyleClass().contains("day-cell") &&
-                        !c.getStyleClass().contains("next-month")) {
-                    if (iniCell == null) {
-                        iniCell = c;
-                    }
-                    endCell = c;
-                }
-                if (iniCell != null && endCell != null) {
-                    int ini = (int) Math.min(Integer.parseInt(iniCell.getText()),
-                            Integer.parseInt(endCell.getText()));
-                    int end = (int) Math.max(Integer.parseInt(iniCell.getText()),
-                            Integer.parseInt(endCell.getText()));
-                    cells.forEach(ce -> ce.getStyleClass().remove("selected"));
-                    cells.stream()
-                            .filter(ce -> Integer.parseInt(ce.getText()) >= ini)
-                            .filter(ce -> Integer.parseInt(ce.getText()) <= end)
-                            .forEach(ce -> ce.getStyleClass().add("selected"));
-                }
-            });
-            content.setOnMouseReleased(e -> {
-                if (iniCell != null && endCell != null) {
-                    System.out.println("Selection from " + iniCell.getText() + " to " + endCell.getText());
-                    dateChanged(iniCell.getItem(), endCell.getItem());
-                }
-                endCell = null;
-                iniCell = null;
-            });
+        if(end.isBefore(start)){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText("Slutdato skal være efter startdao");
+            alert.showAndWait();
+            return;
+        } else{
+            int boughtCount = getBoughtCount(start, end);
+            boughtTicketCouponCount.setText(Integer.toString(boughtCount));
+            int usedCount = getUsedCount(start, end);
+            usedTicketCouponCount.setText(Integer.toString(usedCount));
         }
-    }
-
-    private void dateChanged(LocalDate start, LocalDate end) {
-        int boughtCount = getBoughtCount(start, end);
-        boughtTicketCouponCount.setText(Integer.toString(boughtCount));
-        int usedCount = getUsedCount(start, end);
-        usedTicketCouponCount.setText(Integer.toString(usedCount));
     }
 
     private int getUsedCount(LocalDate start, LocalDate end) {
@@ -143,7 +122,8 @@ public class PaymentMethodPane extends GridPane {
         int usedCount = 0;
         for (Order order : Controller.getOrders()) {
             if (order.getPaymentMethod() == ticketCouponPaymentMethod) {
-                if (order.getDate().toLocalDate().isAfter(start) && order.getDate().toLocalDate().isBefore(end)) {
+                LocalDate date = order.getDate().toLocalDate();
+                if (date.isEqual(start) || date.isAfter(start) && date.isEqual(end) || date.isBefore(end)) {
                     usedCount += order.getCollectedCost();
                 }
             }

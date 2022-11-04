@@ -11,31 +11,35 @@ import javafx.scene.layout.GridPane;
 
 public class ProductPane extends GridPane {
     private final ComboBox<Category> cbCategories = new ComboBox<>();
+    private final Category allCategoriesCategory = new Category("Alle produktkategorier");
+    private final Category createNewCategoryCategory = new Category("Tilføj ny kategori");
+    private Category selectedCategory;
     private final ComboBox<Arrangement> cbArrangements = new ComboBox<>();
+    private final Arrangement allArrangementsArrangement = new Arrangement("Alle salgssituationer");
+    private final Arrangement createNewArrangementArrangement = new Arrangement("Tilføj ny salgssituation");
+    private Arrangement selectedArrangement;
     private final ListView<ProductComponent> lvwProducts = new ListView<>();
-    private final Arrangement allArrangements = new Arrangement("Alle");
-    private final Arrangement newArrangementArrangement = new Arrangement("Tilføj ny salgssituation");
-    private final Category allCategories = new Category("Alle");
-    private final Category newCategoryCategory = new Category("Tilføj ny salgssituation");
 
     public ProductPane() {
         this.setPadding(new Insets(25));
         this.setVgap(10);
         this.setHgap(10);
 
-        cbArrangements.setPromptText("Salgssituation");
-        cbArrangements.getItems().add(allArrangements);
+        cbArrangements.getItems().add(allArrangementsArrangement);
         cbArrangements.getItems().addAll(Controller.getArrangements());
-        cbArrangements.getItems().add(newArrangementArrangement);
-        cbArrangements.setMinSize(150,25);
+        cbArrangements.getItems().add(createNewArrangementArrangement);
+        cbArrangements.setMinSize(150, 25);
         cbArrangements.setOnAction(event -> selectionChangedArrangement());
+        cbArrangements.getSelectionModel().select(allArrangementsArrangement);
+        selectedArrangement = allArrangementsArrangement;
 
-        cbCategories.setPromptText("Produkt kategori");
-        cbCategories.getItems().add(allCategories);
+        cbCategories.getItems().add(allCategoriesCategory);
         cbCategories.getItems().addAll(Controller.getCategories());
-        cbCategories.getItems().add(newCategoryCategory);
-        cbCategories.setMinSize(150,25);
+        cbCategories.getItems().add(createNewCategoryCategory);
+        cbCategories.setMinSize(150, 25);
         cbCategories.setOnAction(event -> selectionChangedCategory());
+        cbCategories.getSelectionModel().select(allCategoriesCategory);
+        selectedCategory = allCategoriesCategory;
 
         Button btnUpdate = new Button("Opdater");
         btnUpdate.setOnAction(event -> updateAction());
@@ -55,84 +59,125 @@ public class ProductPane extends GridPane {
             btnDelete.setDisable(false);
         });
 
-        this.add(cbArrangements,1,1);
-        this.add(cbCategories,2,1);
-        this.add(lvwProducts,1,2, 3, 3);
+        this.add(cbArrangements, 1, 1);
+        this.add(cbCategories, 2, 1);
+        this.add(lvwProducts, 1, 2, 3, 3);
         this.add(btnUpdate, 4, 2);
         this.add(btnDelete, 4, 3);
         this.add(btnAdd, 4, 4);
     }
 
     private void selectionChangedCategory() {
+        selectedCategory = cbCategories.getSelectionModel().getSelectedItem();
+
+        if(selectedCategory == createNewCategoryCategory){
+            AddCategoryWindow newCategoryWindow = new AddCategoryWindow();
+            newCategoryWindow.showAndWait();
+            Category newCategory = newCategoryWindow.getNewCategory();
+            cbCategories.getItems().add(cbCategories.getItems().indexOf(createNewCategoryCategory), newCategory);
+            cbCategories.getSelectionModel().select(allCategoriesCategory);
+            selectedCategory = allCategoriesCategory;
+        }
+
         lvwProducts.getItems().clear();
-        Category selectedCategory = cbCategories.getSelectionModel().getSelectedItem();
 
-        Arrangement selectedArrangement = cbArrangements.getSelectionModel().getSelectedItem();
-        if(selectedArrangement != null) {
+        if (selectedArrangement != allArrangementsArrangement) {
+            if (selectedCategory == allCategoriesCategory) {
+                for (ProductComponent product : Controller.getProducts()) {
+                    for (Price price : product.getPrices()) {
+                        if (price.getArrangement() == selectedArrangement) {
+                            lvwProducts.getItems().add(product);
+                        }
+                    }
+                }
+            } else {
+                for (ProductComponent product : selectedCategory.getProducts()) {
+                    for (Price price : product.getPrices()) {
+                        if (price.getArrangement() == selectedArrangement) {
+                            lvwProducts.getItems().add(product);
+                        }
+                    }
+                }
+            }
+        } else {
+            if (selectedCategory == allCategoriesCategory) {
+                lvwProducts.getItems().addAll(Controller.getProducts());
+            } else {
+                lvwProducts.getItems().addAll(selectedCategory.getProducts());
+            }
+        }
+    }
 
-//            if(selectedArrangement == allArrangements) {
-//                for (Order order : Controller.getOrders()) {
-//                    if (!(order instanceof Rental)) {
-//                        lvwProducts.getItems().add(pr);
-//                    }
-//                }
-//            } else if(selectedArrangement == newArrangementArrangement){
-//                AddArrangementWindow addArrangement = new AddArrangementWindow();
-//                addArrangement.showAndWait();
-//            } else {
-//                for(Order order : Controller.getOrders()) {
-//                    if (!(order instanceof Rental)) {
-//                        if (order.getArrangement() == selectedArrangement) {
-//                            lvwProducts.getItems().add(order);
-//                        }
-//                    }
-//                }
-//            }
+    private void selectionChangedArrangement() {
+        selectedArrangement = cbArrangements.getSelectionModel().getSelectedItem();
 
-            for(ProductComponent product : selectedCategory.getProducts()){
-                for(Price price : product.getPrices()){
-                    if(price.getArrangement() == selectedArrangement){
+        if(selectedArrangement == createNewArrangementArrangement){
+            AddArrangementWindow newArrangementWindow = new AddArrangementWindow();
+            newArrangementWindow.showAndWait();
+            Arrangement newArrangement = newArrangementWindow.getNewArrangement();
+            cbArrangements.getItems().add(cbArrangements.getItems().indexOf(createNewArrangementArrangement), newArrangement);
+            cbArrangements.getSelectionModel().select(allArrangementsArrangement);
+            selectedArrangement = allArrangementsArrangement;
+        }
+
+        lvwProducts.getItems().clear();
+
+        if (selectedCategory != allCategoriesCategory) {
+            if (selectedArrangement == allArrangementsArrangement) {
+                for (Arrangement arrangement : Controller.getArrangements()) {
+                    for (Price price : arrangement.getPrices()) {
+                        ProductComponent product = price.getProduct();
+                        if (product.getCategory() == selectedCategory) {
+                            lvwProducts.getItems().add(product);
+                        }
+                    }
+                }
+            } else {
+                for (Price price : selectedArrangement.getPrices()) {
+                    ProductComponent product = price.getProduct();
+                    if (product.getCategory() == selectedCategory) {
                         lvwProducts.getItems().add(product);
                     }
                 }
             }
         } else {
-            lvwProducts.getItems().addAll(selectedCategory.getProducts());
-        }
-    }
-
-    private void selectionChangedArrangement() {
-        lvwProducts.getItems().clear();
-        Arrangement selectedArrangement = cbArrangements.getSelectionModel().getSelectedItem();
-
-        Category selectedCategory = cbCategories.getSelectionModel().getSelectedItem();
-        if(selectedCategory != null){
-            for(Price price : selectedArrangement.getPrices()){
-                ProductComponent product = price.getProduct();
-                if(product.getCategory() == selectedCategory){
-                    lvwProducts.getItems().add(product);
+            if (selectedArrangement == allArrangementsArrangement) {
+                lvwProducts.getItems().addAll(Controller.getProducts());
+            } else {
+                for (Price price : selectedArrangement.getPrices()) {
+                    lvwProducts.getItems().add(price.getProduct());
                 }
             }
-        } else {
-            for(Price price : selectedArrangement.getPrices()){
-                lvwProducts.getItems().add(price.getProduct());
-            }
         }
     }
 
-    private void addAction(){
+    private void addAction() {
         AddProductWindow addProductWindow = new AddProductWindow();
         addProductWindow.showAndWait();
         lvwProducts.getItems().clear();
-        lvwProducts.getItems().addAll(Controller.getProducts());
+        selectionChangedArrangement();
+        selectionChangedCategory();
+        if(addProductWindow.getNewCategory() != null){
+            cbCategories.getItems().add(cbCategories.getItems().indexOf(createNewCategoryCategory), addProductWindow.getNewCategory());
+        }
+        if(addProductWindow.getNewArrangement() != null){
+            cbArrangements.getItems().add(cbArrangements.getItems().indexOf(createNewArrangementArrangement), addProductWindow.getNewArrangement());
+        }
     }
 
     private void updateAction() {
         ProductComponent product = lvwProducts.getSelectionModel().getSelectedItem();
-        UpdateProductWindow updateWindow = new UpdateProductWindow(product);
-        updateWindow.showAndWait();
+        UpdateProductWindow updateProductWindow = new UpdateProductWindow(product);
+        updateProductWindow.showAndWait();
         lvwProducts.getItems().clear();
-        lvwProducts.getItems().addAll(Controller.getProducts());
+        selectionChangedArrangement();
+        selectionChangedCategory();
+        if(updateProductWindow.getNewCategory() != null){
+            cbCategories.getItems().add(cbCategories.getItems().indexOf(createNewCategoryCategory), updateProductWindow.getNewCategory());
+        }
+        if(updateProductWindow.getNewArrangement() != null){
+            cbArrangements.getItems().add(cbArrangements.getItems().indexOf(createNewArrangementArrangement), updateProductWindow.getNewArrangement());
+        }
     }
 
     private void deleteAction() {
@@ -142,6 +187,7 @@ public class ProductPane extends GridPane {
         ProductComponent product = lvwProducts.getSelectionModel().getSelectedItem();
         Controller.deleteProduct(product);
         lvwProducts.getItems().clear();
-        lvwProducts.getItems().addAll(Controller.getProducts());
+        selectionChangedArrangement();
+        selectionChangedCategory();
     }
 }

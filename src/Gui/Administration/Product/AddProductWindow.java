@@ -16,8 +16,12 @@ public class AddProductWindow extends Stage {
 
     private final TextField txfName = new TextField();
     private final ComboBox<Category> cbCategories = new ComboBox<>();
+    private final Category createNewCategoryCategory = new Category("Tilføj ny kategori");
+    private Category newCategory;
     private final TextField txfPrice = new TextField();
     private final ComboBox<Arrangement> cbArrangements = new ComboBox<>();
+    private final Arrangement createNewArrangementArrangement = new Arrangement("Tilføj ny salgssituation");
+    private Arrangement newArrangement;
     private final Button btnAddPrice = new Button("Tilføj endnu en pris");
     private final TextField txfSecondPrice = new TextField();
     private final ComboBox<Arrangement> cbArrangementsSecondPrice = new ComboBox<>();
@@ -49,14 +53,18 @@ public class AddProductWindow extends Stage {
         pane.add(lblCategory, 1, 2);
         pane.add(cbCategories, 2, 2);
         cbCategories.getItems().addAll(Controller.getCategories());
+        cbCategories.getItems().add(createNewCategoryCategory);
         cbCategories.setPromptText("Vælg kategori");
+        cbCategories.setOnAction(event -> selectionChangedCategory());
 
         Label lblPrice = new Label("Pris");
         pane.add(lblPrice, 1, 3);
         pane.add(txfPrice, 2, 3);
         pane.add(cbArrangements, 3, 3, 2, 1);
         cbArrangements.getItems().addAll(Controller.getArrangements());
+        cbArrangements.getItems().add(createNewArrangementArrangement);
         cbArrangements.setPromptText("Salgssituation");
+        cbArrangements.setOnAction(event -> selectionChangedArrangement());
 
         pane.add(btnAddPrice, 2, 4);
         btnAddPrice.setOnAction(event -> addPriceAction(pane));
@@ -68,6 +76,26 @@ public class AddProductWindow extends Stage {
         Button btnOK = new Button("Bekræft");
         pane.add(btnOK, 4, 6);
         btnOK.setOnAction(event -> okAction());
+    }
+
+    private void selectionChangedCategory() {
+        if(cbCategories.getSelectionModel().getSelectedItem() == createNewCategoryCategory){
+            AddCategoryWindow newCategoryWindow = new AddCategoryWindow();
+            newCategoryWindow.showAndWait();
+            newCategory = newCategoryWindow.getNewCategory();
+            cbCategories.getItems().add(cbCategories.getItems().indexOf(createNewCategoryCategory), newCategory);
+            cbCategories.getSelectionModel().select(newCategory);
+        }
+    }
+
+    private void selectionChangedArrangement() {
+        if(cbArrangements.getSelectionModel().getSelectedItem() == createNewArrangementArrangement){
+            AddArrangementWindow newArrangementWindow = new AddArrangementWindow();
+            newArrangementWindow.showAndWait();
+            newArrangement = newArrangementWindow.getNewArrangement();
+            cbArrangements.getItems().add(cbArrangements.getItems().indexOf(createNewArrangementArrangement), newArrangement);
+            cbArrangements.getSelectionModel().select(newArrangement);
+        }
     }
 
     private void addPriceAction(GridPane pane) {
@@ -134,5 +162,13 @@ public class AddProductWindow extends Stage {
 
     private void cancelAction() {
         this.close();
+    }
+
+    public Category getNewCategory() {
+        return newCategory;
+    }
+
+    public Arrangement getNewArrangement() {
+        return newArrangement;
     }
 }

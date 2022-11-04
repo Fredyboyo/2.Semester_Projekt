@@ -10,7 +10,7 @@ import java.util.List;
 
 public abstract class Controller {
 
-    private static Storage storage;
+    private static Storage storage = new ListStorage();
 
     public static Storage getStorage() {
         return storage;
@@ -84,6 +84,26 @@ public abstract class Controller {
 
     public static ArrayList<Order> getOrders() {
         return storage.getOrders();
+    }
+
+    public static ArrayList<Order> getOrdersNotRental(){
+        ArrayList<Order> ordersNotRental = new ArrayList<>();
+        for(Order order : storage.getOrders()){
+            if(!(order instanceof Rental)){
+                ordersNotRental.add(order);
+            }
+        }
+        return ordersNotRental;
+    }
+
+    public static ArrayList<Order> getRentals(){
+        ArrayList<Order> rentals = new ArrayList<>();
+        for(Order order : storage.getOrders()){
+            if(order instanceof Rental){
+                rentals.add(order);
+            }
+        }
+        return rentals;
     }
 
     public static OrderLine createOrderLine(Order order, ProductComponent product, int amount) {

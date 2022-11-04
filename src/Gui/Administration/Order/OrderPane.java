@@ -10,14 +10,18 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class OrderPane extends GridPane {
     private final DatePicker datePicker = new DatePicker();
+    private LocalDate selectedDate;
     private final ComboBox<Category> cbCategories = new ComboBox<>();
+    private final Category allCategories = new Category("Alle produktkategorier");
+    private Category selectedCategory;
     private final ComboBox<Arrangement> cbArrangements = new ComboBox<>();
+    private final Arrangement allArrangements = new Arrangement("Alle salgssituationer");
+    private Arrangement selectedArrangement;
     private final ListView<Order> lvwOrders = new ListView<>();
-    private final Arrangement allArrangements = new Arrangement("Alle");
-    private final Category allCategories = new Category("Alle");
 
     public OrderPane() {
         this.setPadding(new Insets(25));
@@ -28,21 +32,21 @@ public class OrderPane extends GridPane {
         datePicker.setOnAction(event -> dateChanged());
         dateChanged();
 
-        cbArrangements.setPromptText("Salgssituation");
         cbArrangements.getItems().add(allArrangements);
         cbArrangements.getItems().addAll(Controller.getArrangements());
-        cbArrangements.setMinSize(150,25);
+        cbArrangements.setMinSize(150, 25);
         cbArrangements.setOnAction(event -> selectionChangedArrangement());
+        cbArrangements.getSelectionModel().select(allArrangements);
 
-        cbCategories.setPromptText("Produkt kategori");
         cbCategories.getItems().add(allCategories);
         cbCategories.getItems().addAll(Controller.getCategories());
-        cbCategories.setMinSize(150,25);
+        cbCategories.setMinSize(150, 25);
         cbCategories.setOnAction(event -> selectionChangedCategory());
+        cbCategories.getSelectionModel().select(allCategories);
 
         lvwOrders.setOnMouseClicked(mouseEvent -> {
-            if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-                if(mouseEvent.getClickCount() == 2){
+            if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
+                if (mouseEvent.getClickCount() == 2) {
                     Order order = lvwOrders.getSelectionModel().getSelectedItem();
                     OrderWindow orderWindow = new OrderWindow(order);
                     orderWindow.show();
@@ -51,48 +55,42 @@ public class OrderPane extends GridPane {
         });
 
         this.add(datePicker, 1, 1);
-        this.add(cbArrangements,2,1);
-        this.add(cbCategories,3,1);
-        this.add(lvwOrders,1,2, 3, 3);
+        this.add(cbArrangements, 2, 1);
+        this.add(cbCategories, 3, 1);
+        this.add(lvwOrders, 1, 2, 3, 3);
     }
 
     private void dateChanged() {
         lvwOrders.getItems().clear();
-        LocalDate selectedDate = datePicker.getValue();
-        for(Order order : Controller.getOrders()){
-            if(!(order instanceof Rental)){
-                if(order.getDate().toLocalDate().isEqual(selectedDate)){
-                    lvwOrders.getItems().add(order);
-                }
+        selectedDate = datePicker.getValue();
+
+        for (Order order : Controller.getOrdersNotRental()) {
+            if (order.getDate().toLocalDate().isEqual(selectedDate)) {
+                lvwOrders.getItems().add(order);
             }
         }
     }
 
     private void selectionChangedCategory() {
         lvwOrders.getItems().clear();
-        Category selectedCategory = cbCategories.getSelectionModel().getSelectedItem();
-        Arrangement selectedArrangement = cbArrangements.getSelectionModel().getSelectedItem();
+        selectedCategory = cbCategories.getSelectionModel().getSelectedItem();
 
-        if(selectedArrangement != null){
-            for(Order order : Controller.getOrders()){
-                for(OrderLine orderLine : order.getOrderLines()){
-                    if(!(order instanceof Rental)) {
-                        ProductComponent product = orderLine.getProduct();
-                        for(Price price : product.getPrices()){
-                            if (product.getCategory() == selectedCategory && price.getArrangement() == selectedArrangement) {
-                                lvwOrders.getItems().add(order);
-                            }
+        if (selectedArrangement != null) {
+            for (Order order : Controller.getOrdersNotRental()) {
+                for (OrderLine orderLine : order.getOrderLines()) {
+                    ProductComponent product = orderLine.getProduct();
+                    for (Price price : product.getPrices()) {
+                        if (product.getCategory() == selectedCategory && price.getArrangement() == selectedArrangement) {
+                            lvwOrders.getItems().add(order);
                         }
                     }
                 }
             }
         } else {
-            for(Order order : Controller.getOrders()){
-                for(OrderLine orderLine : order.getOrderLines()){
-                    if(!(order instanceof Rental)) {
-                        if (orderLine.getProduct().getCategory() == selectedCategory) {
-                            lvwOrders.getItems().add(order);
-                        }
+            for (Order order : Controller.getOrdersNotRental()) {
+                for (OrderLine orderLine : order.getOrderLines()) {
+                    if (orderLine.getProduct().getCategory() == selectedCategory) {
+                        lvwOrders.getItems().add(order);
                     }
                 }
             }
@@ -101,27 +99,45 @@ public class OrderPane extends GridPane {
 
     private void selectionChangedArrangement() {
         lvwOrders.getItems().clear();
-        Arrangement selectedArrangement = cbArrangements.getSelectionModel().getSelectedItem();
-        Category selectedCategory = cbCategories.getSelectionModel().getSelectedItem();
+        selectedArrangement = cbArrangements.getSelectionModel().getSelectedItem();
 
-        if(selectedCategory != null){
+        if (selectedCategory != null) {
 
         }
 
-        if(selectedArrangement == allArrangements) {
-            for (Order order : Controller.getOrders()) {
-                if (!(order instanceof Rental)) {
+        if (selectedArrangement == allArrangements) {
+            lvwOrders.getItems().addAll(Controller.getOrdersNotRental());
+        } else {
+            for (Order order : Controller.getOrdersNotRental()) {
+                if (order.getArrangement() == selectedArrangement) {
                     lvwOrders.getItems().add(order);
                 }
             }
-        } else {
-            for(Order order : Controller.getOrders()) {
-                if (!(order instanceof Rental)) {
-                    if (order.getArrangement() == selectedArrangement) {
-                        lvwOrders.getItems().add(order);
-                    }
+        }
+    }
+
+    private void updateOrderList(){
+        ArrayList<Order> filteredOrders = new ArrayList<>();
+
+        for(Order order : Controller.getOrdersNotRental()){
+
+            boolean isSelectedDateMatched = order.getDate().toLocalDate().isEqual(datePicker.getValue());
+
+            boolean isArrangementMatched = selectedArrangement == allArrangements || order.getArrangement() == selectedArrangement;
+
+            boolean isCategoryMatched = selectedCategory == allCategories;
+            for(OrderLine orderLine : order.getOrderLines()){
+                if(orderLine.getProduct().getCategory() == selectedCategory){
+                    isCategoryMatched = true;
                 }
             }
+
+            if(isSelectedDateMatched && isArrangementMatched && isCategoryMatched){
+                filteredOrders.add(order);
+            }
         }
+
+        lvwOrders.getItems().clear();
+        lvwOrders.getItems().addAll(filteredOrders);
     }
 }

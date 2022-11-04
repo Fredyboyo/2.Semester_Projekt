@@ -1,7 +1,7 @@
 package Gui.Administration.Product;
 
 import Controller.Controller;
-import Model.Arrangement;
+import Model.Category;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -13,12 +13,12 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-public class AddArrangementWindow extends Stage {
+public class AddCategoryWindow extends Stage {
 
     private final TextField txfName = new TextField();
-    private Arrangement newArrangement;
+    private Category newCategory;
 
-    public AddArrangementWindow(){
+    public AddCategoryWindow(){
         this.initStyle(StageStyle.UTILITY);
         this.initModality(Modality.APPLICATION_MODAL);
         this.setMinHeight(100);
@@ -37,7 +37,7 @@ public class AddArrangementWindow extends Stage {
         pane.setVgap(10);
         pane.setHgap(10);
 
-        Label lblName = new Label("Salgssituation");
+        Label lblName = new Label("Produktkategori");
         pane.add(lblName, 1, 1);
 
         pane.add(txfName, 2, 1);
@@ -52,15 +52,15 @@ public class AddArrangementWindow extends Stage {
         if(name.isEmpty()){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText("Fejl");
-            alert.setContentText("Salgssituationen skal have en beskrivelse");
+            alert.setContentText("Kategorien skal have en beskrivelse");
             alert.showAndWait();
         } else{
-            newArrangement = Controller.createArrangement(name);
+            newCategory = Controller.createCategory(name);
             this.close();
         }
     }
 
-    public Arrangement getNewArrangement() {
-        return newArrangement;
+    public Category getNewCategory() {
+        return newCategory;
     }
 }
