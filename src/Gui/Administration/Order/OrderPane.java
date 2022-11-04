@@ -29,19 +29,19 @@ public class OrderPane extends GridPane {
         this.setHgap(10);
 
         datePicker.setValue(LocalDate.now());
-        datePicker.setOnAction(event -> dateChanged());
-        dateChanged();
+        datePicker.setOnAction(event -> updateOrderList());
+        updateOrderList();
 
         cbArrangements.getItems().add(allArrangements);
         cbArrangements.getItems().addAll(Controller.getArrangements());
         cbArrangements.setMinSize(150, 25);
-        cbArrangements.setOnAction(event -> selectionChangedArrangement());
+        cbArrangements.setOnAction(event -> updateOrderList());
         cbArrangements.getSelectionModel().select(allArrangements);
 
         cbCategories.getItems().add(allCategories);
         cbCategories.getItems().addAll(Controller.getCategories());
         cbCategories.setMinSize(150, 25);
-        cbCategories.setOnAction(event -> selectionChangedCategory());
+        cbCategories.setOnAction(event -> updateOrderList());
         cbCategories.getSelectionModel().select(allCategories);
 
         lvwOrders.setOnMouseClicked(mouseEvent -> {
@@ -58,62 +58,6 @@ public class OrderPane extends GridPane {
         this.add(cbArrangements, 2, 1);
         this.add(cbCategories, 3, 1);
         this.add(lvwOrders, 1, 2, 3, 3);
-    }
-
-    private void dateChanged() {
-        lvwOrders.getItems().clear();
-        selectedDate = datePicker.getValue();
-
-        for (Order order : Controller.getOrdersNotRental()) {
-            if (order.getDate().toLocalDate().isEqual(selectedDate)) {
-                lvwOrders.getItems().add(order);
-            }
-        }
-    }
-
-    private void selectionChangedCategory() {
-        lvwOrders.getItems().clear();
-        selectedCategory = cbCategories.getSelectionModel().getSelectedItem();
-
-        if (selectedArrangement != null) {
-            for (Order order : Controller.getOrdersNotRental()) {
-                for (OrderLine orderLine : order.getOrderLines()) {
-                    ProductComponent product = orderLine.getProduct();
-                    for (Price price : product.getPrices()) {
-                        if (product.getCategory() == selectedCategory && price.getArrangement() == selectedArrangement) {
-                            lvwOrders.getItems().add(order);
-                        }
-                    }
-                }
-            }
-        } else {
-            for (Order order : Controller.getOrdersNotRental()) {
-                for (OrderLine orderLine : order.getOrderLines()) {
-                    if (orderLine.getProduct().getCategory() == selectedCategory) {
-                        lvwOrders.getItems().add(order);
-                    }
-                }
-            }
-        }
-    }
-
-    private void selectionChangedArrangement() {
-        lvwOrders.getItems().clear();
-        selectedArrangement = cbArrangements.getSelectionModel().getSelectedItem();
-
-        if (selectedCategory != null) {
-
-        }
-
-        if (selectedArrangement == allArrangements) {
-            lvwOrders.getItems().addAll(Controller.getOrdersNotRental());
-        } else {
-            for (Order order : Controller.getOrdersNotRental()) {
-                if (order.getArrangement() == selectedArrangement) {
-                    lvwOrders.getItems().add(order);
-                }
-            }
-        }
     }
 
     private void updateOrderList(){

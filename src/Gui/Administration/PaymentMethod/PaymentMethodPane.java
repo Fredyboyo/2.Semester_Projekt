@@ -50,7 +50,7 @@ public class PaymentMethodPane extends GridPane {
         this.add(lblTicketCoupon, 1, 4);
 
         HBox boxStart = new HBox();
-        this.add(boxStart,1,5);
+        this.add(boxStart, 1, 5);
         boxStart.setSpacing(16);
         Label lblFromDate = new Label("Startdato:");
         boxStart.getChildren().add(lblFromDate);
@@ -99,17 +99,17 @@ public class PaymentMethodPane extends GridPane {
         LocalDate start = datePickerStart.getValue();
         LocalDate end = datePickerEnd.getValue();
 
-        if(end.isBefore(start)){
+        if (end.isBefore(start)) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setContentText("Slutdato skal være efter startdao");
             alert.showAndWait();
             return;
-        } else{
-            int boughtCount = getBoughtCount(start, end);
-            boughtTicketCouponCount.setText(Integer.toString(boughtCount));
-            int usedCount = getUsedCount(start, end);
-            usedTicketCouponCount.setText(Integer.toString(usedCount));
         }
+
+        int boughtCount = getBoughtCount(start, end);
+        boughtTicketCouponCount.setText(Integer.toString(boughtCount));
+        int usedCount = getUsedCount(start, end);
+        usedTicketCouponCount.setText(Integer.toString(usedCount));
     }
 
     private int getUsedCount(LocalDate start, LocalDate end) {
