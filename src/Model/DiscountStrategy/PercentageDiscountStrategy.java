@@ -10,8 +10,16 @@ public class PercentageDiscountStrategy implements Discount {
         this.percentage = percentage;
     }
 
+    public void setPercentage(double percentage) {
+        this.percentage = percentage;
+    }
+
+    public double getPercentage() {
+        return percentage;
+    }
+
     @Override
     public double discount(double collectedCost) {
-        return collectedCost * (1 - percentage);
+        return collectedCost * (1 - (percentage / 100));
     }
 }

@@ -122,7 +122,7 @@ public abstract class Controller {
         return storage.getPaymentMethods();
     }
 
-    public static Price createPrice(ProductComponent product, Arrangement arrangement, double kr){
+    public static Price createPrice(ProductComponent product, Arrangement arrangement, double kr) {
         Price price = product.createPrice(arrangement, kr);
         storage.storePrice(price);
         notifyObservers();

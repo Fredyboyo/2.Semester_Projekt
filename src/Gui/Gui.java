@@ -2,6 +2,7 @@ package Gui;
 
 import Controller.Controller;
 import Model.*;
+import Model.DiscountStrategy.PercentageDiscountStrategy;
 import Storage.ListStorage;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -39,11 +40,6 @@ public class Gui extends Application implements Observer {
     @Override
     public void init() {
         Controller.addObserver(this);
-    }
-
-    @Override
-    public void stop() {
-        ListStorage.saveStorage(Controller.getStorage());
     }
 
     private Order selectedOrder = null;
@@ -88,7 +84,7 @@ public class Gui extends Application implements Observer {
         spProductComps.setPickOnBounds(false);
         spProductComps.setFocusTraversable(false);
 
-        spOrderLines.setPrefSize(540,300);
+        spOrderLines.setPrefSize(580,300);
         spOrderLines.setFocusTraversable(false);
         spOrderLines.setPickOnBounds(false);
         spOrderLines.setFocusTraversable(false);
@@ -298,18 +294,16 @@ public class Gui extends Application implements Observer {
         lKr.setTranslateX(spOrderLines.getWidth()-222);
         lKr.setPrefSize(30,30);
 
-        /*
-        TextField tf = new TextField("Discond");
-        tf.setTranslateX(spOrderLines.getWidth()-192);
-        tf.setPrefSize(60,30);
-        tf.setAlignment(Pos.CENTER_RIGHT);
-        tf.setOnAction(event -> changePrice(tfPrice,orderLine));
-         */
-
         ComboBox<Discount> cbDiscounts = new ComboBox<>();
         cbDiscounts.setTranslateX(spOrderLines.getWidth()-190);
         cbDiscounts.setPrefSize(90,30);
         cbDiscounts.setOnAction(event -> setDiscount(cbDiscounts,orderLine));
+
+        TextField tfPercent = new TextField(orderLine.getCost() + "");
+        tfPercent.setTranslateX(spOrderLines.getWidth()-284);
+        tfPercent.setPrefSize(60,30);
+        tfPercent.setAlignment(Pos.CENTER_RIGHT);
+        tfPercent.setOnAction(event -> changePercent(cbDiscounts,tfPercent));
 
         Button bAppend = new Button("+");
         bAppend.setTranslateX(spOrderLines.getWidth()-98);
@@ -351,9 +345,17 @@ public class Gui extends Application implements Observer {
 
     private void setDiscount(ComboBox<Discount> cbDiscounts, OrderLine orderLine) {
         Discount discount = cbDiscounts.getSelectionModel().getSelectedItem();
+        if (discount == null) return;
         orderLine.setDiscountStrategy(discount);
     }
 
+    private void changePercent(ComboBox<Discount> cbDiscounts, TextField tfPercent) {
+        PercentageDiscountStrategy discountStrategy = new PercentageDiscountStrategy(0);
+        Discount discount = cbDiscounts.getSelectionModel().getSelectedItem();
+        double percent = Double.parseDouble(tfPercent.getText());
+
+        ((PercentageDiscountStrategy)discount).setPercentage(percent);
+    }
 
     private void appendProduct(Label lName, TextField tfPrice, OrderLine orderLine) {
         orderLine.append();
@@ -386,6 +388,7 @@ public class Gui extends Application implements Observer {
             }
         }
     }
+
     private void cancelOrder() {
         Controller.getOrders().remove(selectedOrder);
         selectedOrder = null;
