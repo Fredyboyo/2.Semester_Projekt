@@ -14,7 +14,6 @@ import java.util.ArrayList;
 
 public class OrderPane extends GridPane {
     private final DatePicker datePicker = new DatePicker();
-    private LocalDate selectedDate;
     private final ComboBox<Category> cbCategories = new ComboBox<>();
     private final Category allCategories = new Category("Alle produktkategorier");
     private Category selectedCategory;
@@ -37,12 +36,14 @@ public class OrderPane extends GridPane {
         cbArrangements.setMinSize(150, 25);
         cbArrangements.setOnAction(event -> updateOrderList());
         cbArrangements.getSelectionModel().select(allArrangements);
+        selectedArrangement = allArrangements;
 
         cbCategories.getItems().add(allCategories);
         cbCategories.getItems().addAll(Controller.getCategories());
         cbCategories.setMinSize(150, 25);
         cbCategories.setOnAction(event -> updateOrderList());
         cbCategories.getSelectionModel().select(allCategories);
+        selectedCategory = allCategories;
 
         lvwOrders.setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
