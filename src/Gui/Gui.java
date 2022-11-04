@@ -3,7 +3,6 @@ package Gui;
 import Controller.Controller;
 import Model.*;
 import Model.DiscountStrategy.PercentageDiscountStrategy;
-import Storage.ListStorage;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
@@ -53,7 +52,7 @@ public class Gui extends Application implements Observer {
     private final ToggleButton tbShowRentals = new ToggleButton("View Rental Orders");
     private final Button bCancel = new Button("Cancel");
     private final Button bDone = new Button("Done");
-    private final Button bRemove = new Button("Remove");
+    private final Button bFinishRental = new Button("Remove");
 
     private final Group gProductDisplay = new Group(new Text());
     private final Group gOrderLineDisplay = new Group(new Text());
@@ -97,7 +96,7 @@ public class Gui extends Application implements Observer {
         tbShowRentals.setPrefSize(150,25);
         bCancel.setPrefSize(100,25);
         bDone.setPrefSize(100,25);
-        bRemove.setPrefSize(100,25);
+        bFinishRental.setPrefSize(100,25);
 
         tfTotalPrice.setPrefSize(100,25);
         tfTotalPrice.setEditable(false);
@@ -133,7 +132,7 @@ public class Gui extends Application implements Observer {
         bNewRental.     setOnAction(actionEvent -> createRental());
         bAdministration.setOnAction(actionEvent -> shopWindow());
         tbShowRentals.  setOnAction(actionEvent -> viewRentalOrders());
-        bRemove.        setOnAction(actionEvent -> finishRental());
+        bFinishRental.        setOnAction(actionEvent -> finishRental());
         bDone.          setOnAction(actionEvent -> finishOrder());
         bCancel.        setOnAction(actionEvent -> cancelOrder());
 
@@ -215,7 +214,7 @@ public class Gui extends Application implements Observer {
 
             shop.getChildren().remove(spOrderLines);
             shop.add(lvRentals,3,2,4,1);
-            shop.add(bRemove,4,3);
+            shop.add(bFinishRental,4,3);
         } else {
             bNewOrder.setDisable(false);
             bNewRental.setDisable(false);
@@ -224,7 +223,7 @@ public class Gui extends Application implements Observer {
             bDone.setDisable(false);
             bCancel.setDisable(false);
 
-            shop.getChildren().remove(bRemove);
+            shop.getChildren().remove(bFinishRental);
             shop.getChildren().remove(lvRentals);
             shop.add(spOrderLines,3,2,4,1);
         }
@@ -234,6 +233,12 @@ public class Gui extends Application implements Observer {
         Rental rental = lvRentals.getSelectionModel().getSelectedItem();
         if (rental == null) return;
         rental.finish();
+        lvRentals.getItems().clear();
+        for (Order soonToBeRental : Controller.getOrders()) {
+            if (soonToBeRental.getClass() == Rental.class && !((Rental) soonToBeRental).isFinished()) {
+                lvRentals.getItems().add((Rental) soonToBeRental);
+            }
+        }
     }
 
     private void createNewOrder() {
@@ -288,7 +293,6 @@ public class Gui extends Application implements Observer {
         tfPrice.setTranslateX(spOrderLines.getWidth()-284);
         tfPrice.setPrefSize(60,30);
         tfPrice.setAlignment(Pos.CENTER_RIGHT);
-        tfPrice.setOnAction(event -> changePrice(tfPrice,orderLine));
 
         Label lKr = new Label(" kr");
         lKr.setTranslateX(spOrderLines.getWidth()-222);
@@ -297,30 +301,33 @@ public class Gui extends Application implements Observer {
         ComboBox<Discount> cbDiscounts = new ComboBox<>();
         cbDiscounts.setTranslateX(spOrderLines.getWidth()-190);
         cbDiscounts.setPrefSize(90,30);
-        cbDiscounts.setOnAction(event -> setDiscount(cbDiscounts,orderLine));
 
         TextField tfPercent = new TextField(orderLine.getCost() + "");
         tfPercent.setTranslateX(spOrderLines.getWidth()-284);
         tfPercent.setPrefSize(60,30);
         tfPercent.setAlignment(Pos.CENTER_RIGHT);
-        tfPercent.setOnAction(event -> changePercent(cbDiscounts,tfPercent));
 
         Button bAppend = new Button("+");
         bAppend.setTranslateX(spOrderLines.getWidth()-98);
         bAppend.setPrefSize(30,30);
-        bAppend.setOnAction(event -> appendProduct(lName,tfPrice,orderLine));
 
         Button bDeduct = new Button("-");
         bDeduct.setTranslateX(spOrderLines.getWidth()-66);
         bDeduct.setPrefSize(30,30);
-        bDeduct.setOnAction(event -> deductProduct(lName,tfPrice,orderLine));
 
         Button bRemove = new Button("X");
         bRemove.setTranslateX(spOrderLines.getWidth()-34);
         bRemove.setPrefSize(30,30);
-        bRemove.setOnAction(event -> removeProduct(addButton,orderLine,lName,tfPrice,lKr,cbDiscounts,bAppend,bDeduct,bRemove));
 
         ArrayList<Control> controls = new ArrayList<>(List.of(lName,tfPrice,lKr,cbDiscounts,bAppend,bDeduct,bRemove));
+
+        tfPrice.    setOnAction(event -> changePrice(tfPrice,orderLine));
+        cbDiscounts.setOnAction(event -> setDiscount(cbDiscounts,orderLine));
+        tfPercent.  setOnAction(event -> changePercent(cbDiscounts,tfPercent,orderLine));
+        bAppend.    setOnAction(event -> appendProduct(lName,tfPrice,orderLine));
+        bDeduct.    setOnAction(event -> deductProduct(lName,tfPrice,orderLine));
+        bRemove.    setOnAction(event -> removeProduct(addButton,orderLine,controls));
+
         this.controls.put(orderLine,controls);
         updateList();
 
@@ -349,11 +356,12 @@ public class Gui extends Application implements Observer {
         orderLine.setDiscountStrategy(discount);
     }
 
-    private void changePercent(ComboBox<Discount> cbDiscounts, TextField tfPercent) {
+    private void changePercent(ComboBox<Discount> cbDiscounts, TextField tfPercent, OrderLine orderLine) {
         PercentageDiscountStrategy discountStrategy = new PercentageDiscountStrategy(0);
         Discount discount = cbDiscounts.getSelectionModel().getSelectedItem();
-        double percent = Double.parseDouble(tfPercent.getText());
+        if (discount == null) return;
 
+        double percent = Double.parseDouble(tfPercent.getText());
         ((PercentageDiscountStrategy)discount).setPercentage(percent);
     }
 
@@ -371,12 +379,12 @@ public class Gui extends Application implements Observer {
         tfTotalPrice.setText(selectedOrder.getUpdatedPrice() + " kr");
     }
 
-    private void removeProduct(ToggleButton addButton, OrderLine orderLine, Label lName, TextField tfPrice, Label lKr, ComboBox<Discount> cbDiscounts, Button bAppend, Button bDeduct, Button bRemove) {
+    private void removeProduct(ToggleButton addButton, OrderLine orderLine, ArrayList<Control> controls) {
         addButton.setDisable(false);
         addButton.setSelected(false);
         Controller.removeOrderLine(selectedOrder,orderLine);
         selectedOrder.getOrderLines().remove(orderLine);
-        gOrderLineDisplay.getChildren().removeAll(lName,tfPrice,lKr,cbDiscounts,bAppend,bDeduct,bRemove);
+        gOrderLineDisplay.getChildren().removeAll(controls);
         updateList();
     }
 

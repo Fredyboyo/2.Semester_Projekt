@@ -8,4 +8,9 @@ public class NoDiscountStrategy implements Discount {
     public double discount(double collectedCost) {
         return collectedCost;
     }
+
+    @Override
+    public void setValue(double var) {
+
+    }
 }
