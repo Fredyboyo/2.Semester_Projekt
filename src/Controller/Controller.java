@@ -182,6 +182,9 @@ public abstract class Controller {
         createOrderLine(order4, whisky, 2);
         createOrderLine(order4, klosterbrygfl, 10);
 
+        Order order5 = createOrder(fredagsbar);
+        createOrderLine(order5, klosterbrygfl, 20);
+
         PaymentMethod mobilePay = createPaymentMethod("MobilePay");
     }
 

@@ -40,4 +40,15 @@ public class Rental extends Order {
     public double getCollectedMortgage() {
         return collectedMortgage;
     }
+
+    @Override
+    public String toString() {
+        return "Rental{" +
+                "startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", person='" + person + '\'' +
+                ", collectedMortgage=" + collectedMortgage +
+                ", finished=" + finished +
+                '}';
+    }
 }
