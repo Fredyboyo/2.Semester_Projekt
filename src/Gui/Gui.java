@@ -74,10 +74,9 @@ public class Gui extends Application implements Observer {
         cbArrangement.setPrefSize(150,25);
         cbArrangement.setFocusTraversable(false);
 
-        cbCategory.getItems().add(all);
-        cbCategory.getItems().addAll(Controller.getCategories());
         cbCategory.setPrefSize(150,25);
         cbCategory.setFocusTraversable(false);
+        cbCategory.setDisable(true);
 
         gOrderLineDisplay.setHgap(2);
         gOrderLineDisplay.setPadding(new Insets(2));
@@ -133,7 +132,6 @@ public class Gui extends Application implements Observer {
         GridPane.setHalignment(bDone, HPos.RIGHT);
         GridPane.setHalignment(bCancel, HPos.LEFT);
 
-        cbArrangement.  setOnAction(actionEvent -> choseArrangement());
         cbCategory.     setOnAction(actionEvent -> choseCategory());
         bNewOrder.      setOnAction(actionEvent -> createNewOrder());
         bNewRental.     setOnAction(actionEvent -> createRental());
@@ -151,30 +149,6 @@ public class Gui extends Application implements Observer {
             Platform.runLater(() -> cbCategory.setValue(cbCategory.getItems().get(0)));
 
         return gridPane;
-    }
-
-    private void choseArrangement() {
-        hmCategoryProducts.clear();
-        Arrangement arrangement = cbArrangement.getSelectionModel().getSelectedItem();
-        ArrayList<Price> prices = arrangement.getPrices();
-
-        hmCategoryProducts.put(all, new ArrayList<>());
-        for (Price price : prices) {
-            ProductComponent product = price.getProduct();
-
-            ToggleButton bAddProducts = new ToggleButton(product.getName() + "\n" + price.getPrice() + " kr");
-            bAddProducts.setTextAlignment(TextAlignment.CENTER);
-            bAddProducts.setPrefSize(175, 50);
-            bAddProducts.setOnAction(event -> createOrderLine((ToggleButton) event.getSource(),product));
-
-            hmCategoryProducts.get(all).add(bAddProducts);
-            if (hmCategoryProducts.containsKey(product.getCategory())) {
-                hmCategoryProducts.get(product.getCategory()).add(bAddProducts);
-            } else {
-                hmCategoryProducts.put(product.getCategory(),new ArrayList<>(List.of(bAddProducts)));
-            }
-        }
-        choseCategory();
     }
 
     private void choseCategory() {
@@ -196,6 +170,77 @@ public class Gui extends Application implements Observer {
         }
     }
 
+    private void createNewOrder() {
+        Arrangement arrangement = cbArrangement.getValue();
+        if (arrangement == null) {
+            return;
+        }
+        selectedOrder = Controller.createOrder(arrangement);
+        bNewOrder.setText("Order : " + arrangement);
+        bNewOrder.setDisable(true);
+        bNewRental.setDisable(true);
+        bAdministration.setDisable(true);
+        tbShowRentals.setDisable(true);
+        cbArrangement.setDisable(true);
+
+        cbCategory.setDisable(false);
+        cbCategory.getItems().add(all);
+        cbCategory.setValue(all);
+
+        hmCategoryProducts.clear();
+        hmCategoryProducts.put(all,new ArrayList<>());
+        for (Price price : arrangement.getPrices()) {
+            Category category = price.getProduct().getCategory();
+            if (!cbCategory.getItems().contains(category)) {
+                cbCategory.getItems().add(category);
+                hmCategoryProducts.put(category,new ArrayList<>());
+                for (ProductComponent product : category.getProducts()) {
+                    ToggleButton bAddProducts = new ToggleButton(product.getName() + "\n" + price.getPrice() + " kr");
+                    bAddProducts.setTextAlignment(TextAlignment.CENTER);
+                    bAddProducts.setPrefSize(175, 50);
+                    bAddProducts.setOnAction(event -> createOrderLine((ToggleButton) event.getSource(),product));
+                    hmCategoryProducts.get(all).add(bAddProducts);
+                    hmCategoryProducts.get(category).add(bAddProducts);
+                }
+            }
+        }
+        choseCategory();
+    }
+
+    private void createRental() {
+        Arrangement arrangement = cbArrangement.getValue();
+        if (arrangement == null) return;
+
+        selectedOrder = Controller.createRental(arrangement,null,null,null,0);
+        bNewRental.setText("Rental : " + arrangement);
+        bNewRental.setDisable(true);
+        bNewOrder.setDisable(true);
+        bAdministration.setDisable(true);
+        tbShowRentals.setDisable(true);
+        cbArrangement.setDisable(true);
+        cbCategory.setDisable(false);
+
+        hmCategoryProducts.clear();
+        ArrayList<Price> prices = arrangement.getPrices();
+
+        hmCategoryProducts.put(all, new ArrayList<>());
+        for (Price price : prices) {
+            ProductComponent product = price.getProduct();
+
+            ToggleButton bAddProducts = new ToggleButton(product.getName() + "\n" + price.getPrice() + " kr");
+            bAddProducts.setTextAlignment(TextAlignment.CENTER);
+            bAddProducts.setPrefSize(175, 50);
+            bAddProducts.setOnAction(event -> createOrderLine((ToggleButton) event.getSource(),product));
+
+            hmCategoryProducts.get(all).add(bAddProducts);
+            if (hmCategoryProducts.containsKey(product.getCategory())) {
+                hmCategoryProducts.get(product.getCategory()).add(bAddProducts);
+            } else {
+                hmCategoryProducts.put(product.getCategory(),new ArrayList<>(List.of(bAddProducts)));
+            }
+        }
+        choseCategory();
+    }
 
     private void viewRentalOrders() {
         if (tbShowRentals.isSelected()) {
@@ -241,44 +286,6 @@ public class Gui extends Application implements Observer {
                 lvRentals.getItems().add((Rental) soonToBeRental);
             }
         }
-    }
-
-    private void createNewOrder() {
-        Arrangement arrangement = cbArrangement.getValue();
-        if (arrangement == null) {
-            return;
-        }
-        selectedOrder = Controller.createOrder(arrangement);
-        bNewOrder.setText("Order : " + arrangement);
-        bNewOrder.setDisable(true);
-        bNewRental.setDisable(true);
-        bAdministration.setDisable(true);
-        tbShowRentals.setDisable(true);
-        cbArrangement.setDisable(true);
-        hmCategoryProducts.forEach((category, toggleButtons) -> {
-            for (ToggleButton toggleButton : toggleButtons) {
-                toggleButton.setDisable(false);
-            }
-        });
-    }
-
-    private void createRental() {
-        Arrangement arrangement = cbArrangement.getValue();
-        if (arrangement == null) return;
-
-        selectedOrder = Controller.createRental(arrangement,null,null,null,0);
-        bNewRental.setText("Rental : " + arrangement);
-        bNewRental.setDisable(true);
-        bNewOrder.setDisable(true);
-        bAdministration.setDisable(true);
-        tbShowRentals.setDisable(true);
-        cbArrangement.setDisable(true);
-
-        hmCategoryProducts.forEach((category, toggleButtons) -> {
-            for (ToggleButton toggleButton : toggleButtons) {
-                toggleButton.setDisable(false);
-            }
-        });
     }
 
     //----------------------- OrderLine --------------------------------------------------------------------------------
@@ -432,12 +439,14 @@ public class Gui extends Application implements Observer {
         tbShowRentals.setDisable(false);
         controls.clear();
         gOrderLineDisplay.getChildren().clear();
-        gOrderLineDisplay.getChildren().add(new Text());
-        choseArrangement();
+        cbCategory.getItems().clear();
+        cbCategory.setDisable(true);
+        hmCategoryProducts.clear();
+        gProductDisplay.getChildren().clear();
     }
 
     private void finishOrder() {
-        if (selectedOrder == null) return;
+        if (selectedOrder == null || selectedOrder.getOrderLines().isEmpty()) return;
 
         FinishOrder finishOrder = new FinishOrder(selectedOrder);
         finishOrder.showAndWait();
@@ -454,7 +463,6 @@ public class Gui extends Application implements Observer {
         controls.clear();
         gOrderLineDisplay.getChildren().clear();
         gOrderLineDisplay.getChildren().add(new Text());
-        choseArrangement();
     }
 
     private void fadeIn(Control pane, int delay) {
