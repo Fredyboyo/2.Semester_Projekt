@@ -2,7 +2,6 @@ package Model;
 
 import Model.DiscountStrategy.NoDiscountStrategy;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,7 +54,6 @@ public class Order {
                     map.put(ol.getProduct(), ol.getAmount());
             }
         }
-        System.out.println(map);
         return map;
     }
 

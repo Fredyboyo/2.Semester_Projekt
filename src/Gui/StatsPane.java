@@ -7,6 +7,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class StatsPane extends GridPane implements Observer {
@@ -14,8 +17,8 @@ public class StatsPane extends GridPane implements Observer {
     private final ComboBox<Category> cbCategories = new ComboBox<>();
     private final ComboBox<Arrangement> cbArrangements = new ComboBox<>();
     private final ListView<String> lvwProducts = new ListView<>();
-    private final DatePicker datePickerFrom = new DatePicker();
-    private final DatePicker datePickerTo = new DatePicker();
+    private final DatePicker startDate = new DatePicker();
+    private final DatePicker endDate = new DatePicker();
 
     public StatsPane() {
 
@@ -33,8 +36,11 @@ public class StatsPane extends GridPane implements Observer {
         cbCategories.setMinSize(150, 25);
         cbCategories.setOnAction(event -> selectionChanged());
 
-        this.add(datePickerTo, 3, 1);
-        this.add(datePickerFrom, 4, 1);
+        startDate.setOnAction(event -> selectionChanged());
+        endDate.setOnAction(event -> selectionChanged());
+
+        this.add(endDate, 3, 1);
+        this.add(startDate, 4, 1);
         this.add(cbArrangements, 1, 1);
         this.add(cbCategories, 2, 1);
         this.add(lvwProducts, 1, 2, 4, 4);
@@ -46,9 +52,10 @@ public class StatsPane extends GridPane implements Observer {
         lvwProducts.getItems().clear();
         Category selectedCategory = cbCategories.getSelectionModel().getSelectedItem();
         Arrangement selectedArrangement = cbArrangements.getSelectionModel().getSelectedItem();
-        LocalDate from = (LocalDate) datePickerFrom.getUserData();
-        LocalDate to = (LocalDate) datePickerTo.getUserData();
-        if (selectedCategory == null || selectedArrangement == null){
+
+        if (selectedCategory == null || selectedArrangement == null
+                || (startDate.getValue() != null && endDate.getValue() == null)
+                || (startDate.getValue() == null && endDate.getValue() != null)) {
             return;
         }
         HashMap<ProductComponent, Integer> map = addProducts(selectedCategory, selectedArrangement);
@@ -57,20 +64,20 @@ public class StatsPane extends GridPane implements Observer {
             lvwProducts.getItems().addAll(map.keySet() + ", " + map.values());
     }
 
-    private HashMap<ProductComponent, Integer> addProducts(Category selectedCategory, Arrangement selectedArrangement){
+    private HashMap<ProductComponent, Integer> addProducts(Category selectedCategory, Arrangement selectedArrangement) {
         HashMap<ProductComponent, Integer> map = new HashMap<>();
         if (selectedArrangement != null) {
-            for (Order order : Controller.getOrders()) {
+            for (Order order : findAllOrderForPeriod()) {
                 HashMap<ProductComponent, Integer> tempMap = order.countSoldProduct(selectedCategory, selectedArrangement);
                 if (!tempMap.isEmpty()) {
-                    for (ProductComponent product : tempMap.keySet()){
-                        if (map.containsKey(product)){
+                    for (ProductComponent product : tempMap.keySet()) {
+                        if (map.containsKey(product)) {
                             map.put(product, map.get(product) + tempMap.get(product));
-                        }
-                        else
+                        } else
                             map.put(product, tempMap.get(product));
                     }
                 }
+
             }
         } else
             lvwProducts.getItems().clear();
@@ -78,7 +85,21 @@ public class StatsPane extends GridPane implements Observer {
         return map;
     }
 
+    private ArrayList<Order> findAllOrderForPeriod(){
+        ArrayList<Order> orders = new ArrayList<>();
+        if ((startDate.getValue() != null && endDate.getValue() != null)) {
+            for (Order order : Controller.getOrders()) {
+                LocalDate orderDate = LocalDate.from(order.getDate());
+                if (!startDate.getValue().isBefore(orderDate) && !endDate.getValue().isAfter(orderDate)){
+                    orders.add(order);
+                }
+            }
+        }
+        else
+            return Controller.getOrders();
 
+        return orders;
+    }
     @Override
     public void update() {
 
