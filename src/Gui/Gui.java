@@ -2,12 +2,12 @@ package Gui;
 
 import Controller.Controller;
 import Model.*;
+import Model.DiscountStrategy.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -15,6 +15,8 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
+import javax.xml.parsers.ParserConfigurationException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,15 +50,16 @@ public class Gui extends Application implements Observer {
     private final Button bNewRental = new Button("+ Rental");
     private final Button bNewOrder = new Button("+ Order");
     private final Button bAdministration = new Button("Administration");
-    private final ToggleButton tbShowRentals = new ToggleButton("View Rental Orders");
     private final Button bCancel = new Button("Cancel");
     private final Button bDone = new Button("Done");
     private final Button bFinishRental = new Button("Remove");
+    private final ToggleButton tbShowRentals = new ToggleButton("View Rental Orders");
 
     private final GridPane gProductDisplay = new GridPane();
     private final GridPane gOrderLineDisplay = new GridPane();
     private final TextField tfTotalPrice = new TextField("* * *");
     private final ScrollPane spOrderLines = new ScrollPane(gOrderLineDisplay);
+    private final ListView<Rental> lvRentals = new ListView<>();
 
     private final HashMap<Category,ArrayList<ToggleButton>> hmCategoryProducts = new HashMap<>();
     private final Category all = new Category("* All");
@@ -85,13 +88,12 @@ public class Gui extends Application implements Observer {
         ScrollPane spProductComps = new ScrollPane(gProductDisplay);
         spProductComps.setPrefSize(360,500);
         spProductComps.setFocusTraversable(false);
-        spProductComps.setPickOnBounds(false);
-        spProductComps.setFocusTraversable(false);
 
-        spOrderLines.setPrefSize(580,300);
+        spOrderLines.setPrefSize(640,300);
         spOrderLines.setFocusTraversable(false);
-        spOrderLines.setPickOnBounds(false);
-        spOrderLines.setFocusTraversable(false);
+
+        lvRentals.setPrefSize(640,300);
+        lvRentals.setFocusTraversable(false);
 
         Label lTotalPrice = new Label("Total Cost :");
 
@@ -194,7 +196,6 @@ public class Gui extends Application implements Observer {
         }
     }
 
-    private final ListView<Rental> lvRentals = new ListView<>();
 
     private void viewRentalOrders() {
         if (tbShowRentals.isSelected()) {
@@ -302,8 +303,10 @@ public class Gui extends Application implements Observer {
         lKr.setPrefSize(20,30);
         lKr.setOpacity(0);
 
-        ComboBox<Discount> cbDiscounts = new ComboBox<>();
-        cbDiscounts.setPrefSize(90,30);
+        ComboBox<String> cbDiscounts = new ComboBox<>();
+        cbDiscounts.getItems().addAll("AmountDiscount","PercentageDiscount","RegCustomerDiscount","StudentDiscount","NoDiscount");
+        cbDiscounts.setValue(cbDiscounts.getItems().get(4));
+        cbDiscounts.setPrefSize(120,30);
         cbDiscounts.setOpacity(0);
 
         TextField tfPercent = new TextField();
@@ -331,7 +334,7 @@ public class Gui extends Application implements Observer {
 
         tfPrice.    setOnAction(event -> changePrice(tfPrice,orderLine));
         cbDiscounts.setOnAction(event -> setDiscount(cbDiscounts,orderLine,tfPercent));
-        tfPercent.  setOnAction(event -> changePercent(tfPercent,cbDiscounts));
+        tfPercent.  setOnAction(event -> changeValue(tfPercent,orderLine));
         bAppend.    setOnAction(event -> appendProduct(lName,tfPrice,orderLine));
         bDeduct.    setOnAction(event -> deductProduct(lName,tfPrice,orderLine));
         bRemove.    setOnAction(event -> removeProduct(addButton,orderLine,controls));
@@ -358,19 +361,26 @@ public class Gui extends Application implements Observer {
         shop.requestFocus();
     }
 
-    private void setDiscount(ComboBox<Discount> cbDiscounts, OrderLine orderLine, TextField tfPercent) {
-        Discount discount = cbDiscounts.getSelectionModel().getSelectedItem();
-        if (discount == null) return;
-        orderLine.setDiscountStrategy(discount);
+    private void setDiscount(ComboBox<String> cbDiscounts, OrderLine orderLine, TextField tfPercent) {
+        int index = cbDiscounts.getSelectionModel().getSelectedIndex();
+        if (index < 0) return;
+        orderLine.setDiscountStrategy(switch (index) {
+            case 1 -> new AmountDiscountStrategy(0);
+            case 2 -> new PercentageDiscountStrategy(0);
+            default -> new NoDiscountStrategy();
+            case 4 -> new StudentDiscountStrategy();
+            case 5 -> new RegCustomerDiscountStrategy();
+        });
         tfPercent.clear();
+        shop.requestFocus();
     }
 
-    private void changePercent(TextField tfPercent, ComboBox<Discount> cbDiscounts) {
-        Discount discount = cbDiscounts.getSelectionModel().getSelectedItem();
-        if (discount == null) return;
+    private void changeValue(TextField tfPercent, OrderLine orderLine) {
+        try {
+            orderLine.getDiscountStrategy().setValue(Double.parseDouble(tfPercent.getText()));
+        } catch (NumberFormatException ignore) {
 
-        double percent = Double.parseDouble(tfPercent.getText());
-        discount.setValue(percent);
+        }
         shop.requestFocus();
     }
 
@@ -427,10 +437,13 @@ public class Gui extends Application implements Observer {
     }
 
     private void finishOrder() {
-        if (selectedOrder != null) {
-            selectedOrder.updateCollectedCost();
-            selectedOrder = null;
-        }
+        if (selectedOrder == null) return;
+
+        FinishOrder finishOrder = new FinishOrder(selectedOrder);
+        finishOrder.showAndWait();
+
+        if(!finishOrder.isFinished()) return;
+
         cbArrangement.setDisable(false);
         bNewOrder.setDisable(false);
         bNewOrder.setText("+ Order");

@@ -2,10 +2,11 @@ package Model;
 
 import Model.DiscountStrategy.NoDiscountStrategy;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-public class Order {
+public class Order implements Serializable {
     private final LocalDateTime date = LocalDateTime.now();
     private final ArrayList<OrderLine> orderLines = new ArrayList<>();
     private final Arrangement arrangement;
@@ -68,7 +69,7 @@ public class Order {
 
     @Override
     public String toString() {
-        return date + " - " + arrangement + " - " + collectedCost;
+        return date.toLocalDate() + " - " + arrangement + " - " + collectedCost;
     }
 
 }

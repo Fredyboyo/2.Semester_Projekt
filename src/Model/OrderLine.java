@@ -2,7 +2,9 @@ package Model;
 
 import Model.DiscountStrategy.NoDiscountStrategy;
 
-public class OrderLine {
+import java.io.Serializable;
+
+public class OrderLine implements Serializable {
     private final ProductComponent product;
     private final Arrangement arrangement;
     private int amount;
