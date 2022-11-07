@@ -43,6 +43,6 @@ public class Rental extends Order {
 
     @Override
     public String toString() {
-        return startDate + " - " + endDate + " (" + person + " har betalt " + payedMortgage + ")";
+        return startDate + " - " + endDate + " (" + person + " har betalt " + collectedMortgage + ")";
     }
 }
