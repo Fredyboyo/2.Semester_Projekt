@@ -36,8 +36,8 @@ public abstract class Controller {
         return 0;
     }
 
-    public static GiftBasket createGiftBasket(String name, Category category, ArrayList<Price> prices, ArrayList<ProductComponent> products) {
-        GiftBasket giftBasket = new GiftBasket(name, category, prices, products);
+    public static GiftBasket createGiftBasket(String name, Category category, ArrayList<ProductComponent> products) {
+        GiftBasket giftBasket = new GiftBasket(name, category, products);
         storage.storeProduct(giftBasket);
         notifyObservers();
         return giftBasket;

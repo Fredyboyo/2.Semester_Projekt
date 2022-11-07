@@ -2,14 +2,15 @@ package Gui.Administration.Product;
 
 import Controller.Controller;
 import Model.*;
+import javafx.beans.value.ChangeListener;
+import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class ProductPane extends GridPane {
     private final ComboBox<Category> cbCategories = new ComboBox<>();
@@ -50,11 +51,14 @@ public class ProductPane extends GridPane {
         Button btnAdd = new Button("Tilføj nyt produkt");
         btnAdd.setOnAction(event -> addAction());
 
+        Button btnAddGiftBasket = new Button("Tilføj ny sampakning");
+        btnAddGiftBasket.setOnAction(event -> addGiftBasketAction());
+
         lvwProducts.getItems().addAll(Controller.getProducts());
         lvwProducts.setPrefWidth(500);
-        lvwProducts.setOnMouseClicked(event -> {
-            btnUpdate.setDisable(false);
-            btnDelete.setDisable(false);
+        lvwProducts.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
+            btnUpdate.setDisable(newValue == null);
+            btnDelete.setDisable(newValue == null);
         });
 
         this.add(cbArrangements, 1, 1);
@@ -62,7 +66,12 @@ public class ProductPane extends GridPane {
         this.add(lvwProducts, 1, 2, 3, 3);
         this.add(btnUpdate, 4, 2);
         this.add(btnDelete, 4, 3);
-        this.add(btnAdd, 4, 4);
+
+        VBox box = new VBox();
+        this.add(box, 4, 4);
+        box.getChildren().add(btnAdd);
+        box.getChildren().add(btnAddGiftBasket);
+        box.setSpacing(10);
     }
 
     private void selectionChangedCategory() {
@@ -123,9 +132,7 @@ public class ProductPane extends GridPane {
     private void addAction() {
         AddProductWindow addProductWindow = new AddProductWindow();
         addProductWindow.showAndWait();
-        lvwProducts.getItems().clear();
-        selectionChangedArrangement();
-        selectionChangedCategory();
+        updateProductList();
         if(addProductWindow.getNewCategory() != null){
             cbCategories.getItems().add(cbCategories.getItems().indexOf(createNewCategoryCategory), addProductWindow.getNewCategory());
         }
@@ -134,14 +141,19 @@ public class ProductPane extends GridPane {
         }
     }
 
+    private void addGiftBasketAction(){
+        AddGiftBasketWindow addGiftBasketWindow = new AddGiftBasketWindow();
+        addGiftBasketWindow.showAndWait();
+        updateProductList();
+
+    }
+
     private void updateAction() {
         ProductComponent product = lvwProducts.getSelectionModel().getSelectedItem();
         UpdateProductWindow updateProductWindow = new UpdateProductWindow(product);
         updateProductWindow.showAndWait();
 
-        lvwProducts.getItems().clear();
-        selectionChangedArrangement();
-        selectionChangedCategory();
+        updateProductList();
         if(updateProductWindow.getNewCategory() != null){
             cbCategories.getItems().add(cbCategories.getItems().indexOf(createNewCategoryCategory), updateProductWindow.getNewCategory());
         }
@@ -153,11 +165,11 @@ public class ProductPane extends GridPane {
     private void deleteAction() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setContentText("Er du sikker på, at du vil slette dette produkt?");
-        alert.showAndWait();
-        ProductComponent product = lvwProducts.getSelectionModel().getSelectedItem();
-        Controller.deleteProduct(product);
-        lvwProducts.getItems().clear();
-        selectionChangedArrangement();
-        selectionChangedCategory();
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            ProductComponent product = lvwProducts.getSelectionModel().getSelectedItem();
+            Controller.deleteProduct(product);
+            updateProductList();
+        }
     }
 }

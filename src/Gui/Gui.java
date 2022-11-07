@@ -528,7 +528,7 @@ public class Gui extends Application implements Observer {
         TabPane tabPane = new TabPane();
         this.initTabPane(tabPane);
         gridPane.add(tabPane, 0, 0, 1, 2);
-        tabPane.setPrefWidth(850);
+        tabPane.setPrefWidth(1050);
 
         Button btnBack = new Button("<");
         btnBack.setOnAction(event -> shopWindow());

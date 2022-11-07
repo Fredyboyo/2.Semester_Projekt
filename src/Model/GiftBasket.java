@@ -5,17 +5,16 @@ import java.util.ArrayList;
 public class GiftBasket implements ProductComponent {
     private String name;
     private Category category;
-    private final ArrayList<Price> prices;
+    private ArrayList<Price> prices = new ArrayList<>();
     private final ArrayList<ProductComponent> products;
 
     public GiftBasket(
             String name,
             Category category,
-            ArrayList<Price> prices,
             ArrayList<ProductComponent> products) {
         this.name = name;
         this.category = category;
-        this.prices = prices;
+        category.products.add(this);
         this.products = products;
     }
 
