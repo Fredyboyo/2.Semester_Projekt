@@ -9,15 +9,15 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
 
+import java.util.ArrayList;
+
 public class ProductPane extends GridPane {
     private final ComboBox<Category> cbCategories = new ComboBox<>();
     private final Category allCategoriesCategory = new Category("Alle produktkategorier");
     private final Category createNewCategoryCategory = new Category("Tilføj ny kategori");
-    private Category selectedCategory;
     private final ComboBox<Arrangement> cbArrangements = new ComboBox<>();
     private final Arrangement allArrangementsArrangement = new Arrangement("Alle salgssituationer");
     private final Arrangement createNewArrangementArrangement = new Arrangement("Tilføj ny salgssituation");
-    private Arrangement selectedArrangement;
     private final ListView<ProductComponent> lvwProducts = new ListView<>();
 
     public ProductPane() {
@@ -31,7 +31,6 @@ public class ProductPane extends GridPane {
         cbArrangements.setMinSize(150, 25);
         cbArrangements.setOnAction(event -> selectionChangedArrangement());
         cbArrangements.getSelectionModel().select(allArrangementsArrangement);
-        selectedArrangement = allArrangementsArrangement;
 
         cbCategories.getItems().add(allCategoriesCategory);
         cbCategories.getItems().addAll(Controller.getCategories());
@@ -39,17 +38,16 @@ public class ProductPane extends GridPane {
         cbCategories.setMinSize(150, 25);
         cbCategories.setOnAction(event -> selectionChangedCategory());
         cbCategories.getSelectionModel().select(allCategoriesCategory);
-        selectedCategory = allCategoriesCategory;
 
-        Button btnUpdate = new Button("Opdater");
+        Button btnUpdate = new Button("Opdater produkt");
         btnUpdate.setOnAction(event -> updateAction());
         btnUpdate.setDisable(true);
 
-        Button btnDelete = new Button("Slet");
+        Button btnDelete = new Button("Slet produkt");
         btnDelete.setOnAction(event -> deleteAction());
         btnDelete.setDisable(true);
 
-        Button btnAdd = new Button("Opret");
+        Button btnAdd = new Button("Tilføj nyt produkt");
         btnAdd.setOnAction(event -> addAction());
 
         lvwProducts.getItems().addAll(Controller.getProducts());
@@ -68,87 +66,58 @@ public class ProductPane extends GridPane {
     }
 
     private void selectionChangedCategory() {
-        selectedCategory = cbCategories.getSelectionModel().getSelectedItem();
-
-        if(selectedCategory == createNewCategoryCategory){
+        if(getSelectedCategory() == createNewCategoryCategory){
             AddCategoryWindow newCategoryWindow = new AddCategoryWindow();
             newCategoryWindow.showAndWait();
             Category newCategory = newCategoryWindow.getNewCategory();
             cbCategories.getItems().add(cbCategories.getItems().indexOf(createNewCategoryCategory), newCategory);
             cbCategories.getSelectionModel().select(allCategoriesCategory);
-            selectedCategory = allCategoriesCategory;
         }
 
-        lvwProducts.getItems().clear();
-
-        if (selectedArrangement != allArrangementsArrangement) {
-            if (selectedCategory == allCategoriesCategory) {
-                for (ProductComponent product : Controller.getProducts()) {
-                    for (Price price : product.getPrices()) {
-                        if (price.getArrangement() == selectedArrangement) {
-                            lvwProducts.getItems().add(product);
-                        }
-                    }
-                }
-            } else {
-                for (ProductComponent product : selectedCategory.getProducts()) {
-                    for (Price price : product.getPrices()) {
-                        if (price.getArrangement() == selectedArrangement) {
-                            lvwProducts.getItems().add(product);
-                        }
-                    }
-                }
-            }
-        } else {
-            if (selectedCategory == allCategoriesCategory) {
-                lvwProducts.getItems().addAll(Controller.getProducts());
-            } else {
-                lvwProducts.getItems().addAll(selectedCategory.getProducts());
-            }
-        }
+        updateProductList();
     }
 
     private void selectionChangedArrangement() {
-        selectedArrangement = cbArrangements.getSelectionModel().getSelectedItem();
-
-        if(selectedArrangement == createNewArrangementArrangement){
+        if(getSelectedArrangement() == createNewArrangementArrangement){
             AddArrangementWindow newArrangementWindow = new AddArrangementWindow();
             newArrangementWindow.showAndWait();
             Arrangement newArrangement = newArrangementWindow.getNewArrangement();
             cbArrangements.getItems().add(cbArrangements.getItems().indexOf(createNewArrangementArrangement), newArrangement);
             cbArrangements.getSelectionModel().select(allArrangementsArrangement);
-            selectedArrangement = allArrangementsArrangement;
+        }
+
+        updateProductList();
+    }
+
+    private void updateProductList(){
+        ArrayList<ProductComponent> filteredProducts = new ArrayList<>();
+
+        for(ProductComponent product : Controller.getProducts()){
+
+            boolean isCategoryMatched = getSelectedCategory() == allCategoriesCategory || product.getCategory() == getSelectedCategory();
+
+            boolean isArrangementMatched = getSelectedArrangement() == allArrangementsArrangement;
+            for(Price price : product.getPrices()){
+                if(price.getArrangement() == getSelectedArrangement()){
+                    isArrangementMatched = true;
+                }
+            }
+
+            if(isArrangementMatched && isCategoryMatched){
+                filteredProducts.add(product);
+            }
         }
 
         lvwProducts.getItems().clear();
+        lvwProducts.getItems().addAll(filteredProducts);
+    }
 
-        if (selectedCategory != allCategoriesCategory) {
-            if (selectedArrangement == allArrangementsArrangement) {
-                for (Arrangement arrangement : Controller.getArrangements()) {
-                    for (Price price : arrangement.getPrices()) {
-                        ProductComponent product = price.getProduct();
-                        if (product.getCategory() == selectedCategory) {
-                            lvwProducts.getItems().add(product);
-                        }
-                    }
-                }
-            } else {
-                for (Price price : selectedArrangement.getPrices()) {
-                    ProductComponent product = price.getProduct();
-                    if (product.getCategory() == selectedCategory) {
-                        lvwProducts.getItems().add(product);
-                    }
-                }
-            }
-        } else {
-            if (selectedArrangement == allArrangementsArrangement) {
-                lvwProducts.getItems().addAll(Controller.getProducts());
-            } else {
-                for (Price price : selectedArrangement.getPrices()) {
-                    lvwProducts.getItems().add(price.getProduct());
-                }
-            }
-        }
+    private Category getSelectedCategory() {
+        return cbCategories.getSelectionModel().getSelectedItem();
+    }
+
+    private Arrangement getSelectedArrangement() {
+        return cbArrangements.getSelectionModel().getSelectedItem();
     }
 
     private void addAction() {
@@ -169,6 +138,7 @@ public class ProductPane extends GridPane {
         ProductComponent product = lvwProducts.getSelectionModel().getSelectedItem();
         UpdateProductWindow updateProductWindow = new UpdateProductWindow(product);
         updateProductWindow.showAndWait();
+
         lvwProducts.getItems().clear();
         selectionChangedArrangement();
         selectionChangedCategory();
