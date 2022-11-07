@@ -27,6 +27,15 @@ public abstract class Controller {
         return product;
     }
 
+    public static double getProductPrice(ProductComponent product, Arrangement arrangement) {
+        for (Price price : product.getPrices()) {
+            if (price.getArrangement() == arrangement) {
+                return price.getValue();
+            }
+        }
+        return 0;
+    }
+
     public static GiftBasket createGiftBasket(String name, Category category, ArrayList<Price> prices, ArrayList<ProductComponent> products) {
         GiftBasket giftBasket = new GiftBasket(name, category, prices, products);
         storage.storeProduct(giftBasket);

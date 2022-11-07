@@ -27,6 +27,7 @@ public class ListStorage implements Storage, Serializable {
         } catch (ClassCastException e) {
             System.out.println("Class Cast Failed");
         }
+        System.out.println("Created new Storage");
         return new ListStorage();
     }
 
