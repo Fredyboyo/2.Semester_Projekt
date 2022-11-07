@@ -14,7 +14,7 @@ public class Price implements Serializable {
         this.product = product;
     }
 
-    public double getPrice() {
+    public double getValue() {
         return price;
     }
 

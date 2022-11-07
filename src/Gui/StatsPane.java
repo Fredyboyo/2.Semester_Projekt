@@ -67,15 +67,15 @@ public class StatsPane extends GridPane implements Observer {
         if (selectedArrangement != null) {
             for (Order order : findAllOrderForPeriod()) {
                 HashMap<ProductComponent, Integer> tempMap = order.countSoldProduct(selectedCategory, selectedArrangement);
-                if (!tempMap.isEmpty()) {
-                    for (ProductComponent product : tempMap.keySet()) {
-                        if (map.containsKey(product)) {
-                            map.put(product, map.get(product) + tempMap.get(product));
-                        } else
-                            map.put(product, tempMap.get(product));
-                    }
+                if (tempMap.isEmpty()) {
+                    continue;
                 }
-
+                for (ProductComponent product : tempMap.keySet()) {
+                    if (map.containsKey(product)) {
+                        map.put(product, map.get(product) + tempMap.get(product));
+                    } else
+                        map.put(product, tempMap.get(product));
+                }
             }
         } else
             lvwProducts.getItems().clear();

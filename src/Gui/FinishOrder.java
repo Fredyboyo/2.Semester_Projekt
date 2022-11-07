@@ -26,25 +26,25 @@ public class FinishOrder extends Stage {
         gridPane.setVgap(10);
         gridPane.setHgap(10);
 
-        Label lDatePicker = new Label("Date: ");
+        Label lDatePicker = new Label("Dato: ");
         lDatePicker.setPrefSize(150,25);
 
         DatePicker datePicker = new DatePicker(LocalDate.now());
         datePicker.setEditable(false);
 
-        Label lArrangement = new Label("Arrangement: ");
+        Label lArrangement = new Label("arrangement: ");
         lArrangement.setPrefSize(150,25);
 
         TextField tfArrangement = new TextField(order.getArrangement().getName());
         tfArrangement.setEditable(false);
 
-        Label lPaymentMethod = new Label("Payment Method: ");
+        Label lPaymentMethod = new Label("Betaling Metode: ");
         lPaymentMethod.setPrefSize(150,25);
 
         ComboBox<PaymentMethod> cbPaymentMethod = new ComboBox<>();
         cbPaymentMethod.getItems().addAll(Controller.getPaymentMethods());
 
-        Label lPrice = new Label("Price: ");
+        Label lPrice = new Label("Pris: ");
         lPrice.setPrefSize(150,25);
 
         TextField tfPrice = new TextField(order.getUpdatedPrice()+"");
@@ -54,7 +54,6 @@ public class FinishOrder extends Stage {
         Button bFinish = new Button("Færdig");
         bFinish.setOnAction(actionEvent -> {
             if (cbPaymentMethod.getValue() == null) return;
-
             isFinished = true;
             this.close();
         });

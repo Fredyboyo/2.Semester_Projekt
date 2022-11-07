@@ -37,7 +37,8 @@ public class PaymentMethodPane extends GridPane {
         lvwPaymentMethods.getItems().addAll(Controller.getPaymentMethods());
         lvwPaymentMethods.setPrefHeight(150);
         lvwPaymentMethods.setOnMouseClicked(event -> {
-            btnDelete.setDisable(false);
+            if (lvwPaymentMethods.getSelectionModel().getSelectedItem() != null)
+                btnDelete.setDisable(false);
         });
 
         Label lblTicketCoupon = new Label("Købte og brugte klip");
