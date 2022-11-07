@@ -23,6 +23,7 @@ public class AddArrangementWindow extends Stage {
         this.setMinHeight(100);
         this.setMinWidth(200);
         this.setResizable(false);
+        this.setTitle("Ny salgssituation");
 
         GridPane pane = new GridPane();
         this.initContent(pane);

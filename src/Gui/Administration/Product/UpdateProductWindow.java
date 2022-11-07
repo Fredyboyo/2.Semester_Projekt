@@ -13,6 +13,7 @@ import javafx.stage.StageStyle;
 
 public class UpdateProductWindow extends Stage implements Observer {
 
+    private final ProductComponent product;
     private final TextField txfName = new TextField();
     private final ComboBox<Category> cbCategories = new ComboBox<>();
     private final Category createNewCategoryCategory = new Category("Tilføj ny kategori");
@@ -22,7 +23,6 @@ public class UpdateProductWindow extends Stage implements Observer {
     private final Button btnAddPrice = new Button("Tilføj endnu en pris");
     private final TextField txfSecondPrice = new TextField();
     private final ComboBox<Arrangement> cbArrangementsSecondPrice = new ComboBox<>();
-    private final ProductComponent product;
 
     public UpdateProductWindow(ProductComponent product) {
         Controller.addObserver(this);
@@ -33,6 +33,7 @@ public class UpdateProductWindow extends Stage implements Observer {
         this.setMinHeight(100);
         this.setMinWidth(200);
         this.setResizable(false);
+        this.setTitle("Redigér produkt");
 
         GridPane pane = new GridPane();
         this.initContent(pane);

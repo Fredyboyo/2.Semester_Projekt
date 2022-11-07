@@ -22,6 +22,7 @@ public class AddPaymentMethodWindow extends Stage {
         this.setMinHeight(100);
         this.setMinWidth(200);
         this.setResizable(false);
+        this.setTitle("Ny betalingsmetode");
 
         GridPane pane = new GridPane();
         this.initContent(pane);

@@ -33,6 +33,7 @@ public class AddGiftBasketWindow extends Stage implements Observer {
         this.setMinHeight(100);
         this.setMinWidth(200);
         this.setResizable(false);
+        this.setTitle("Ny sampakning");
 
         GridPane pane = new GridPane();
         this.initContent(pane);
