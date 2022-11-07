@@ -136,7 +136,7 @@ public class UpdateProductWindow extends Stage {
             alert.setContentText("Alle felterne skal udfyldes");
             alert.showAndWait();
         } else {
-            Controller.createPrice(product, arrangement, price);
+            Controller.updateProduct(product, productName, category);
             secondPriceAdded(secondPriceFromTextField, arrangementSecondPrice, product);
         }
 

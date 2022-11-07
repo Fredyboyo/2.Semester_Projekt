@@ -47,7 +47,7 @@ public class RentalPane extends GridPane {
         if (cbIsCompleted.isSelected()) {
             lvwRentals.getItems().clear();
             for (Order order : Controller.getRentals()) {
-                if (!order.isCompleted()) {
+                if (!order.isFinished()) {
                     lvwRentals.getItems().add(order);
                 }
             }
