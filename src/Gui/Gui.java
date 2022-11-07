@@ -289,6 +289,7 @@ public class Gui extends Application implements Observer {
         }
     }
 
+
     //----------------------- OrderLine --------------------------------------------------------------------------------
 
     private final HashMap<OrderLine,ArrayList<Control>> controls = new HashMap<>();
