@@ -16,7 +16,6 @@ import javafx.stage.StageStyle;
 public class AddCategoryWindow extends Stage {
 
     private final TextField txfName = new TextField();
-    private Category newCategory;
 
     public AddCategoryWindow(){
         this.initStyle(StageStyle.UTILITY);
@@ -55,12 +54,8 @@ public class AddCategoryWindow extends Stage {
             alert.setContentText("Kategorien skal have en beskrivelse");
             alert.showAndWait();
         } else{
-            newCategory = Controller.createCategory(name);
+            Controller.createCategory(name);
             this.close();
         }
-    }
-
-    public Category getNewCategory() {
-        return newCategory;
     }
 }

@@ -1,6 +1,7 @@
 package Gui.Administration.Product;
 
 import Controller.Controller;
+import Gui.Observer;
 import Model.*;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -10,22 +11,22 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-public class UpdateProductWindow extends Stage {
+public class UpdateProductWindow extends Stage implements Observer {
 
     private final TextField txfName = new TextField();
     private final ComboBox<Category> cbCategories = new ComboBox<>();
     private final Category createNewCategoryCategory = new Category("Tilføj ny kategori");
-    private Category newCategory;
     private final TextField txfPrice = new TextField();
     private final ComboBox<Arrangement> cbArrangements = new ComboBox<>();
     private final Arrangement createNewArrangementArrangement = new Arrangement("Tilføj ny salgssituation");
-    private Arrangement newArrangement;
     private final Button btnAddPrice = new Button("Tilføj endnu en pris");
     private final TextField txfSecondPrice = new TextField();
     private final ComboBox<Arrangement> cbArrangementsSecondPrice = new ComboBox<>();
     private final ProductComponent product;
 
     public UpdateProductWindow(ProductComponent product) {
+        Controller.addObserver(this);
+
         this.product = product;
         this.initStyle(StageStyle.UTILITY);
         this.initModality(Modality.APPLICATION_MODAL);
@@ -85,9 +86,6 @@ public class UpdateProductWindow extends Stage {
         if(cbCategories.getSelectionModel().getSelectedItem() == createNewCategoryCategory){
             AddCategoryWindow newCategoryWindow = new AddCategoryWindow();
             newCategoryWindow.showAndWait();
-            newCategory = newCategoryWindow.getNewCategory();
-            cbCategories.getItems().add(cbCategories.getItems().indexOf(createNewCategoryCategory), newCategory);
-            cbCategories.getSelectionModel().select(newCategory);
         }
     }
 
@@ -95,9 +93,6 @@ public class UpdateProductWindow extends Stage {
         if(cbArrangements.getSelectionModel().getSelectedItem() == createNewArrangementArrangement){
             AddArrangementWindow newArrangementWindow = new AddArrangementWindow();
             newArrangementWindow.showAndWait();
-            newArrangement = newArrangementWindow.getNewArrangement();
-            cbArrangements.getItems().add(cbArrangements.getItems().indexOf(createNewArrangementArrangement), newArrangement);
-            cbArrangements.getSelectionModel().select(newArrangement);
         }
     }
 
@@ -166,11 +161,8 @@ public class UpdateProductWindow extends Stage {
         this.close();
     }
 
-    public Category getNewCategory() {
-        return newCategory;
-    }
+    @Override
+    public void update() {
 
-    public Arrangement getNewArrangement() {
-        return newArrangement;
     }
 }

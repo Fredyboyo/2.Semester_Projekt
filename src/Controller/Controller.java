@@ -51,7 +51,7 @@ public abstract class Controller {
     public static void updateProduct(ProductComponent product, String newName, Category newCategory){
         product.setName(newName);
         product.setCategory(newCategory);
-        // notifyObservers(); ??
+        notifyObservers();
     }
 
     public static ArrayList<ProductComponent> getProducts() {
@@ -142,9 +142,9 @@ public abstract class Controller {
         return paymentMethod;
     }
 
-    public static void deletPaymentMethod(PaymentMethod paymentMethod){
+    public static void deletePaymentMethod(PaymentMethod paymentMethod){
         storage.removePaymentMethod(paymentMethod);
-        // notifyObservers(); ??
+        notifyObservers();
     }
 
     public static ArrayList<PaymentMethod> getPaymentMethods() {

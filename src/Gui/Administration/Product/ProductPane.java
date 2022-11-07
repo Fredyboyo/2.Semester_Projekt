@@ -1,9 +1,8 @@
 package Gui.Administration.Product;
 
 import Controller.Controller;
+import Gui.Observer;
 import Model.*;
-import javafx.beans.value.ChangeListener;
-import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -12,7 +11,7 @@ import javafx.scene.layout.VBox;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class ProductPane extends GridPane {
+public class ProductPane extends GridPane implements Observer {
     private final ComboBox<Category> cbCategories = new ComboBox<>();
     private final Category allCategoriesCategory = new Category("Alle produktkategorier");
     private final Category createNewCategoryCategory = new Category("Tilføj ny kategori");
@@ -22,20 +21,17 @@ public class ProductPane extends GridPane {
     private final ListView<ProductComponent> lvwProducts = new ListView<>();
 
     public ProductPane() {
+        Controller.addObserver(this);
+
         this.setPadding(new Insets(25));
         this.setVgap(10);
         this.setHgap(10);
 
-        cbArrangements.getItems().add(allArrangementsArrangement);
-        cbArrangements.getItems().addAll(Controller.getArrangements());
-        cbArrangements.getItems().add(createNewArrangementArrangement);
+        populateComboBoxes();
         cbArrangements.setMinSize(150, 25);
         cbArrangements.setOnAction(event -> selectionChangedArrangement());
         cbArrangements.getSelectionModel().select(allArrangementsArrangement);
 
-        cbCategories.getItems().add(allCategoriesCategory);
-        cbCategories.getItems().addAll(Controller.getCategories());
-        cbCategories.getItems().add(createNewCategoryCategory);
         cbCategories.setMinSize(150, 25);
         cbCategories.setOnAction(event -> selectionChangedCategory());
         cbCategories.getSelectionModel().select(allCategoriesCategory);
@@ -54,7 +50,7 @@ public class ProductPane extends GridPane {
         Button btnAddGiftBasket = new Button("Tilføj ny sampakning");
         btnAddGiftBasket.setOnAction(event -> addGiftBasketAction());
 
-        lvwProducts.getItems().addAll(Controller.getProducts());
+        updateProductList();
         lvwProducts.setPrefWidth(500);
         lvwProducts.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
             btnUpdate.setDisable(newValue == null);
@@ -74,12 +70,26 @@ public class ProductPane extends GridPane {
         box.setSpacing(10);
     }
 
+    private void populateComboBoxes() {
+        int arrangementIndex = cbArrangements.getSelectionModel().getSelectedIndex();
+        cbArrangements.getItems().clear();
+        cbArrangements.getItems().add(allArrangementsArrangement);
+        cbArrangements.getItems().addAll(Controller.getArrangements());
+        cbArrangements.getItems().add(createNewArrangementArrangement);
+        cbArrangements.getSelectionModel().select(arrangementIndex);
+
+        int categoryIndex = cbCategories.getSelectionModel().getSelectedIndex();
+        cbCategories.getItems().clear();
+        cbCategories.getItems().add(allCategoriesCategory);
+        cbCategories.getItems().addAll(Controller.getCategories());
+        cbCategories.getItems().add(createNewCategoryCategory);
+        cbCategories.getSelectionModel().select(categoryIndex);
+    }
+
     private void selectionChangedCategory() {
         if(getSelectedCategory() == createNewCategoryCategory){
             AddCategoryWindow newCategoryWindow = new AddCategoryWindow();
             newCategoryWindow.showAndWait();
-            Category newCategory = newCategoryWindow.getNewCategory();
-            cbCategories.getItems().add(cbCategories.getItems().indexOf(createNewCategoryCategory), newCategory);
             cbCategories.getSelectionModel().select(allCategoriesCategory);
         }
 
@@ -90,8 +100,6 @@ public class ProductPane extends GridPane {
         if(getSelectedArrangement() == createNewArrangementArrangement){
             AddArrangementWindow newArrangementWindow = new AddArrangementWindow();
             newArrangementWindow.showAndWait();
-            Arrangement newArrangement = newArrangementWindow.getNewArrangement();
-            cbArrangements.getItems().add(cbArrangements.getItems().indexOf(createNewArrangementArrangement), newArrangement);
             cbArrangements.getSelectionModel().select(allArrangementsArrangement);
         }
 
@@ -132,34 +140,17 @@ public class ProductPane extends GridPane {
     private void addAction() {
         AddProductWindow addProductWindow = new AddProductWindow();
         addProductWindow.showAndWait();
-        updateProductList();
-        if(addProductWindow.getNewCategory() != null){
-            cbCategories.getItems().add(cbCategories.getItems().indexOf(createNewCategoryCategory), addProductWindow.getNewCategory());
-        }
-        if(addProductWindow.getNewArrangement() != null){
-            cbArrangements.getItems().add(cbArrangements.getItems().indexOf(createNewArrangementArrangement), addProductWindow.getNewArrangement());
-        }
     }
 
     private void addGiftBasketAction(){
         AddGiftBasketWindow addGiftBasketWindow = new AddGiftBasketWindow();
         addGiftBasketWindow.showAndWait();
-        updateProductList();
-
     }
 
     private void updateAction() {
         ProductComponent product = lvwProducts.getSelectionModel().getSelectedItem();
         UpdateProductWindow updateProductWindow = new UpdateProductWindow(product);
         updateProductWindow.showAndWait();
-
-        updateProductList();
-        if(updateProductWindow.getNewCategory() != null){
-            cbCategories.getItems().add(cbCategories.getItems().indexOf(createNewCategoryCategory), updateProductWindow.getNewCategory());
-        }
-        if(updateProductWindow.getNewArrangement() != null){
-            cbArrangements.getItems().add(cbArrangements.getItems().indexOf(createNewArrangementArrangement), updateProductWindow.getNewArrangement());
-        }
     }
 
     private void deleteAction() {
@@ -169,7 +160,12 @@ public class ProductPane extends GridPane {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             ProductComponent product = lvwProducts.getSelectionModel().getSelectedItem();
             Controller.deleteProduct(product);
-            updateProductList();
         }
+    }
+
+    @Override
+    public void update() {
+        populateComboBoxes();
+        updateProductList();
     }
 }

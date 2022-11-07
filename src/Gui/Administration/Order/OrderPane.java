@@ -1,6 +1,7 @@
 package Gui.Administration.Order;
 
 import Controller.Controller;
+import Gui.Observer;
 import Model.*;
 import javafx.geometry.Insets;
 import javafx.scene.control.ComboBox;
@@ -13,7 +14,7 @@ import javafx.scene.layout.GridPane;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class OrderPane extends GridPane {
+public class OrderPane extends GridPane implements Observer {
     private final DatePicker datePicker = new DatePicker();
     private final ComboBox<Category> cbCategories = new ComboBox<>();
     private final Category allCategories = new Category("Alle produktkategorier");
@@ -22,6 +23,8 @@ public class OrderPane extends GridPane {
     private final ListView<Order> lvwOrders = new ListView<>();
 
     public OrderPane() {
+        Controller.addObserver(this);
+
         this.setPadding(new Insets(25));
         this.setVgap(10);
         this.setHgap(10);
@@ -30,14 +33,11 @@ public class OrderPane extends GridPane {
         datePicker.setOnAction(event -> updateOrderList());
         updateOrderList();
 
-        cbArrangements.getItems().add(allArrangements);
-        cbArrangements.getItems().addAll(Controller.getArrangements());
+        populateComboBoxes();
         cbArrangements.setMinSize(150, 25);
         cbArrangements.setOnAction(event -> updateOrderList());
         cbArrangements.getSelectionModel().select(allArrangements);
 
-        cbCategories.getItems().add(allCategories);
-        cbCategories.getItems().addAll(Controller.getCategories());
         cbCategories.setMinSize(150, 25);
         cbCategories.setOnAction(event -> updateOrderList());
         cbCategories.getSelectionModel().select(allCategories);
@@ -58,26 +58,40 @@ public class OrderPane extends GridPane {
         this.add(lvwOrders, 1, 2, 3, 1);
 
         Label lblToolTip = new Label("Dobbeltklik på et salg for at få vist oversigt over solgte produkter og antal");
-        this.add(lblToolTip,1,3,3,1);
+        this.add(lblToolTip, 1, 3, 3, 1);
     }
 
-    private void updateOrderList(){
+    private void populateComboBoxes() {
+        int arrangementIndex = cbArrangements.getSelectionModel().getSelectedIndex();
+        cbArrangements.getItems().clear();
+        cbArrangements.getItems().add(allArrangements);
+        cbArrangements.getItems().addAll(Controller.getArrangements());
+        cbArrangements.getSelectionModel().select(arrangementIndex);
+
+        int categoryIndex = cbCategories.getSelectionModel().getSelectedIndex();
+        cbCategories.getItems().clear();
+        cbCategories.getItems().add(allCategories);
+        cbCategories.getItems().addAll(Controller.getCategories());
+        cbCategories.getSelectionModel().select(categoryIndex);
+    }
+
+    private void updateOrderList() {
         ArrayList<Order> filteredOrders = new ArrayList<>();
 
-        for(Order order : Controller.getOrdersNotRental()){
+        for (Order order : Controller.getOrdersNotRental()) {
 
             boolean isSelectedDateMatched = order.getTimestamp().toLocalDate().isEqual(datePicker.getValue());
 
             boolean isArrangementMatched = getSelectedArrangement() == allArrangements || order.getArrangement() == getSelectedArrangement();
 
             boolean isCategoryMatched = getSelectedCategory() == allCategories;
-            for(OrderLine orderLine : order.getOrderLines()){
-                if(orderLine.getProduct().getCategory() == getSelectedCategory()){
+            for (OrderLine orderLine : order.getOrderLines()) {
+                if (orderLine.getProduct().getCategory() == getSelectedCategory()) {
                     isCategoryMatched = true;
                 }
             }
 
-            if(isSelectedDateMatched && isArrangementMatched && isCategoryMatched){
+            if (isSelectedDateMatched && isArrangementMatched && isCategoryMatched) {
                 filteredOrders.add(order);
             }
         }
@@ -88,7 +102,7 @@ public class OrderPane extends GridPane {
 
     private Category getSelectedCategory() {
         Category selectedCategory = cbCategories.getSelectionModel().getSelectedItem();
-        if(selectedCategory == null){
+        if (selectedCategory == null) {
             return allCategories;
         }
         return selectedCategory;
@@ -96,9 +110,15 @@ public class OrderPane extends GridPane {
 
     private Arrangement getSelectedArrangement() {
         Arrangement selectedArrangement = cbArrangements.getSelectionModel().getSelectedItem();
-        if(selectedArrangement == null){
+        if (selectedArrangement == null) {
             return allArrangements;
         }
         return selectedArrangement;
+    }
+
+    @Override
+    public void update() {
+        populateComboBoxes();
+        updateOrderList();
     }
 }

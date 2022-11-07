@@ -1,10 +1,10 @@
 package Gui.Administration.Product;
 
 import Controller.Controller;
+import Gui.Observer;
 import Model.Arrangement;
 import Model.Category;
 import Model.ProductComponent;
-import com.sun.source.tree.NewClassTree;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -15,7 +15,7 @@ import javafx.stage.StageStyle;
 
 import java.util.ArrayList;
 
-public class AddGiftBasketWindow extends Stage {
+public class AddGiftBasketWindow extends Stage implements Observer {
 
     private final TextField txfName = new TextField();
     private final TextField txfPrice = new TextField();
@@ -26,6 +26,8 @@ public class AddGiftBasketWindow extends Stage {
     private final ComboBox<ProductComponent> cbProducts = new ComboBox<>();
 
     public AddGiftBasketWindow() {
+        Controller.addObserver(this);
+
         this.initStyle(StageStyle.UTILITY);
         this.initModality(Modality.APPLICATION_MODAL);
         this.setMinHeight(100);
@@ -141,5 +143,10 @@ public class AddGiftBasketWindow extends Stage {
 
     private void cancelAction() {
         this.close();
+    }
+
+    @Override
+    public void update() {
+
     }
 }
