@@ -17,17 +17,17 @@ public class ListStorage implements Storage, Serializable {
 
     // -------------------------------------------------------------------------
 
-    public static ListStorage loadStorage() {
+    public static ListStorage loadStorage() throws Exception {
         try (ObjectInputStream out = new ObjectInputStream(new FileInputStream("StorageFile"))) {
             return (ListStorage) out.readObject();
         } catch (IOException e) {
-            System.out.println("Failed");
+            System.out.println("File Compatibility error");
         } catch (ClassNotFoundException e) {
             System.out.println("Class Not Found");
         } catch (ClassCastException e) {
             System.out.println("Class Cast Failed");
         }
-        return null;
+        return new ListStorage();
     }
 
     public static void saveStorage(Storage storage) {
