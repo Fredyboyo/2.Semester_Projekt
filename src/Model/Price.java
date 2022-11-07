@@ -5,13 +5,12 @@ import java.io.Serializable;
 public class Price implements Serializable {
     private double price;
     private final Arrangement arrangement;
-    private final ProductComponent product;
+    ProductComponent product;
 
-    Price(Arrangement arrangement, double price, ProductComponent product) {
+    Price(Arrangement arrangement, double price) {
         this.arrangement = arrangement;
         arrangement.prices.add(this);
         this.price = price;
-        this.product = product;
     }
 
     public double getPrice() {

@@ -46,8 +46,9 @@ public class GiftBasket implements ProductComponent {
 
     @Override
     public Price createPrice(Arrangement arrangement, double price) {
-        Price p = new Price(arrangement, price, this);
+        Price p = new Price(arrangement, price);
         prices.add(p);
+        p.product = this;
         return p;
     }
 
