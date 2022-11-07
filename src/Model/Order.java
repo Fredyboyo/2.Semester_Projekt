@@ -15,6 +15,7 @@ public class Order implements Serializable {
     private PaymentMethod paymentMethod;
     private boolean isCompleted;
     private Discount discountStrategy = new NoDiscountStrategy();
+    private boolean finished = false;
 
     public Order(Arrangement arrangement) {
         this.arrangement = arrangement;
@@ -31,6 +32,14 @@ public class Order implements Serializable {
         orderLines.add(orderline);
         getUpdatedPrice();
         return orderline;
+    }
+
+    public boolean isFinished() {
+        return finished;
+    }
+
+    public void finish() {
+        this.finished = true;
     }
 
     public double getPrice(){

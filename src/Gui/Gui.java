@@ -18,8 +18,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
-import javax.xml.parsers.ParserConfigurationException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,22 +48,22 @@ public class Gui extends Application implements Observer {
     private final ComboBox<Arrangement> cbArrangement = new ComboBox<>();
     private final ComboBox<Category> cbCategory = new ComboBox<>();
 
-    private final Button bNewRental = new Button("+ Rental");
-    private final Button bNewOrder = new Button("+ Order");
+    private final Button bNewRental = new Button("+ Udlejning");
+    private final Button bNewOrder = new Button("+ Ordre");
     private final Button bAdministration = new Button("Administration");
-    private final Button bCancel = new Button("Cancel");
-    private final Button bDone = new Button("Done");
+    private final Button bCancel = new Button("Anuller");
+    private final Button bDone = new Button("Færdig");
     private final Button bFinishRental = new Button("Remove");
-    private final ToggleButton tbShowRentals = new ToggleButton("View Rental Orders");
+    private final ToggleButton tbShowRentals = new ToggleButton("Vis Udlejning Ordre");
 
     private final GridPane gProductDisplay = new GridPane();
     private final GridPane gOrderLineDisplay = new GridPane();
     private final TextField tfTotalPrice = new TextField("* * *");
     private final ScrollPane spOrderLines = new ScrollPane(gOrderLineDisplay);
-    private final ListView<Rental> lvRentals = new ListView<>();
+    private final ListView<Order> lvOpenOrder = new ListView<>();
 
     private final HashMap<Category,ArrayList<ToggleButton>> hmCategoryProducts = new HashMap<>();
-    private final Category all = new Category("* All");
+    private final Category all = new Category("* Alle");
 
     private GridPane initContentOrderScene() {
         GridPane gridPane = new GridPane();
@@ -94,8 +92,8 @@ public class Gui extends Application implements Observer {
         spOrderLines.setPrefSize(640,300);
         spOrderLines.setFocusTraversable(false);
 
-        lvRentals.setPrefSize(640,300);
-        lvRentals.setFocusTraversable(false);
+        lvOpenOrder.setPrefSize(640,300);
+        lvOpenOrder.setFocusTraversable(false);
 
         Label lTotalPrice = new Label("Total Cost :");
 
@@ -179,7 +177,7 @@ public class Gui extends Application implements Observer {
             return;
         }
         selectedOrder = Controller.createOrder(arrangement);
-        bNewOrder.setText("Order : " + arrangement);
+        bNewOrder.setText("Ordre : " + arrangement);
         bNewOrder.setDisable(true);
         bNewRental.setDisable(true);
         bAdministration.setDisable(true);
@@ -215,7 +213,7 @@ public class Gui extends Application implements Observer {
         if (arrangement == null) return;
 
         selectedOrder = Controller.createRental(arrangement,null,null,null,0);
-        bNewRental.setText("Rental : " + arrangement);
+        bNewRental.setText("Udlejning : " + arrangement);
         bNewRental.setDisable(true);
         bNewOrder.setDisable(true);
         bAdministration.setDisable(true);
@@ -255,15 +253,15 @@ public class Gui extends Application implements Observer {
             bCancel.setDisable(true);
             cbArrangement.setDisable(true);
 
-            lvRentals.getItems().clear();
+            lvOpenOrder.getItems().clear();
             for (Order soonToBeRental : Controller.getOrders()) {
-                if (soonToBeRental.getClass() == Rental.class && !((Rental) soonToBeRental).isFinished()) {
-                    lvRentals.getItems().add((Rental) soonToBeRental);
+                if (soonToBeRental.getClass() == Rental.class && !soonToBeRental.isFinished()) {
+                    lvOpenOrder.getItems().add(soonToBeRental);
                 }
             }
 
             shop.getChildren().remove(spOrderLines);
-            shop.add(lvRentals,3,2,4,1);
+            shop.add(lvOpenOrder,3,2,4,1);
             shop.add(bFinishRental,4,3);
         } else {
             bNewOrder.setDisable(false);
@@ -274,19 +272,19 @@ public class Gui extends Application implements Observer {
             bCancel.setDisable(false);
 
             shop.getChildren().remove(bFinishRental);
-            shop.getChildren().remove(lvRentals);
+            shop.getChildren().remove(lvOpenOrder);
             shop.add(spOrderLines,3,2,4,1);
         }
     }
 
     private void finishRental() {
-        Rental rental = lvRentals.getSelectionModel().getSelectedItem();
-        if (rental == null) return;
-        rental.finish();
-        lvRentals.getItems().clear();
-        for (Order soonToBeRental : Controller.getOrders()) {
-            if (soonToBeRental.getClass() == Rental.class && !((Rental) soonToBeRental).isFinished()) {
-                lvRentals.getItems().add((Rental) soonToBeRental);
+        Order openOrder = lvOpenOrder.getSelectionModel().getSelectedItem();
+        if (openOrder == null) return;
+        openOrder.finish();
+        lvOpenOrder.getItems().clear();
+        for (Order order : Controller.getOrders()) {
+            if (order.getClass() == Rental.class && !order.isFinished()) {
+                lvOpenOrder.getItems().add(order);
             }
         }
     }
