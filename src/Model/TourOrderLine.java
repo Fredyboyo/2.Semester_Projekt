@@ -10,5 +10,6 @@ public class TourOrderLine extends OrderLine {
         super(product, amount, arrangement);
         this.date = date;
         this.customer = customer;
+        customer.tours.add(this);
     }
 }

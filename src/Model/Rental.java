@@ -13,6 +13,7 @@ public class Rental extends Order {
         this.startDate = startDate;
         this.endDate = endDate;
         this.customer = customer;
+        customer.rentals.add(this);
         this.payedDeposit = payedDeposit;
     }
 
