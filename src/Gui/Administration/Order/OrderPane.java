@@ -66,7 +66,7 @@ public class OrderPane extends GridPane {
 
         for(Order order : Controller.getOrdersNotRental()){
 
-            boolean isSelectedDateMatched = order.getDate().toLocalDate().isEqual(datePicker.getValue());
+            boolean isSelectedDateMatched = order.getTimestamp().toLocalDate().isEqual(datePicker.getValue());
 
             boolean isArrangementMatched = getSelectedArrangement() == allArrangements || order.getArrangement() == getSelectedArrangement();
 

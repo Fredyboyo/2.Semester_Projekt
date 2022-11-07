@@ -87,7 +87,7 @@ public class StatsPane extends GridPane implements Observer {
         ArrayList<Order> orders = new ArrayList<>();
         if ((startDate.getValue() != null && endDate.getValue() != null)) {
             for (Order order : Controller.getOrders()) {
-                LocalDate orderDate = LocalDate.from(order.getDate());
+                LocalDate orderDate = LocalDate.from(order.getTimestamp());
                 if (!startDate.getValue().isBefore(orderDate) && !endDate.getValue().isAfter(orderDate)){
                     orders.add(order);
                 }

@@ -117,8 +117,9 @@ public class PaymentMethodPane extends GridPane {
         }
         int usedCount = 0;
         for (Order order : Controller.getOrders()) {
-            if (order.getPaymentMethod() == ticketCouponPaymentMethod) {
-                LocalDate date = order.getDate().toLocalDate();
+            PaymentMethod paymentMethod = order.getPaymentMethod();
+            if (paymentMethod != null && paymentMethod == ticketCouponPaymentMethod) {
+                LocalDate date = order.getTimestamp().toLocalDate();
                 if (date.isEqual(start) || date.isAfter(start) && date.isEqual(end) || date.isBefore(end)) {
                     usedCount += order.getCollectedCost();
                 }
@@ -138,8 +139,9 @@ public class PaymentMethodPane extends GridPane {
         final int amountOfTicketsPrTicketCoupon = 4;
         for (Order order : Controller.getOrders()) {
             for (OrderLine orderLine : order.getOrderLines()) {
-                if (orderLine.getProduct().getCategory() == ticketCouponCategory) {
-                    if (order.getDate().toLocalDate().isAfter(start) && order.getDate().toLocalDate().isBefore(end)) {
+                Category category = orderLine.getProduct().getCategory();
+                if (category != null && category == ticketCouponCategory) {
+                    if (order.getTimestamp().toLocalDate().isAfter(start) && order.getTimestamp().toLocalDate().isBefore(end)) {
                         boughtCount += orderLine.getAmount() * amountOfTicketsPrTicketCoupon;
                     }
                 }

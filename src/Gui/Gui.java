@@ -243,7 +243,7 @@ public class Gui extends Application implements Observer {
         for (Price price : prices) {
             ProductComponent product = price.getProduct();
 
-            ToggleButton bAddProducts = new ToggleButton(product.getName() + "\n" + price.getValue() + " Kr.");
+            ToggleButton bAddProducts = new ToggleButton(product.getName() + "\n" + price.getPrice() + " Kr.");
             bAddProducts.setTextAlignment(TextAlignment.CENTER);
             bAddProducts.setPrefSize(175, 50);
             bAddProducts.setOnAction(event -> createOrderLine((ToggleButton) event.getSource(),product));
@@ -295,7 +295,7 @@ public class Gui extends Application implements Observer {
     private void finishRental() {
         Order openOrder = lvOpenOrder.getSelectionModel().getSelectedItem();
         if (openOrder == null) return;
-        openOrder.finish();
+        openOrder.finishOrder();
         lvOpenOrder.getItems().clear();
         for (Order order : Controller.getOrders()) {
             if (order.getClass() == Rental.class && !order.isFinished()) {

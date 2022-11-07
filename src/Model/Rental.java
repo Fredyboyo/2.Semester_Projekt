@@ -5,15 +5,15 @@ import java.time.LocalDate;
 public class Rental extends Order {
     private final LocalDate startDate;
     private final LocalDate endDate;
-    private final String person;
-    private final double collectedMortgage;
+    private final Customer customer;
+    private final double payedDeposit;
 
-    public Rental(Arrangement arrangement, LocalDate startDate, LocalDate endDate, String person, double payedMortgage) {
+    public Rental(Arrangement arrangement, LocalDate startDate, LocalDate endDate, Customer customer, double payedDeposit) {
         super(arrangement);
         this.startDate = startDate;
         this.endDate = endDate;
-        this.person = person;
-        this.collectedMortgage = payedMortgage;
+        this.customer = customer;
+        this.payedDeposit = payedDeposit;
     }
 
     public LocalDate getStartDate() {
@@ -24,16 +24,16 @@ public class Rental extends Order {
         return endDate;
     }
 
-    public String getPerson() {
-        return person;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public double getCollectedMortgage() {
-        return collectedMortgage;
+    public double getPayedDeposit() {
+        return payedDeposit;
     }
 
     @Override
     public String toString() {
-        return startDate + " - " + endDate + " (" + person + " har betalt " + collectedMortgage + ")";
+        return startDate + " - " + endDate + " (" + customer + " har betalt " + payedDeposit + ")";
     }
 }

@@ -30,7 +30,7 @@ public abstract class Controller {
     public static double getProductPrice(ProductComponent product, Arrangement arrangement) {
         for (Price price : product.getPrices()) {
             if (price.getArrangement() == arrangement) {
-                return price.getValue();
+                return price.getPrice();
             }
         }
         return 0;
@@ -86,8 +86,13 @@ public abstract class Controller {
         return order;
     }
 
-    public static Rental createRental(Arrangement arrangement, LocalDate startDate, LocalDate endDate, String person, double payedMortgage) {
-        Rental rental = new Rental(arrangement, startDate, endDate, person, payedMortgage);
+    public static Rental createRental(
+            Arrangement arrangement,
+            LocalDate startDate,
+            LocalDate endDate,
+            Customer customer,
+            double payedMortgage) {
+        Rental rental = new Rental(arrangement, startDate, endDate, customer, payedMortgage);
         storage.storeOrder(rental);
         notifyObservers();
         return rental;

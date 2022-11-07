@@ -61,7 +61,7 @@ public class UpdateProductWindow extends Stage {
         Label lblPrice = new Label("Pris");
         pane.add(lblPrice, 1, 3);
         pane.add(txfPrice, 2, 3);
-        txfPrice.setText(Double.toString(product.getPrices().get(0).getValue()));
+        txfPrice.setText(Double.toString(product.getPrices().get(0).getPrice()));
 
         pane.add(cbArrangements, 3, 3, 2, 1);
         cbArrangements.getItems().addAll(Controller.getArrangements());

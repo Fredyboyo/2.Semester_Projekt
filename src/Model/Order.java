@@ -8,18 +8,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Order implements Serializable {
-    private final LocalDateTime date = LocalDateTime.now();
+    private final LocalDateTime timestamp = LocalDateTime.now();
     private final ArrayList<OrderLine> orderLines = new ArrayList<>();
     private final Arrangement arrangement;
     private double collectedCost;
     private PaymentMethod paymentMethod;
-    private boolean isCompleted;
     private Discount discountStrategy = new NoDiscountStrategy();
-    private boolean finished = false;
+    private boolean isFinished = false;
 
     public Order(Arrangement arrangement) {
         this.arrangement = arrangement;
-        this.isCompleted = false;
     }
 
     public double getUpdatedPrice() {
@@ -35,11 +33,11 @@ public class Order implements Serializable {
     }
 
     public boolean isFinished() {
-        return finished;
+        return isFinished;
     }
 
-    public void finish() {
-        this.finished = true;
+    public void finishOrder() {
+        this.isFinished = true;
     }
 
     public double getPrice(){
@@ -53,7 +51,6 @@ public class Order implements Serializable {
         }
         collectedCost = discountStrategy.discount(collectedCost);
     }
-
 
     public HashMap<ProductComponent, Integer>  countSoldProduct(Category category, Arrangement arrangement){
         HashMap<ProductComponent, Integer> map = new HashMap<>();
@@ -69,8 +66,6 @@ public class Order implements Serializable {
         return map;
     }
 
-
-
     public void removeOrderLine(OrderLine orderLine) {
         orderLines.remove(orderLine);
     }
@@ -79,16 +74,12 @@ public class Order implements Serializable {
         this.paymentMethod = paymentMethod;
     }
 
-    public void setIsCompletedToTrue(){
-        this.isCompleted = true;
-    }
-
     public double getCollectedCost() {
         return collectedCost;
     }
 
-    public LocalDateTime getDate() {
-        return date;
+    public LocalDateTime getTimestamp() {
+        return timestamp;
     }
 
     public Arrangement getArrangement() {
@@ -99,13 +90,8 @@ public class Order implements Serializable {
         return paymentMethod;
     }
 
-
     public ArrayList<OrderLine> getOrderLines() {
         return orderLines;
-    }
-
-    public boolean isCompleted() {
-        return isCompleted;
     }
 
     @Override

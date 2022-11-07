@@ -26,7 +26,7 @@ public class OrderLine implements Serializable {
     private void updateCost() {
         for (Price price : product.getPrices()) {
            if (price.getArrangement() == arrangement) {
-               cost = price.getValue() * amount;
+               cost = price.getPrice() * amount;
            }
         }
         cost = discountStrategy.discount(cost);
