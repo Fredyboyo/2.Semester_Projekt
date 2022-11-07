@@ -8,4 +8,9 @@ public class StudentDiscountStrategy implements Discount {
     public double discount(double collectedCost) {
         return collectedCost * 0.9;
     }
+
+    @Override
+    public void setValue(double var) {
+
+    }
 }

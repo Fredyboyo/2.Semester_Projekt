@@ -1,8 +1,9 @@
 package Model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Category {
+public class Category implements Serializable {
     private final String name;
     private final ArrayList<ProductComponent> products = new ArrayList<>();
 

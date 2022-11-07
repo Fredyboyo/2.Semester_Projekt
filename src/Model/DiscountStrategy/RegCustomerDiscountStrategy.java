@@ -8,4 +8,9 @@ public class RegCustomerDiscountStrategy implements Discount {
     public double discount(double collectedCost) {
         return collectedCost * 0.85;
     }
+
+    @Override
+    public void setValue(double var) {
+
+    }
 }

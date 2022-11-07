@@ -3,7 +3,7 @@ package Storage;
 import Controller.Storage;
 import Model.*;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 
 public class ListStorage implements Storage, Serializable {
@@ -18,12 +18,24 @@ public class ListStorage implements Storage, Serializable {
     // -------------------------------------------------------------------------
 
     public static ListStorage loadStorage() {
-
+        try (ObjectInputStream out = new ObjectInputStream(new FileInputStream("StorageFile"))) {
+            return (ListStorage) out.readObject();
+        } catch (IOException e) {
+            System.out.println("Failed");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Class Not Found");
+        } catch (ClassCastException e) {
+            System.out.println("Class Cast Failed");
+        }
         return null;
     }
 
     public static void saveStorage(Storage storage) {
-
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("StorageFile"))) {
+            out.writeObject(storage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // -------------------------------------------------------------------------
