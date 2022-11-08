@@ -3,62 +3,114 @@ package Model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class OrderTest {
 
-    private Arrangement arrangement;
-    private Order order;
-    private Category category;
-    private Product product;
+    private Arrangement fredagsbar;
+    private Order order1;
+    private Category fadøl;
+    private Product product1;
     private Price price;
-    private OrderLine orderLine;
+    private OrderLine orderLine1;
 
     @BeforeEach
     public void setUp(){
-        arrangement = new Arrangement("Fredagsbar");
-        order = new Order(arrangement);
-        category = new Category("Fadøl");
-        product = new Product("Klosterbryg", category);
-        price = product.createPrice(arrangement,75);
-        orderLine = order.createOrderLine(product, 8);
+        fredagsbar = new Arrangement("Fredagsbar");
+        order1 = new Order(fredagsbar);
+        fadøl = new Category("Fadøl");
+        product1 = new Product("Klosterbryg", fadøl);
+        price = product1.createPrice(fredagsbar,38);
+        orderLine1 = order1.createOrderLine(product1, 8);
     }
 
     @Test
     public void shouldConstructOrder() {
-        assertEquals(order.getClass(), Order.class);
+        Order order1 = new Order(fredagsbar);
+        assertEquals(order1.getArrangement(), fredagsbar);
 
     }
 
     @Test
     public void shouldCreateOrderLine(){
-        Product product1 = new Product("Flaske", category);
-        OrderLine orderLine2 = order.createOrderLine(product1, 10);
+        Product product1 = new Product("p1", fadøl);
+        OrderLine orderLine1 = order1.createOrderLine(product1, 10);
 
-        assertEquals(order.getOrderLines().get(0).getAmount(),8);
-        assertEquals(orderLine.getClass(), OrderLine.class);
+        assertEquals(order1.getOrderLines().get(0).getAmount(),8);
+        assertEquals(this.orderLine1.getProduct(), this.product1);
 
-        assertEquals(order.getOrderLines().get(1).getAmount(),10);
-        assertEquals(orderLine2.getClass(), OrderLine.class);
+        assertEquals(order1.getOrderLines().get(1).getAmount(),10);
+        assertEquals(orderLine1.getProduct(), product1);
     }
 
     @Test
     public void shouldCalculateCost(){
-        Product product1 = new Product("Flaske", category);
-        product1.createPrice(arrangement, 50);
-        order.createOrderLine(product1, 10);
+        Category spiritus = new Category("Spiritus");
 
-        order.getUpdatedPrice();
+        Product product2 = new Product("Celebration", fadøl);
+        Product product3 = new Product("Jazz Classic", fadøl);
+        Product product4 = new Product("Whisky", spiritus);
 
-        assertEquals(order.getUpdatedPrice(), 1100);
+        Order order2 = new Order(fredagsbar);
+
+        product2.createPrice(fredagsbar, 38);
+        product3.createPrice(fredagsbar, 38);
+        product4.createPrice(fredagsbar, 599);
+
+        order1.createOrderLine(product2, 10);
+
+        order2.createOrderLine(product1, 8);
+        order2.createOrderLine(product2, 10);
+        order2.createOrderLine(product3, 2);
+        order2.createOrderLine(product4, 1);
+
+        Order noOrder = new Order(fredagsbar);
+
+        order1.updateCollectedCost();
+        order2.updateCollectedCost();
+
+        // Order for 1 product
+        assertEquals(noOrder.getUpdatedPrice(), 0);
+        // Order for 2 products
+        assertEquals(order1.getUpdatedPrice(), 684);
+        // Order for 4 products
+        assertEquals(order2.getUpdatedPrice(), 1359);
     }
 
     @Test
     public void shouldSetPayment(){
         PaymentMethod paymentMethod = new PaymentMethod("Mastercard");
-        order.setPaymentMethod(paymentMethod);
+        order1.setPaymentMethod(paymentMethod);
 
-        assertEquals(order.getPaymentMethod(), paymentMethod);
+        assertEquals(order1.getPaymentMethod(), paymentMethod);
+    }
+
+    @Test
+    public void shouldCountOrders(){
+        Category spiritus = new Category("Spiritus");
+        
+        Product product2 = new Product("Celebration", fadøl);
+        Product product3 = new Product("Jazz Classic", fadøl);
+        Product product4 = new Product("Whisky", spiritus);
+
+        Order order2 = new Order(fredagsbar);
+
+        product2.createPrice(fredagsbar, 38);
+        product3.createPrice(fredagsbar, 38);
+        product4.createPrice(fredagsbar, 599);
+
+        order1.createOrderLine(product2, 10);
+
+        order2.createOrderLine(product1, 8);
+        order2.createOrderLine(product2, 10);
+        order2.createOrderLine(product3, 2);
+        order2.createOrderLine(product4, 1);
+
+        HashMap<ProductComponent, Integer> map = order1.countSoldProduct(fadøl, fredagsbar);
+
+        assertEquals(map.get(product2), 10);
     }
 
 

@@ -66,6 +66,14 @@ public class Order implements Serializable {
         return map;
     }
 
+    public Discount getDiscountStrategy() {
+        return discountStrategy;
+    }
+
+    public void setDiscountStrategy(Discount discountStrategy) {
+        this.discountStrategy = discountStrategy;
+    }
+
     public void removeOrderLine(OrderLine orderLine) {
         orderLines.remove(orderLine);
     }
