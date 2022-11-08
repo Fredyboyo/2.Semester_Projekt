@@ -17,8 +17,8 @@ public class ListStorage implements Storage, Serializable {
 
     // -------------------------------------------------------------------------
 
-    public static ListStorage loadStorage() throws Exception {
-        try (ObjectInputStream out = new ObjectInputStream(new FileInputStream("StorageFile"))) {
+    public static ListStorage loadStorage() {
+        try (ObjectInputStream out = new ObjectInputStream(new FileInputStream("StorageFile.ser"))) {
             return (ListStorage) out.readObject();
         } catch (IOException e) {
             System.out.println("File Compatibility error");
@@ -28,11 +28,11 @@ public class ListStorage implements Storage, Serializable {
             System.out.println("Class Cast Failed");
         }
         System.out.println("Created new Storage");
-        return new ListStorage();
+        return null;
     }
 
     public static void saveStorage(Storage storage) {
-        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("StorageFile"))) {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("StorageFile.ser"))) {
             out.writeObject(storage);
         } catch (IOException e) {
             e.printStackTrace();
@@ -45,7 +45,6 @@ public class ListStorage implements Storage, Serializable {
     public void storeProduct(ProductComponent product) {
         products.add(product);
     }
-
     @Override
     public void removeProduct(ProductComponent product) {
         products.remove(product);
@@ -99,15 +98,15 @@ public class ListStorage implements Storage, Serializable {
     public ArrayList<Price> getPrices() {
         return prices;
     }
-
+    @Override
     public void storeDiscount(Discount discount){
         discounts.add(discount);
     }
-
+    @Override
     public void deleteDiscount(Discount discount){
         discounts.remove(discount);
     }
-
+    @Override
     public ArrayList<Discount> getDiscounts() {
         return new ArrayList<>(discounts);
     }

@@ -13,6 +13,8 @@ public interface Storage {
     public void storeArrangement(Arrangement arrangement);
     public void storePaymentMethod(PaymentMethod paymentMethod);
     public void removePaymentMethod(PaymentMethod paymentMethod);
+    public void storeDiscount(Discount discount);
+    public void deleteDiscount(Discount discount);
 
     public ArrayList<Order> getOrders();
     public ArrayList<Price> getPrices();
@@ -20,4 +22,7 @@ public interface Storage {
     public ArrayList<Arrangement> getArrangements();
     public ArrayList<ProductComponent> getProducts();
     public ArrayList<PaymentMethod> getPaymentMethods();
+    public ArrayList<Discount> getDiscounts();
+
+
 }
