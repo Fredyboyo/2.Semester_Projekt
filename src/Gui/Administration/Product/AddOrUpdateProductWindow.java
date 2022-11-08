@@ -18,9 +18,11 @@ import java.util.List;
 public class AddOrUpdateProductWindow extends Stage implements Observer {
     private ProductComponent product;
 
+    private final ArrayList<ArrayList<Control>> alControls = new ArrayList<>();
+
     private final Category createNewCategoryCategory = new Category("Tilføj ny kategori");
     private final Arrangement createNewArrangementArrangement = new Arrangement("Tilføj ny salgssituation");
-    private final ArrayList<ArrayList<Control>> alControls = new ArrayList<>();
+
 
     private final TextField txfName = new TextField();
     private final ComboBox<Category> cbCategories = new ComboBox<>();
@@ -60,8 +62,6 @@ public class AddOrUpdateProductWindow extends Stage implements Observer {
         pane.add(cbCategories, 1, 1);
 
         cbCategories.setPromptText("Vælg kategori");
-        cbCategories.getItems().addAll(Controller.getCategories());
-        cbCategories.getItems().add(createNewCategoryCategory);
         cbCategories.setOnAction(event -> selectionChangedCategory());
 
         Label lPrice = new Label("Pris");
@@ -71,6 +71,8 @@ public class AddOrUpdateProductWindow extends Stage implements Observer {
         pane.add(lPrice, 0, 2);
         pane.add(lClip, 1, 2);
         pane.add(lArrangement, 2, 2);
+
+        populateComboBoxes();
 
         GridPane.setHalignment(btnCancel, HPos.RIGHT);
         GridPane.setHalignment(btnOK, HPos.RIGHT);
@@ -102,10 +104,17 @@ public class AddOrUpdateProductWindow extends Stage implements Observer {
                 cbArrangement.setValue(arrangement);
             }
         }
+        Category category = cbCategories.getValue();
+        cbCategories.getItems().clear();
+        cbCategories.getItems().addAll(Controller.getCategories());
+        cbCategories.getItems().add(createNewCategoryCategory);
+        if (category != null && category != createNewCategoryCategory) {
+            cbCategories.setValue(category);
+        }
     }
 
     private void selectionChangedCategory() {
-        if (cbCategories.getSelectionModel().getSelectedItem() == createNewCategoryCategory) {
+        if (cbCategories.getValue() == createNewCategoryCategory) {
             AddCategoryWindow newCategoryWindow = new AddCategoryWindow();
             newCategoryWindow.showAndWait();
             String name = newCategoryWindow.getName();
@@ -113,7 +122,8 @@ public class AddOrUpdateProductWindow extends Stage implements Observer {
                 cbCategories.setValue(null);
                 return;
             }
-            cbCategories.setValue(Controller.createCategory(name));
+            Category category = Controller.createCategory(name);
+            cbCategories.setValue(category);
             System.out.println("Test");
         }
     }
@@ -211,10 +221,9 @@ public class AddOrUpdateProductWindow extends Stage implements Observer {
             try {
                 price = Double.parseDouble(tfPrices.getText());
                 clips = Integer.valueOf(tfClips.getText());
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
+            } catch (NumberFormatException ignore) {
             }
-            Controller.createPrice(product, arrangement, price, clips);
+            Controller.createProductPrice(product, arrangement, price, clips);
         }
         this.close();
     }

@@ -1,6 +1,8 @@
-package Gui;
+package Gui.Shop;
 
 import Controller.Controller;
+import Gui.Gui;
+import Gui.Observer;
 import Model.*;
 import Model.DiscountStrategy.*;
 import javafx.application.Platform;
@@ -20,7 +22,7 @@ import java.util.List;
 public class ShopWindow extends Stage implements Observer {
     private final Gui gui;
 
-    ShopWindow(Gui gui) {
+    public ShopWindow(Gui gui) {
         this.gui = gui;
     }
 
@@ -502,5 +504,8 @@ public class ShopWindow extends Stage implements Observer {
     public void update() {
         cbArrangement.getItems().clear();
         cbArrangement.getItems().addAll(Controller.getArrangements());
+        if (cbArrangement.getItems().size() > 0) {
+            cbArrangement.setValue(cbArrangement.getItems().get(0));
+        }
     }
 }

@@ -21,13 +21,13 @@ public class ListStorage implements Storage, Serializable {
         try (ObjectInputStream out = new ObjectInputStream(new FileInputStream("StorageFile.ser"))) {
             return (ListStorage) out.readObject();
         } catch (IOException e) {
-            System.out.println("File Compatibility error");
+            System.out.print("File Compatibility error");
         } catch (ClassNotFoundException e) {
-            System.out.println("Class Not Found");
+            System.out.print("Class Not Found");
         } catch (ClassCastException e) {
-            System.out.println("Class Cast Failed");
+            System.out.print("Class Cast Failed");
         }
-        System.out.println("Created new Storage");
+        System.out.println("| Created new Storage");
         return null;
     }
 

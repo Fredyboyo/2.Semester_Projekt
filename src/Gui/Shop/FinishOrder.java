@@ -1,4 +1,4 @@
-package Gui;
+package Gui.Shop;
 
 import Controller.Controller;
 import Model.Order;

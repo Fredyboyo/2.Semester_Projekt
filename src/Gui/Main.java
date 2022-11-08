@@ -5,17 +5,16 @@ import Controller.Storage;
 import Storage.ListStorage;
 
 public class Main {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         Storage storage = ListStorage.loadStorage();
         if (storage == null) {
             storage = new ListStorage();
         }
+
         Controller.setStorage(storage);
+        Controller.init();
 
-        if (storage == null) {
-
-        }
         Gui.launch(Gui.class);
-        ListStorage.saveStorage(storage);
+        ListStorage.saveStorage(Controller.getStorage());
     }
 }

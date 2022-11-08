@@ -1,9 +1,9 @@
 package Gui;
 
-import Controller.Controller;
 import Gui.Administration.Order.OrderPane;
 import Gui.Administration.PaymentMethod.PaymentMethodPane;
 import Gui.Administration.Product.ProductPane;
+import Gui.Shop.ShopWindow;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -12,44 +12,38 @@ import javafx.stage.Stage;
 
 public class Gui extends Application {
     private final ShopWindow shopWindow = new ShopWindow(this);
-    private GridPane administration;
+    private final Pane administrationRoot = initContentAdministrationScene();
+    private final Pane shopRoot = shopWindow.getRoot();
     private Scene scene;
 
     @Override
     public void start(Stage stage) {
-        administration = initContentAdministrationScene();
-        scene = new Scene(shopWindow.getRoot());
+        scene = new Scene(shopRoot);
 
         stage.setScene(scene);
-        stage.setTitle("BREW-BREW");
+        stage.setTitle("Kasseapparatet");
         stage.show();
     }
-
-    @Override
-    public void init() {
-        Controller.addObserver(shopWindow);
-    }
-
-
 
     //------------------------------------------------------------------------------------------------------------------
     // initAdministration()
 
-    private GridPane initContentAdministrationScene() {
-        GridPane gridPane = new GridPane();
-        gridPane.setHgap(10);
+    private Pane initContentAdministrationScene() {
+        Pane pane = new Pane();
 
         TabPane tabPane = new TabPane();
         this.initTabPane(tabPane);
-        gridPane.add(tabPane, 0, 0, 1, 2);
-        tabPane.setPrefWidth(1050);
+        pane.getChildren().add(tabPane);
+        tabPane.setPrefWidth(1100);
 
-        Button btnBack = new Button("<");
+        Button btnBack = new Button("Tilbage til Køb");
         btnBack.setOnAction(event -> shopWindow());
-        gridPane.add(btnBack, 1, 0);
-        return gridPane;
+        pane.getChildren().add(btnBack);
+        btnBack.setPrefWidth(150);
+        btnBack.setTranslateX(900);
+        btnBack.setTranslateY(30);
+        return pane;
     }
-
 
     private void initTabPane(TabPane tabPane) {
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
@@ -84,7 +78,7 @@ public class Gui extends Application {
     // TV - Remote
 
     public void administrationWindow() {
-        scene.setRoot(administration);
+        scene.setRoot(administrationRoot);
     }
 
     public void shopWindow() {
