@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class ShopWindow extends Stage {
+public class ShopWindow extends Stage implements Observer {
     private final Gui gui;
 
     ShopWindow(Gui gui) {
@@ -135,13 +135,8 @@ public class ShopWindow extends Stage {
         if (cbCategory.getItems().size() > 0)
             Platform.runLater(() -> cbCategory.setValue(cbCategory.getItems().get(0)));
 
-        reload();
+        update();
         return gridPane;
-    }
-
-    void reload() {
-        cbArrangement.getItems().clear();
-        cbArrangement.getItems().addAll(Controller.getArrangements());
     }
 
     private void choseCategory() {
@@ -501,5 +496,11 @@ public class ShopWindow extends Stage {
 
     public GridPane getRoot() {
         return root;
+    }
+
+    @Override
+    public void update() {
+        cbArrangement.getItems().clear();
+        cbArrangement.getItems().addAll(Controller.getArrangements());
     }
 }

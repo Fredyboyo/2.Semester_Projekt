@@ -23,7 +23,7 @@ public class ThreeMethodTest {
         order1 = new Order(fredagsbar);
         fadøl = new Category("Fadøl");
         product1 = new Product("Klosterbryg", fadøl);
-        price = product1.createPrice(fredagsbar,75);
+        price = product1.createPrice(fredagsbar,75,null);
         orderLine1 = order1.createOrderLine(product1, 10);
     }
 

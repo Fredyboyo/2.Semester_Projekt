@@ -10,7 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
-public class Gui extends Application implements Observer {
+public class Gui extends Application {
     private final ShopWindow shopWindow = new ShopWindow(this);
     private GridPane administration;
     private Scene scene;
@@ -27,7 +27,7 @@ public class Gui extends Application implements Observer {
 
     @Override
     public void init() {
-        Controller.addObserver(this);
+        Controller.addObserver(shopWindow);
     }
 
 
@@ -89,11 +89,5 @@ public class Gui extends Application implements Observer {
 
     public void shopWindow() {
         scene.setRoot(shopWindow.getRoot());
-        shopWindow.reload();
-    }
-
-    @Override
-    public void update() {
-
     }
 }

@@ -151,8 +151,8 @@ public abstract class Controller {
         return storage.getPaymentMethods();
     }
 
-    public static Price createPrice(ProductComponent product, Arrangement arrangement, double price){
-        Price p = product.createPrice(arrangement, price);
+    public static Price createPrice(ProductComponent product, Arrangement arrangement, double price, Integer clip){
+        Price p = product.createPrice(arrangement, price, clip);
         storage.storePrice(p);
         notifyObservers();
         return p;

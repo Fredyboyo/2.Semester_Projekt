@@ -4,18 +4,19 @@ import java.io.Serializable;
 
 public class Price implements Serializable {
     private double price;
-    private Clip clip;
+    private Integer clips;
     private final Arrangement arrangement;
     ProductComponent product;
 
-    Price(Arrangement arrangement, double price) {
+    Price(Arrangement arrangement, double price, Integer clips) {
         this.arrangement = arrangement;
         arrangement.prices.add(this);
         this.price = price;
+        this.clips = clips;
     }
 
-    public void setClip(Clip clip) {
-        this.clip = clip;
+    public void setClips(Integer clips) {
+        this.clips = clips;
     }
 
     public double getPrice() {
@@ -37,5 +38,9 @@ public class Price implements Serializable {
     @Override
     public String toString() {
         return price + " kr i " + arrangement;
+    }
+
+    public Integer getClips() {
+        return clips;
     }
 }

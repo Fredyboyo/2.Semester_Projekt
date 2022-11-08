@@ -39,7 +39,7 @@ public class RentalProduct implements ProductComponent{
     }
 
     @Override
-    public Price createPrice(Arrangement arrangement, double price) {
+    public Price createPrice(Arrangement arrangement, double price, Integer clips) {
         return null;
     }
 }

@@ -22,7 +22,7 @@ public class OrderTest {
         order1 = new Order(fredagsbar);
         fadøl = new Category("Fadøl");
         product1 = new Product("Klosterbryg", fadøl);
-        price = product1.createPrice(fredagsbar,38);
+        price = product1.createPrice(fredagsbar,38,null);
         orderLine1 = order1.createOrderLine(product1, 8);
     }
 
@@ -55,9 +55,9 @@ public class OrderTest {
 
         Order order2 = new Order(fredagsbar);
 
-        product2.createPrice(fredagsbar, 38);
-        product3.createPrice(fredagsbar, 38);
-        product4.createPrice(fredagsbar, 599);
+        product2.createPrice(fredagsbar, 38,null);
+        product3.createPrice(fredagsbar, 38,null);
+        product4.createPrice(fredagsbar, 599,null);
 
         order1.createOrderLine(product2, 10);
 
@@ -97,9 +97,9 @@ public class OrderTest {
 
         Order order2 = new Order(fredagsbar);
 
-        product2.createPrice(fredagsbar, 38);
-        product3.createPrice(fredagsbar, 38);
-        product4.createPrice(fredagsbar, 599);
+        product2.createPrice(fredagsbar, 38,null);
+        product3.createPrice(fredagsbar, 38,null);
+        product4.createPrice(fredagsbar, 599,null);
 
         order1.createOrderLine(product2, 10);
 

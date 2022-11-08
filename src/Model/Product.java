@@ -1,5 +1,6 @@
 package Model;
 
+import javax.sound.sampled.Clip;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -42,8 +43,8 @@ public class Product implements ProductComponent, Serializable {
     }
 
     @Override
-    public Price createPrice(Arrangement arrangement, double price) {
-        Price p = new Price(arrangement, price);
+    public Price createPrice(Arrangement arrangement, double price, Integer clip) {
+        Price p = new Price(arrangement, price, clip);
         prices.add(p);
         p.product = this;
         return p;
