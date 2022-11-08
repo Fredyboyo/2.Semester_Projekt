@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class Price implements Serializable {
     private double price;
+    private Clip clip;
     private final Arrangement arrangement;
     ProductComponent product;
 
@@ -11,6 +12,10 @@ public class Price implements Serializable {
         this.arrangement = arrangement;
         arrangement.prices.add(this);
         this.price = price;
+    }
+
+    public void setClip(Clip clip) {
+        this.clip = clip;
     }
 
     public double getPrice() {
