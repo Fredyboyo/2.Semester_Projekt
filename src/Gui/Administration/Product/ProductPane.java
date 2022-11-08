@@ -138,7 +138,7 @@ public class ProductPane extends GridPane implements Observer {
     }
 
     private void addAction() {
-        AddProductWindow addProductWindow = new AddProductWindow();
+        AddOrUpdateProductWindow addProductWindow = new AddOrUpdateProductWindow(null);
         addProductWindow.showAndWait();
     }
 
@@ -149,7 +149,7 @@ public class ProductPane extends GridPane implements Observer {
 
     private void updateAction() {
         ProductComponent product = lvwProducts.getSelectionModel().getSelectedItem();
-        UpdateProductWindow updateProductWindow = new UpdateProductWindow(product);
+        AddOrUpdateProductWindow updateProductWindow = new AddOrUpdateProductWindow(product);
         updateProductWindow.showAndWait();
     }
 
