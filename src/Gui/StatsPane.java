@@ -56,7 +56,20 @@ public class StatsPane extends GridPane implements Observer {
                 || (startDate.getValue() == null && endDate.getValue() != null)) {
             return;
         }
+
+        boolean isDatePicked = !(startDate.getValue() == null && endDate.getValue() == null);
+        if (isDatePicked){
+            boolean isStartAfterEndDate = startDate.getValue().isBefore(endDate.getValue());
+                if (isStartAfterEndDate){
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setHeaderText("Fejl");
+                    alert.setContentText("Ugyldig dato");
+                    alert.showAndWait();
+                }
+        }
+
         HashMap<ProductComponent, Integer> map = addProducts(selectedCategory, selectedArrangement);
+
 
         if (!map.isEmpty())
             lvwProducts.getItems().addAll(map.keySet() + ", " + map.values());

@@ -23,7 +23,7 @@ public class OrderLine implements Serializable {
         return cost;
     }
 
-    private void updateCost() {
+    public void updateCost() {
         for (Price price : product.getPrices()) {
            if (price.getArrangement() == arrangement) {
                cost = price.getPrice() * amount;
