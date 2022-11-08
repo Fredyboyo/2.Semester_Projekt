@@ -16,7 +16,6 @@ import javafx.stage.StageStyle;
 public class AddArrangementWindow extends Stage {
 
     private final TextField txfName = new TextField();
-    private Arrangement newArrangement;
 
     public AddArrangementWindow(){
         this.initStyle(StageStyle.UTILITY);
@@ -24,6 +23,7 @@ public class AddArrangementWindow extends Stage {
         this.setMinHeight(100);
         this.setMinWidth(200);
         this.setResizable(false);
+        this.setTitle("Ny salgssituation");
 
         GridPane pane = new GridPane();
         this.initContent(pane);
@@ -55,12 +55,8 @@ public class AddArrangementWindow extends Stage {
             alert.setContentText("Salgssituationen skal have en beskrivelse");
             alert.showAndWait();
         } else{
-            newArrangement = Controller.createArrangement(name);
+            Controller.createArrangement(name);
             this.close();
         }
-    }
-
-    public Arrangement getNewArrangement() {
-        return newArrangement;
     }
 }

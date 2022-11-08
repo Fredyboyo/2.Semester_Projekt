@@ -1,6 +1,7 @@
 package Gui.Administration.PaymentMethod;
 
 import Controller.Controller;
+import Gui.Observer;
 import Model.*;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -12,7 +13,8 @@ import javafx.scene.text.Text;
 import java.time.LocalDate;
 import java.util.Optional;
 
-public class PaymentMethodPane extends GridPane {
+public class PaymentMethodPane extends GridPane implements Observer {
+
     private final ListView<PaymentMethod> lvwPaymentMethods = new ListView<>();
     private final DatePicker datePickerStart = new DatePicker();
     private final DatePicker datePickerEnd = new DatePicker();
@@ -20,6 +22,8 @@ public class PaymentMethodPane extends GridPane {
     private final Text usedTicketCouponCount = new Text("0");
 
     public PaymentMethodPane() {
+        Controller.addObserver(this);
+
         this.setPadding(new Insets(25));
         this.setVgap(10);
         this.setHgap(10);
@@ -78,17 +82,13 @@ public class PaymentMethodPane extends GridPane {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             PaymentMethod paymentMethod = lvwPaymentMethods.getSelectionModel().getSelectedItem();
-            Controller.deletPaymentMethod(paymentMethod);
-            lvwPaymentMethods.getItems().clear();
-            lvwPaymentMethods.getItems().addAll(Controller.getPaymentMethods());
+            Controller.deletePaymentMethod(paymentMethod);
         }
     }
 
     private void addAction() {
         AddPaymentMethodWindow paymentMethodWindow = new AddPaymentMethodWindow();
         paymentMethodWindow.showAndWait();
-        lvwPaymentMethods.getItems().clear();
-        lvwPaymentMethods.getItems().addAll(Controller.getPaymentMethods());
     }
 
     private void dateChanged() {
@@ -102,13 +102,20 @@ public class PaymentMethodPane extends GridPane {
             return;
         }
 
-        int boughtCount = getBoughtCount(start, end);
+        updateCounts();
+    }
+
+    private void updateCounts() {
+        int boughtCount = getBoughtCount();
         boughtTicketCouponCount.setText(Integer.toString(boughtCount));
-        int usedCount = getUsedCount(start, end);
+        int usedCount = getUsedCount();
         usedTicketCouponCount.setText(Integer.toString(usedCount));
     }
 
-    private int getUsedCount(LocalDate start, LocalDate end) {
+    private int getUsedCount() {
+        LocalDate start = datePickerStart.getValue();
+        LocalDate end = datePickerEnd.getValue();
+
         PaymentMethod ticketCouponPaymentMethod = null;
         for (PaymentMethod paymentMethod : Controller.getPaymentMethods()) {
             if (paymentMethod.getName().equals("Klippekort")) {
@@ -128,7 +135,10 @@ public class PaymentMethodPane extends GridPane {
         return usedCount;
     }
 
-    private int getBoughtCount(LocalDate start, LocalDate end) {
+    private int getBoughtCount() {
+        LocalDate start = datePickerStart.getValue();
+        LocalDate end = datePickerEnd.getValue();
+
         Category ticketCouponCategory = null;
         for (Category category : Controller.getCategories()) {
             if (category.getName().equals("Klippekort")) {
@@ -148,5 +158,12 @@ public class PaymentMethodPane extends GridPane {
             }
         }
         return boughtCount;
+    }
+
+    @Override
+    public void update() {
+        updateCounts();
+        lvwPaymentMethods.getItems().clear();
+        lvwPaymentMethods.getItems().addAll(Controller.getPaymentMethods());
     }
 }

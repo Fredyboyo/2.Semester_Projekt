@@ -1,6 +1,7 @@
 package Gui.Administration.Product;
 
 import Controller.Controller;
+import Gui.Observer;
 import Model.Arrangement;
 import Model.Category;
 import Model.ProductComponent;
@@ -12,26 +13,27 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-public class AddProductWindow extends Stage {
+import java.util.ArrayList;
+
+public class AddGiftBasketWindow extends Stage implements Observer {
 
     private final TextField txfName = new TextField();
-    private final ComboBox<Category> cbCategories = new ComboBox<>();
-    private final Category createNewCategoryCategory = new Category("Tilføj ny kategori");
-    private Category newCategory;
     private final TextField txfPrice = new TextField();
     private final ComboBox<Arrangement> cbArrangements = new ComboBox<>();
-    private final Arrangement createNewArrangementArrangement = new Arrangement("Tilføj ny salgssituation");
-    private Arrangement newArrangement;
     private final Button btnAddPrice = new Button("Tilføj endnu en pris");
     private final TextField txfSecondPrice = new TextField();
     private final ComboBox<Arrangement> cbArrangementsSecondPrice = new ComboBox<>();
+    private final ComboBox<ProductComponent> cbProducts = new ComboBox<>();
 
-    public AddProductWindow() {
+    public AddGiftBasketWindow() {
+        Controller.addObserver(this);
+
         this.initStyle(StageStyle.UTILITY);
         this.initModality(Modality.APPLICATION_MODAL);
         this.setMinHeight(100);
         this.setMinWidth(200);
         this.setResizable(false);
+        this.setTitle("Ny sampakning");
 
         GridPane pane = new GridPane();
         this.initContent(pane);
@@ -49,25 +51,19 @@ public class AddProductWindow extends Stage {
         pane.add(lblName, 1, 1);
         pane.add(txfName, 2, 1);
 
-        Label lblCategory = new Label("Produkt kategori");
-        pane.add(lblCategory, 1, 2);
-        pane.add(cbCategories, 2, 2);
-        cbCategories.getItems().addAll(Controller.getCategories());
-        cbCategories.getItems().add(createNewCategoryCategory);
-        cbCategories.setPromptText("Vælg kategori");
-        cbCategories.setOnAction(event -> selectionChangedCategory());
-
         Label lblPrice = new Label("Pris");
-        pane.add(lblPrice, 1, 3);
-        pane.add(txfPrice, 2, 3);
-        pane.add(cbArrangements, 3, 3, 2, 1);
+        pane.add(lblPrice, 1, 2);
+        pane.add(txfPrice, 2, 2);
+        pane.add(cbArrangements, 3, 2, 2, 1);
         cbArrangements.getItems().addAll(Controller.getArrangements());
-        cbArrangements.getItems().add(createNewArrangementArrangement);
         cbArrangements.setPromptText("Salgssituation");
-        cbArrangements.setOnAction(event -> selectionChangedArrangement());
 
-        pane.add(btnAddPrice, 2, 4);
+        pane.add(btnAddPrice, 2, 3);
         btnAddPrice.setOnAction(event -> addPriceAction(pane));
+
+        Label lblProducts = new Label("Produkter");
+        pane.add(lblProducts, 1, 4);
+        pane.add(cbProducts, 2, 4);
 
         Button btnCancel = new Button("Annuller");
         pane.add(btnCancel, 3, 6);
@@ -78,31 +74,11 @@ public class AddProductWindow extends Stage {
         btnOK.setOnAction(event -> okAction());
     }
 
-    private void selectionChangedCategory() {
-        if(cbCategories.getSelectionModel().getSelectedItem() == createNewCategoryCategory){
-            AddCategoryWindow newCategoryWindow = new AddCategoryWindow();
-            newCategoryWindow.showAndWait();
-            newCategory = newCategoryWindow.getNewCategory();
-            cbCategories.getItems().add(cbCategories.getItems().indexOf(createNewCategoryCategory), newCategory);
-            cbCategories.getSelectionModel().select(newCategory);
-        }
-    }
-
-    private void selectionChangedArrangement() {
-        if(cbArrangements.getSelectionModel().getSelectedItem() == createNewArrangementArrangement){
-            AddArrangementWindow newArrangementWindow = new AddArrangementWindow();
-            newArrangementWindow.showAndWait();
-            newArrangement = newArrangementWindow.getNewArrangement();
-            cbArrangements.getItems().add(cbArrangements.getItems().indexOf(createNewArrangementArrangement), newArrangement);
-            cbArrangements.getSelectionModel().select(newArrangement);
-        }
-    }
-
     private void addPriceAction(GridPane pane) {
         Label lblPrice = new Label("Pris");
-        pane.add(lblPrice, 1, 4);
-        pane.add(txfSecondPrice, 2, 4);
-        pane.add(cbArrangementsSecondPrice, 3, 4, 2, 1);
+        pane.add(lblPrice, 1, 3);
+        pane.add(txfSecondPrice, 2, 3);
+        pane.add(cbArrangementsSecondPrice, 3, 3, 2, 1);
         cbArrangementsSecondPrice.getItems().addAll(Controller.getArrangements());
         cbArrangementsSecondPrice.setPromptText("Salgssituation");
         btnAddPrice.setVisible(false);
@@ -110,7 +86,6 @@ public class AddProductWindow extends Stage {
 
     private void okAction() {
         String productName = txfName.getText();
-        Category category = cbCategories.getSelectionModel().getSelectedItem();
         String priceFromTextField = txfPrice.getText();
         Arrangement arrangement = cbArrangements.getSelectionModel().getSelectedItem();
         String secondPriceFromTextField = txfSecondPrice.getText();
@@ -127,15 +102,22 @@ public class AddProductWindow extends Stage {
             return;
         }
 
-        if (productName.isEmpty() || category == null || priceFromTextField.isEmpty() || arrangement == null) {
+        if (productName.isEmpty() || priceFromTextField.isEmpty() || arrangement == null) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText("Fejl");
             alert.setContentText("Alle felterne skal udfyldes");
             alert.showAndWait();
         } else {
-            ProductComponent newProduct = Controller.createProduct(productName, category);
-            Controller.createPrice(newProduct, arrangement, price);
-            secondPriceAdded(secondPriceFromTextField, arrangementSecondPrice, newProduct);
+            Category category = null;
+            for(Category cat : Controller.getCategories()){
+                if(cat.getName().equals("Sampakning")){
+                    category = cat;
+                }
+            }
+            ArrayList<ProductComponent> products = new ArrayList<>();
+            ProductComponent newGiftBasket = Controller.createGiftBasket(productName, category, products);
+            Controller.createPrice(newGiftBasket, arrangement, price);
+            secondPriceAdded(secondPriceFromTextField, arrangementSecondPrice, newGiftBasket);
         }
 
         this.close();
@@ -164,11 +146,8 @@ public class AddProductWindow extends Stage {
         this.close();
     }
 
-    public Category getNewCategory() {
-        return newCategory;
-    }
+    @Override
+    public void update() {
 
-    public Arrangement getNewArrangement() {
-        return newArrangement;
     }
 }
