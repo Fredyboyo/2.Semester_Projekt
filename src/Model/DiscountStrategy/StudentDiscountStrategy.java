@@ -6,7 +6,10 @@ public class StudentDiscountStrategy implements Discount {
 
     @Override
     public double discount(double collectedCost) {
-        return collectedCost * 0.9;
+        if (collectedCost != 0)
+            return collectedCost * 0.9;
+        else
+            return 0;
     }
 
     @Override

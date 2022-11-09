@@ -54,6 +54,7 @@ public class OrderTest {
         Product product4 = new Product("Whisky", spiritus);
 
         Order order2 = new Order(fredagsbar);
+        Order order3 = new Order(fredagsbar);
 
         product2.createPrice(fredagsbar, 38,null);
         product3.createPrice(fredagsbar, 38,null);
@@ -61,22 +62,17 @@ public class OrderTest {
 
         order1.createOrderLine(product2, 10);
 
-        order2.createOrderLine(product1, 8);
-        order2.createOrderLine(product2, 10);
-        order2.createOrderLine(product3, 2);
-        order2.createOrderLine(product4, 1);
-
         Order noOrder = new Order(fredagsbar);
 
         order1.updateCollectedCost();
         order2.updateCollectedCost();
 
-        // Order for 1 product
+        // Order for 0 product
         assertEquals(noOrder.getUpdatedPrice(), 0);
+        // Order for 1 product
+        assertEquals(order1.getUpdatedPrice(), 38);
         // Order for 2 products
-        assertEquals(order1.getUpdatedPrice(), 684);
-        // Order for 4 products
-        assertEquals(order2.getUpdatedPrice(), 1359);
+        assertEquals(order2.getUpdatedPrice(), 684);
     }
 
     @Test

@@ -13,7 +13,10 @@ public class AmountDiscountStrategy implements Discount {
 
     @Override
     public double discount(double collectedCost) {
-        return collectedCost - amount;
+        if (collectedCost != 0 || collectedCost > amount)
+            return collectedCost - amount;
+        else
+            return 0;
     }
 
     @Override

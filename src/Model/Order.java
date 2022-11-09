@@ -49,6 +49,7 @@ public class Order implements Serializable {
         for (OrderLine orderLine : orderLines) {
             collectedCost += orderLine.getCost();
         }
+
         collectedCost = discountStrategy.discount(collectedCost);
     }
 

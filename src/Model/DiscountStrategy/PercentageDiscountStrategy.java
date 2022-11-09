@@ -16,7 +16,10 @@ public class PercentageDiscountStrategy implements Discount {
 
     @Override
     public double discount(double collectedCost) {
-        return collectedCost * (1 - (percentage / 100));
+        if (collectedCost != 0)
+            return collectedCost * (1 - (percentage / 100));
+        else
+            return 0;
     }
 
     @Override
