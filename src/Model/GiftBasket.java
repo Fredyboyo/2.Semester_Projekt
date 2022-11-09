@@ -1,21 +1,20 @@
 package Model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class GiftBasket implements ProductComponent {
+public class GiftBasket implements ProductComponent, Serializable {
     private String name;
     private Category category;
     private ArrayList<Price> prices = new ArrayList<>();
-    private final ArrayList<ProductComponent> products;
+    private final ArrayList<ProductComponent> products = new ArrayList<>();
 
     public GiftBasket(
             String name,
-            Category category,
-            ArrayList<ProductComponent> products) {
+            Category category) {
         this.name = name;
         this.category = category;
         category.getProducts().add(this);
-        this.products = products;
     }
 
     @Override
@@ -51,7 +50,16 @@ public class GiftBasket implements ProductComponent {
         return p;
     }
 
+    public void addProduct(ProductComponent product){
+        products.add(product);
+    }
+
     public ProductComponent getChild(int i) {
         return products.get(i);
+    }
+
+    @Override
+    public String toString() {
+        return name + " " + category + " " + prices;
     }
 }

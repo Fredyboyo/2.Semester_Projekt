@@ -27,7 +27,7 @@ public class AddOrUpdateProductWindow extends Stage implements Observer {
     private final Arrangement createNewArrangementArrangement = new Arrangement("Tilføj ny salgssituation");
     private final Button btnAddPrice = new Button("Tilføj endnu en pris");
     private final VBox vBox = new VBox();
-    private HashMap<TextField, ComboBox<Arrangement>> priceMap = new HashMap<>();
+    private HashMap<TextField[], ComboBox<Arrangement>> priceMap = new HashMap<>();
 
     public AddOrUpdateProductWindow(ProductComponent product) {
         this.product = product;
@@ -64,21 +64,21 @@ public class AddOrUpdateProductWindow extends Stage implements Observer {
 
         pane.add(vBox, 1, 3, 3, 1);
         vBox.setSpacing(10);
-        pane.add(btnAddPrice, 2, 4);
+        pane.add(btnAddPrice, 1, 4);
         btnAddPrice.setOnAction(event -> addPriceAction(null));
 
         Button btnCancel = new Button("Annuller");
-        pane.add(btnCancel, 3, 6);
+        pane.add(btnCancel, 4, 6);
         btnCancel.setOnAction(event -> cancelAction());
 
         Button btnOK = new Button("Bekræft");
-        pane.add(btnOK, 4, 6);
+        pane.add(btnOK, 5, 6);
         btnOK.setOnAction(event -> okAction());
 
-        if(product != null){
+        if (product != null) {
             txfName.setText(product.getName());
             cbCategories.getSelectionModel().select(product.getCategory());
-            for(Price price : product.getPrices()){
+            for (Price price : product.getPrices()) {
                 addPriceAction(price);
             }
         } else {
@@ -104,7 +104,7 @@ public class AddOrUpdateProductWindow extends Stage implements Observer {
         if (cbCategories.getSelectionModel().getSelectedItem() == createNewCategoryCategory) {
             AddCategoryWindow newCategoryWindow = new AddCategoryWindow();
             newCategoryWindow.showAndWait();
-            cbCategories.getSelectionModel().select(cbCategories.getItems().size()-2);
+            cbCategories.getSelectionModel().select(cbCategories.getItems().size() - 2);
         }
     }
 
@@ -117,14 +117,21 @@ public class AddOrUpdateProductWindow extends Stage implements Observer {
 
     private void addPriceAction(Price price) {
         TextField txfPrice = new TextField();
+        TextField txfClip = new TextField();
         ComboBox<Arrangement> cbArrangements = new ComboBox<>();
-        priceMap.put(txfPrice, cbArrangements);
+        TextField[] textArray = new TextField[2];
+        textArray[0] = txfPrice;
+        textArray[1] = txfClip;
+        priceMap.put(textArray, cbArrangements);
 
         HBox hBox = new HBox();
         hBox.setSpacing(10);
         Label lblPrice = new Label("Pris");
         hBox.getChildren().add(lblPrice);
         hBox.getChildren().add(txfPrice);
+        txfPrice.setPromptText("Kr");
+        hBox.getChildren().add(txfClip);
+        txfClip.setPromptText("Antal klip");
         hBox.getChildren().add(cbArrangements);
         cbArrangements.setPromptText("Salgssituation");
         cbArrangements.setOnAction(event -> selectionChangedArrangement((ComboBox<Arrangement>) event.getSource()));
@@ -133,9 +140,12 @@ public class AddOrUpdateProductWindow extends Stage implements Observer {
         this.sizeToScene();
 
         populateComboBoxes();
-        if(price != null){
+        if (price != null) {
             txfPrice.setText(Double.toString(price.getPrice()));
             cbArrangements.getSelectionModel().select(price.getArrangement());
+            if(price.getClips() != null){
+                txfClip.setText(Integer.toString(price.getClips()));
+            }
         }
     }
 
@@ -145,7 +155,8 @@ public class AddOrUpdateProductWindow extends Stage implements Observer {
 
         boolean isAllArrangementsSpecified = true;
         for (var entry : priceMap.entrySet()) {
-            String priceFromTextField = entry.getKey().getText();
+            String priceFromTextField = entry.getKey()[0].getText();
+            String clipsFromTextField = entry.getKey()[1].getText();
 
             try {
                 Double.parseDouble(priceFromTextField);
@@ -157,8 +168,18 @@ public class AddOrUpdateProductWindow extends Stage implements Observer {
                 return;
             }
 
+            try {
+                Integer.parseInt(clipsFromTextField);
+            } catch (NumberFormatException ex) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setHeaderText("Fejl");
+                alert.setContentText("Antal klip skal være et tal");
+                alert.showAndWait();
+                return;
+            }
+
             Arrangement selectedArrangement = entry.getValue().getSelectionModel().getSelectedItem();
-            if(selectedArrangement == null){
+            if (selectedArrangement == null) {
                 isAllArrangementsSpecified = false;
             }
         }
@@ -171,7 +192,7 @@ public class AddOrUpdateProductWindow extends Stage implements Observer {
             return;
         } else {
             ProductComponent productComponent;
-            if(product == null){
+            if (product == null) {
                 productComponent = Controller.createProduct(productName, category);
             } else {
                 productComponent = product;
@@ -179,10 +200,12 @@ public class AddOrUpdateProductWindow extends Stage implements Observer {
             }
 
             for (var entry : priceMap.entrySet()) {
-                String priceFromTextField = entry.getKey().getText();
+                String priceFromTextField = entry.getKey()[0].getText();
                 double price = Double.parseDouble(priceFromTextField);
+                String clipsFromTextField = entry.getKey()[1].getText();
+                Integer clips = Integer.parseInt(clipsFromTextField);
                 Arrangement selectedArrangement = entry.getValue().getSelectionModel().getSelectedItem();
-                Controller.createProductPrice(productComponent, selectedArrangement, price,null);
+                Controller.createProductPrice(productComponent, selectedArrangement, price, clips);
             }
         }
 

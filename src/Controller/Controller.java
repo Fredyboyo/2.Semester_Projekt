@@ -36,11 +36,15 @@ public abstract class Controller {
         return null;
     }
 
-    public static GiftBasket createGiftBasket(String name, Category category, ArrayList<ProductComponent> products) {
-        GiftBasket giftBasket = new GiftBasket(name, category, products);
+    public static GiftBasket createGiftBasket(String name, Category category) {
+        GiftBasket giftBasket = new GiftBasket(name, category);
         storage.storeProduct(giftBasket);
         notifyObservers();
         return giftBasket;
+    }
+
+    public static void addProductToGiftBasket(GiftBasket giftBasket, ProductComponent product){
+        giftBasket.addProduct(product);
     }
 
     public static void deleteProduct(ProductComponent product){
@@ -267,15 +271,15 @@ public abstract class Controller {
 
         Product glas_uanset_størelse = Controller.createProduct("Glas",glas);
 
-        Product gaveæske1 = Controller.createProduct("Gaveæske 2 øl, 2 glas",sampakninger);
-        Product gaveæske2 = Controller.createProduct("Gaveæske 4 øl",sampakninger);
-        Product gaveæske3 = Controller.createProduct("Trækasse 6 øl",sampakninger);
-        Product gaveæske4 = Controller.createProduct("Gavekurv 6 øl, 2 glas",sampakninger);
-        Product gaveæske5 = Controller.createProduct("Trækasse 6 øl, 6 glas",sampakninger);
-        Product gaveæske6 = Controller.createProduct("Trækasse 12 øl",sampakninger);
-        Product gaveæske7 = Controller.createProduct("Papkasse 12 øl",sampakninger);
+        GiftBasket gaveæske1 = Controller.createGiftBasket("Gaveæske 2 øl, 2 glas",sampakninger);
+        GiftBasket gaveæske2 = Controller.createGiftBasket("Gaveæske 4 øl",sampakninger);
+        GiftBasket gaveæske3 = Controller.createGiftBasket("Trækasse 6 øl",sampakninger);
+        GiftBasket gaveæske4 = Controller.createGiftBasket("Gavekurv 6 øl, 2 glas",sampakninger);
+        GiftBasket gaveæske5 = Controller.createGiftBasket("Trækasse 6 øl, 6 glas",sampakninger);
+        GiftBasket gaveæske6 = Controller.createGiftBasket("Trækasse 12 øl",sampakninger);
+        GiftBasket gaveæske7 = Controller.createGiftBasket("Papkasse 12 øl",sampakninger);
 
-        Product rundvisning_pr_person = Controller.createProduct("pr person dag",sampakninger);
+        Product rundvisning_pr_person = Controller.createProduct("pr person dag",rundvisning);
 
         // ------------------------------------ Prices ----------------------------------------
 
