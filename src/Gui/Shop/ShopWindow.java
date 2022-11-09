@@ -241,11 +241,11 @@ public class ShopWindow extends Stage implements Observer {
         hmCategoryProducts.put(category,new ArrayList<>());
         for (ProductComponent product : category.getProducts()) {
             Price price1 = Controller.getProductPrice(product,arrangement);
-            if (price1 == null) return;
+            if (price1 == null) continue;
             Integer clip = price1.getClips();
             ToggleButton bAddProducts;
             if (clip != null) {
-                bAddProducts = new ToggleButton(product.getName() + "\n" + price1.getPrice() + " Kr." + clip + " Clips");
+                bAddProducts = new ToggleButton(product.getName() + "\n" + price1.getPrice() + " Kr.  " + clip + " Clips");
             } else {
                 bAddProducts = new ToggleButton(product.getName() + "\n" + price1.getPrice() + " Kr.");
             }
@@ -276,7 +276,7 @@ public class ShopWindow extends Stage implements Observer {
 
             root.getChildren().remove(spOrderLines);
             root.add(lvOpenOrder,3,2,5,1);
-            root.add(bFinishRental,4,3);
+            root.add(bFinishRental,5,3);
         } else {
             bNewOrder.setDisable(false);
             bNewRental.setDisable(false);
