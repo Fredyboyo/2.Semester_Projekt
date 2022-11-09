@@ -81,7 +81,6 @@ public class AddTourOrderLine extends Stage {
                 alert.showAndWait();
                 return;
             }
-
             customer = Controller.createCustomer(name,email,number,address);
         } catch (NumberFormatException e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -91,6 +90,7 @@ public class AddTourOrderLine extends Stage {
             return;
         }
         tour = Controller.createTourOrderLine(order,product,amount,date,customer);
+        this.close();
     }
 
     public TourOrderLine getTourOrderLine() {

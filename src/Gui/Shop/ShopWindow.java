@@ -317,7 +317,10 @@ public class ShopWindow extends Stage implements Observer {
         } else {
             orderLine = Controller.createOrderLine(selectedOrder,product,1);
         }
-
+        if (orderLine == null) {
+            addButton.setSelected(false);
+            return;
+        }
         Label lName = new Label("  (" + orderLine.getAmount() + ") " + orderLine.getProduct().getName());
         lName.setPrefSize(200,30);
         lName.setOpacity(0);
