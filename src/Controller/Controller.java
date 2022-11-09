@@ -27,13 +27,13 @@ public abstract class Controller {
         return product;
     }
 
-    public static double getProductPrice(ProductComponent product, Arrangement arrangement) {
+    public static Price getProductPrice(ProductComponent product, Arrangement arrangement) {
         for (Price price : product.getPrices()) {
             if (price.getArrangement() == arrangement) {
-                return price.getPrice();
+                return price;
             }
         }
-        return 0;
+        return null;
     }
 
     public static GiftBasket createGiftBasket(String name, Category category, ArrayList<ProductComponent> products) {
@@ -65,8 +65,8 @@ public abstract class Controller {
         return category;
     }
 
-    public static RentalCategory createRentalCategory(String name, int mortgage) {
-        RentalCategory rentalCategory = new RentalCategory(name,mortgage);
+    public static DepositCategory createRentalCategory(String name, int mortgage) {
+        DepositCategory rentalCategory = new DepositCategory(name,mortgage);
         storage.storeCategory(rentalCategory);
         notifyObservers();
         return rentalCategory;

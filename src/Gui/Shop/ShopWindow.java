@@ -11,7 +11,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
-import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
@@ -200,19 +199,8 @@ public class ShopWindow extends Stage implements Observer {
         hmCategoryProducts.put(all,new ArrayList<>());
         for (Price price : arrangement.getPrices()) {
             Category category = price.getProduct().getCategory();
-            if (cbCategory.getItems().contains(category) || category.getClass() == RentalCategory.class) {
-                continue;
-            }
-            cbCategory.getItems().add(category);
-            hmCategoryProducts.put(category,new ArrayList<>());
-            for (ProductComponent product : category.getProducts()) {
-                if (product.getPrices().isEmpty()) continue;
-                ToggleButton bAddProducts = new ToggleButton(product.getName() + "\n" + Controller.getProductPrice(product, arrangement) + " Kr.");
-                bAddProducts.setTextAlignment(TextAlignment.CENTER);
-                bAddProducts.setPrefSize(175, 50);
-                bAddProducts.setOnAction(event -> createOrderLine((ToggleButton) event.getSource(),product));
-                hmCategoryProducts.get(all).add(bAddProducts);
-                hmCategoryProducts.get(category).add(bAddProducts);
+            if (!cbCategory.getItems().contains(category) && category.getClass() == Category.class) {
+                updateProductButtons(category,arrangement);
             }
         }
         choseCategory();
@@ -241,22 +229,32 @@ public class ShopWindow extends Stage implements Observer {
         hmCategoryProducts.put(all,new ArrayList<>());
         for (Price price : arrangement.getPrices()) {
             Category category = price.getProduct().getCategory();
-            if (cbCategory.getItems().contains(category) || category.getClass() == Category.class) {
-                continue;
-            }
-            cbCategory.getItems().add(category);
-            hmCategoryProducts.put(category,new ArrayList<>());
-            for (ProductComponent product : category.getProducts()) {
-                if (product.getPrices().isEmpty()) continue;
-                ToggleButton bAddProducts = new ToggleButton(product.getName() + "\n" + Controller.getProductPrice(product, arrangement) + " Kr.");
-                bAddProducts.setTextAlignment(TextAlignment.CENTER);
-                bAddProducts.setPrefSize(175, 50);
-                bAddProducts.setOnAction(event -> createOrderLine((ToggleButton) event.getSource(),product));
-                hmCategoryProducts.get(all).add(bAddProducts);
-                hmCategoryProducts.get(category).add(bAddProducts);
+            if (!cbCategory.getItems().contains(category) || category.getClass() == DepositCategory.class) {
+                updateProductButtons(category,arrangement);
             }
         }
         choseCategory();
+    }
+
+    private void updateProductButtons(Category category, Arrangement arrangement) {
+        cbCategory.getItems().add(category);
+        hmCategoryProducts.put(category,new ArrayList<>());
+        for (ProductComponent product : category.getProducts()) {
+            Price price1 = Controller.getProductPrice(product,arrangement);
+            if (price1 == null) return;
+            Integer clip = price1.getClips();
+            ToggleButton bAddProducts;
+            if (clip != null) {
+                bAddProducts = new ToggleButton(product.getName() + "\n" + price1.getPrice() + " Kr." + clip + " Clips");
+            } else {
+                bAddProducts = new ToggleButton(product.getName() + "\n" + price1.getPrice() + " Kr.");
+            }
+            bAddProducts.setTextAlignment(TextAlignment.CENTER);
+            bAddProducts.setPrefSize(175, 50);
+            bAddProducts.setOnAction(event -> createOrderLine((ToggleButton) event.getSource(),product));
+            hmCategoryProducts.get(all).add(bAddProducts);
+            hmCategoryProducts.get(category).add(bAddProducts);
+        }
     }
 
     private void viewRentalOrders() {
