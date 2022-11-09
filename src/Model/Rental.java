@@ -3,8 +3,8 @@ package Model;
 import java.time.LocalDate;
 
 public class Rental extends Order {
-    private final LocalDate startDate;
-    private final LocalDate endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private final Customer customer;
     private final double payedDeposit;
 
@@ -15,6 +15,14 @@ public class Rental extends Order {
         this.customer = customer;
         customer.rentals.add(this);
         this.payedDeposit = payedDeposit;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
     public LocalDate getStartDate() {

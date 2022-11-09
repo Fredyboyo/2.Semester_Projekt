@@ -11,8 +11,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.RowConstraints;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
@@ -75,7 +73,7 @@ public class ShopWindow extends Stage implements Observer {
         spProductComps.setPrefSize(375,500);
         spProductComps.setFocusTraversable(false);
 
-        spOrderLines.setPrefSize(640,300);
+        spOrderLines.setPrefSize(650,300);
         spOrderLines.setFocusTraversable(false);
 
         lvOpenOrder.setPrefSize(640,300);
@@ -100,6 +98,17 @@ public class ShopWindow extends Stage implements Observer {
         tfTotalPrice.setAlignment(Pos.CENTER);
         tfTotalPrice.setFocusTraversable(false);
 
+
+        Label lArrangement = new Label("Salgsiturationer:");
+        Label lCategory = new Label("Kategorier:");
+        Label lCreateOrder = new Label("Opret Ordrer:");
+        Label lCreateRental = new Label("Opret Udlejning:");
+
+        gridPane.add(lArrangement,1,0);
+        gridPane.add(lCategory,2,0);
+        gridPane.add(lCreateOrder,3,0);
+        gridPane.add(lCreateRental,4,0);
+
         gridPane.add(cbArrangement,1,1);
         gridPane.add(cbCategory,2,1);
         gridPane.add(bNewOrder,3,1);
@@ -116,9 +125,15 @@ public class ShopWindow extends Stage implements Observer {
         gridPane.add(bDone,6,3);
         gridPane.add(bCancel,7,3);
 
+        GridPane.setHalignment(lArrangement,HPos.CENTER);
+        GridPane.setHalignment(lCategory,HPos.CENTER);
+        GridPane.setHalignment(lCreateOrder,HPos.CENTER);
+        GridPane.setHalignment(lCreateRental,HPos.CENTER);
+
         GridPane.setHalignment(bAdministration, HPos.RIGHT);
         GridPane.setHalignment(tbShowRentals, HPos.RIGHT);
-        GridPane.setHalignment(cbCategory, HPos.RIGHT);
+        GridPane.setHalignment(cbArrangement, HPos.CENTER);
+        GridPane.setHalignment(cbCategory, HPos.CENTER);
         GridPane.setHalignment(lTotalPrice, HPos.RIGHT);
         GridPane.setHalignment(lKr, HPos.LEFT);
         GridPane.setHalignment(bDone, HPos.CENTER);
@@ -355,7 +370,6 @@ public class ShopWindow extends Stage implements Observer {
         for (Control control : controls) {
             fadeIn(control,5);
         }
-
         tfTotalPrice.setText(selectedOrder.getUpdatedPrice()+"");
 
         Platform.runLater(() -> addButton.setDisable(true));
@@ -499,7 +513,9 @@ public class ShopWindow extends Stage implements Observer {
         hmCategoryProducts.clear();
         gProductDisplay.getChildren().clear();
         bCancel.setDisable(true);
+        bDone.setDisable(true);
         bFinishRental.setDisable(true);
+        tfTotalPrice.clear();
     }
 
     private void finishOrder() {
@@ -508,20 +524,24 @@ public class ShopWindow extends Stage implements Observer {
         FinishOrder finishOrder = new FinishOrder(selectedOrder);
         finishOrder.showAndWait();
 
-        if(!finishOrder.isFinished()) return;
+        if(!finishOrder.isCompleted()) return;
 
         cbArrangement.setDisable(false);
+        tbShowRentals.setDisable(false);
+        controls.clear();
+        gProductDisplay.getChildren().clear();
+        gOrderLineDisplay.getChildren().clear();
+
         bNewOrder.setDisable(false);
         bNewOrder.setText("+ Ordre");
         bNewRental.setDisable(false);
         bNewRental.setText("+ Udlejning");
         bAdministration.setDisable(false);
-        tbShowRentals.setDisable(false);
-        controls.clear();
-        gOrderLineDisplay.getChildren().clear();
-        gOrderLineDisplay.getChildren().add(new Text());
+        cbCategory.setDisable(true);
         bCancel.setDisable(true);
+        bDone.setDisable(true);
         bFinishRental.setDisable(true);
+        tfTotalPrice.clear();
     }
 
     private void fadeIn(Control pane, int delay) {

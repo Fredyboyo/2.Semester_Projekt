@@ -265,19 +265,19 @@ public abstract class Controller {
         Product levering = Controller.createProduct("Levering",anlæg);
         Product krus = Controller.createProduct("Krus",anlæg);
 
-        Product glas_uanset_størelse = Controller.createProduct("glas",glas);
+        Product glas_uanset_størelse = Controller.createProduct("Glas",glas);
 
-        Product gaveæske1 = Controller.createProduct("gaveæske 2 øl, 2 glas",sampakninger);
-        Product gaveæske2 = Controller.createProduct("gaveæske 4 øl",sampakninger);
-        Product gaveæske3 = Controller.createProduct("trækasse 6 øl",sampakninger);
-        Product gaveæske4 = Controller.createProduct("gavekurv 6 øl, 2 glas",sampakninger);
-        Product gaveæske5 = Controller.createProduct("trækasse 6 øl, 6 glas",sampakninger);
-        Product gaveæske6 = Controller.createProduct("trækasse 12 øl",sampakninger);
-        Product gaveæske7 = Controller.createProduct("papkasse 12 øl",sampakninger);
+        Product gaveæske1 = Controller.createProduct("Gaveæske 2 øl, 2 glas",sampakninger);
+        Product gaveæske2 = Controller.createProduct("Gaveæske 4 øl",sampakninger);
+        Product gaveæske3 = Controller.createProduct("Trækasse 6 øl",sampakninger);
+        Product gaveæske4 = Controller.createProduct("Gavekurv 6 øl, 2 glas",sampakninger);
+        Product gaveæske5 = Controller.createProduct("Trækasse 6 øl, 6 glas",sampakninger);
+        Product gaveæske6 = Controller.createProduct("Trækasse 12 øl",sampakninger);
+        Product gaveæske7 = Controller.createProduct("Papkasse 12 øl",sampakninger);
 
         Product rundvisning_pr_person = Controller.createProduct("pr person dag",sampakninger);
 
-        // ------------------------------------  Priser ----------------------------------------
+        // ------------------------------------ Prices ----------------------------------------
 
         Controller.createProductPrice(klosterbrygFlaske,        fredagsbar,70,2);
         Controller.createProductPrice(sweet_georgia_brownFlaske,fredagsbar,70,2);
@@ -395,5 +395,12 @@ public abstract class Controller {
         Controller.createProductPrice(gaveæske7,butik,370,null);
 
         Controller.createProductPrice(rundvisning_pr_person,butik,100,null);
+
+        // ------------------------------------ Sale ----------------------------------------
+
+        Controller.createPaymentMethod("Kontant");
+        Controller.createPaymentMethod("Credit-kort");
+        Controller.createPaymentMethod("MobilePay");
+
     }
 }
