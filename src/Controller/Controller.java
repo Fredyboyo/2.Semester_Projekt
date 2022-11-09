@@ -134,7 +134,11 @@ public abstract class Controller {
         OrderLine orderLine = order.createOrderLine(product, amount);
         notifyObservers();
         return orderLine;
-
+    }
+    public static TourOrderLine createTourOrderLine(Order order, ProductComponent product, int amount, LocalDate localDate, Customer customer) {
+        TourOrderLine tourOrderLine = order.createTourOrderLine(product,amount,localDate,customer);
+        notifyObservers();
+        return tourOrderLine;
     }
 
     public static void removeOrderLine(Order order, OrderLine orderLine) {
@@ -175,6 +179,11 @@ public abstract class Controller {
         for (Observer observer : observers) {
             observer.update();
         }
+    }
+
+
+    public static Customer createCustomer(String name, String email, int number, String address) {
+        return new Customer(name,email,number,address);
     }
 
     public static void init() {
@@ -275,7 +284,7 @@ public abstract class Controller {
         Product gaveæske6 = Controller.createProduct("Trækasse 12 øl",sampakninger);
         Product gaveæske7 = Controller.createProduct("Papkasse 12 øl",sampakninger);
 
-        Product rundvisning_pr_person = Controller.createProduct("pr person dag",sampakninger);
+        Product rundvisning_pr_person = Controller.createProduct("Rundvisning",rundvisning);
 
         // ------------------------------------ Prices ----------------------------------------
 

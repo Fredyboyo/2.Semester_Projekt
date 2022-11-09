@@ -66,7 +66,7 @@ public class FinishOrder extends Stage {
         gridPane.add(lPaymentMethod,0,1);
         gridPane.add(cbPaymentMethod,1,1);
 
-        if (order.getClass() != Order.class) {
+        if (order.getClass() == Rental.class) {
             gridPane.add(lStartDate,0,2);
             gridPane.add(dpStartDate,1,2);
             gridPane.add(lEndDate,0,3);
@@ -79,40 +79,44 @@ public class FinishOrder extends Stage {
             gridPane.add(lPrice,0,2);
             gridPane.add(tfPrice,1,2);
             gridPane.add(bFinish,1,3);
-
         }
-
-
 
         this.setScene(new Scene(gridPane));
     }
 
     private void finish(Order order) {
         PaymentMethod paymentMethod = cbPaymentMethod.getValue();
-        LocalDate startDate = dpStartDate.getValue();
-        LocalDate endDate = dpEndDate.getValue();
-        if (paymentMethod == null || startDate == null || endDate == null) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setHeaderText("Fejl");
-            alert.setContentText("Alle felter skal udfyldes");
-            alert.showAndWait();
-            return;
-        }
-        if (startDate.isAfter(endDate)) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setHeaderText("Fejl");
-            alert.setContentText("start datoen er efter slutdatoen");
-            alert.showAndWait();
-            return;
-        }
-
-        order.setPaymentMethod(paymentMethod);
         if (order.getClass() == Rental.class) {
+            LocalDate startDate = dpStartDate.getValue();
+            LocalDate endDate = dpEndDate.getValue();
+            if (paymentMethod == null || startDate == null || endDate == null) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setHeaderText("Fejl");
+                alert.setContentText("Alle felter skal udfyldes");
+                alert.showAndWait();
+                return;
+            }
+            if (startDate.isAfter(endDate)) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setHeaderText("Fejl");
+                alert.setContentText("start datoen er efter slutdatoen");
+                alert.showAndWait();
+                return;
+            }
+            order.setPaymentMethod(paymentMethod);
             Rental rental = (Rental) order;
             rental.setStartDate(startDate);
             rental.setEndDate(endDate);
+        } else {
+            if (paymentMethod == null) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setHeaderText("Fejl");
+                alert.setContentText("Alle felter skal udfyldes");
+                alert.showAndWait();
+                return;
+            }
+            order.setPaymentMethod(paymentMethod);
         }
-
         completed = true;
         this.close();
     }
