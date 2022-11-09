@@ -16,7 +16,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public class AddOrUpdateProductWindow extends Stage implements Observer {
 
@@ -27,7 +27,7 @@ public class AddOrUpdateProductWindow extends Stage implements Observer {
     private final Arrangement createNewArrangementArrangement = new Arrangement("Tilføj ny salgssituation");
     private final Button btnAddPrice = new Button("Tilføj endnu en pris");
     private final VBox vBox = new VBox();
-    private HashMap<TextField[], ComboBox<Arrangement>> priceMap = new HashMap<>();
+    private final ArrayList<PriceLineComponents> priceLineComponents = new ArrayList<>();
 
     public AddOrUpdateProductWindow(ProductComponent product) {
         this.product = product;
@@ -62,7 +62,9 @@ public class AddOrUpdateProductWindow extends Stage implements Observer {
         cbCategories.setPromptText("Vælg kategori");
         cbCategories.setOnAction(event -> selectionChangedCategory());
 
-        pane.add(vBox, 1, 3, 3, 1);
+        TitledPane titledPane = new TitledPane("Priser", vBox);
+        pane.add(titledPane, 1, 3, 3, 1);
+        titledPane.setCollapsible(false);
         vBox.setSpacing(10);
         pane.add(btnAddPrice, 1, 4);
         btnAddPrice.setOnAction(event -> addPriceAction(null));
@@ -91,7 +93,8 @@ public class AddOrUpdateProductWindow extends Stage implements Observer {
         cbCategories.getItems().addAll(Controller.getCategories());
         cbCategories.getItems().add(createNewCategoryCategory);
 
-        for (ComboBox<Arrangement> cbArrangements : priceMap.values()) {
+        for (PriceLineComponents priceLineComponents : priceLineComponents) {
+            ComboBox<Arrangement> cbArrangements = priceLineComponents.getCbArrangements();
             int index = cbArrangements.getSelectionModel().getSelectedIndex();
             cbArrangements.getItems().clear();
             cbArrangements.getItems().addAll(Controller.getArrangements());
@@ -119,10 +122,7 @@ public class AddOrUpdateProductWindow extends Stage implements Observer {
         TextField txfPrice = new TextField();
         TextField txfClip = new TextField();
         ComboBox<Arrangement> cbArrangements = new ComboBox<>();
-        TextField[] textArray = new TextField[2];
-        textArray[0] = txfPrice;
-        textArray[1] = txfClip;
-        priceMap.put(textArray, cbArrangements);
+        priceLineComponents.add(new PriceLineComponents(txfPrice, txfClip, cbArrangements));
 
         HBox hBox = new HBox();
         hBox.setSpacing(10);
@@ -154,41 +154,34 @@ public class AddOrUpdateProductWindow extends Stage implements Observer {
         Category category = cbCategories.getSelectionModel().getSelectedItem();
 
         boolean isAllArrangementsSpecified = true;
-        for (var entry : priceMap.entrySet()) {
-            String priceFromTextField = entry.getKey()[0].getText();
-            String clipsFromTextField = entry.getKey()[1].getText();
+        for (PriceLineComponents priceLineComponents : priceLineComponents) {
+            String priceFromTextField = priceLineComponents.getTxfPrice().getText();
+            String clipsFromTextField = priceLineComponents.getTxfClips().getText();
 
             try {
                 Double.parseDouble(priceFromTextField);
             } catch (NumberFormatException ex) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setHeaderText("Fejl");
-                alert.setContentText("Prisen skal være et tal");
-                alert.showAndWait();
+                showAlert("Prisen skal være et tal");
                 return;
             }
 
-            try {
-                Integer.parseInt(clipsFromTextField);
-            } catch (NumberFormatException ex) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setHeaderText("Fejl");
-                alert.setContentText("Antal klip skal være et tal");
-                alert.showAndWait();
-                return;
+            if(!clipsFromTextField.isBlank()) {
+                try {
+                    Integer.parseInt(clipsFromTextField);
+                } catch (NumberFormatException ex) {
+                    showAlert("Antal klip skal være et tal");
+                    return;
+                }
             }
 
-            Arrangement selectedArrangement = entry.getValue().getSelectionModel().getSelectedItem();
+            Arrangement selectedArrangement = priceLineComponents.getCbArrangements().getSelectionModel().getSelectedItem();
             if (selectedArrangement == null) {
                 isAllArrangementsSpecified = false;
             }
         }
 
         if (productName.isEmpty() || category == null || !isAllArrangementsSpecified) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setHeaderText("Fejl");
-            alert.setContentText("Alle felterne skal udfyldes");
-            alert.showAndWait();
+            showAlert("Alle felterne skal udfyldes");
             return;
         } else {
             ProductComponent productComponent;
@@ -199,12 +192,12 @@ public class AddOrUpdateProductWindow extends Stage implements Observer {
                 Controller.updateProduct(product, productName, category);
             }
 
-            for (var entry : priceMap.entrySet()) {
-                String priceFromTextField = entry.getKey()[0].getText();
+            for (PriceLineComponents priceLineComponents : priceLineComponents) {
+                String priceFromTextField = priceLineComponents.getTxfPrice().getText();
                 double price = Double.parseDouble(priceFromTextField);
-                String clipsFromTextField = entry.getKey()[1].getText();
-                Integer clips = Integer.parseInt(clipsFromTextField);
-                Arrangement selectedArrangement = entry.getValue().getSelectionModel().getSelectedItem();
+                String clipsFromTextField = priceLineComponents.getTxfClips().getText();
+                Integer clips = clipsFromTextField.isBlank() ? null : Integer.parseInt(clipsFromTextField);
+                Arrangement selectedArrangement = priceLineComponents.getCbArrangements().getSelectionModel().getSelectedItem();
                 Controller.createProductPrice(productComponent, selectedArrangement, price, clips);
             }
         }
@@ -216,8 +209,42 @@ public class AddOrUpdateProductWindow extends Stage implements Observer {
         this.close();
     }
 
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setHeaderText("Fejl");
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
     @Override
     public void update() {
         populateComboBoxes();
+    }
+
+    private class PriceLineComponents {
+        private final TextField txfPrice;
+        private final TextField txfClips;
+        private final ComboBox<Arrangement> cbArrangements;
+
+        private PriceLineComponents(
+                TextField txfPrice,
+                TextField txfClips,
+                ComboBox<Arrangement> cbArrangements) {
+            this.txfPrice = txfPrice;
+            this.txfClips = txfClips;
+            this.cbArrangements = cbArrangements;
+        }
+
+        public TextField getTxfPrice() {
+            return txfPrice;
+        }
+
+        public TextField getTxfClips() {
+            return txfClips;
+        }
+
+        public ComboBox<Arrangement> getCbArrangements() {
+            return cbArrangements;
+        }
     }
 }

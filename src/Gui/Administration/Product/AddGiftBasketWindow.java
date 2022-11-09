@@ -55,22 +55,26 @@ public class AddGiftBasketWindow extends Stage implements Observer {
         pane.add(lblName, 1, 1);
         pane.add(txfName, 2, 1);
 
-        pane.add(vBoxPrices, 1, 2, 3, 1);
+        TitledPane titledPanePrices = new TitledPane("Priser", vBoxPrices);
+        pane.add(titledPanePrices, 1, 3, 3, 1);
+        titledPanePrices.setCollapsible(false);
         vBoxPrices.setSpacing(10);
-        pane.add(btnAddPrice, 1, 3);
+        pane.add(btnAddPrice, 1, 4);
         btnAddPrice.setOnAction(event -> addPriceAction());
 
-        pane.add(vBoxProducts, 1, 4, 3, 1);
+        TitledPane titledPaneProducts = new TitledPane("Produkter", vBoxProducts);
+        pane.add(titledPaneProducts, 1, 6, 3, 1);
+        titledPaneProducts.setCollapsible(false);
         vBoxProducts.setSpacing(10);
-        pane.add(btnAddProduct, 1, 5);
+        pane.add(btnAddProduct, 1, 7);
         btnAddProduct.setOnAction(event -> addProductAction());
 
         Button btnCancel = new Button("Annuller");
-        pane.add(btnCancel, 4, 7);
+        pane.add(btnCancel, 4, 9);
         btnCancel.setOnAction(event -> cancelAction());
 
         Button btnOK = new Button("Bekræft");
-        pane.add(btnOK, 5, 7);
+        pane.add(btnOK, 5, 9);
         btnOK.setOnAction(event -> okAction());
 
         addPriceAction();
