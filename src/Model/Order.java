@@ -3,6 +3,7 @@ package Model;
 import Model.DiscountStrategy.NoDiscountStrategy;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +33,13 @@ public class Order implements Serializable {
         return orderline;
     }
 
+    public TourOrderLine createTourOrderLine(ProductComponent product, int amount, LocalDate localDate, Customer customer) {
+        TourOrderLine tourOrderLine = new TourOrderLine(product, amount, arrangement, localDate, customer);
+        orderLines.add(tourOrderLine);
+        getUpdatedPrice();
+        return tourOrderLine;
+    }
+
     public boolean isFinished() {
         return isFinished;
     }
@@ -53,7 +61,7 @@ public class Order implements Serializable {
         collectedCost = discountStrategy.discount(collectedCost);
     }
 
-    public HashMap<ProductComponent, Integer>  countSoldProduct(Category category, Arrangement arrangement){
+    public HashMap<ProductComponent, Integer> countSoldProduct(Category category, Arrangement arrangement){
         HashMap<ProductComponent, Integer> map = new HashMap<>();
         for (OrderLine ol : orderLines){
             if (ol.getArrangement() == arrangement && ol.getProduct().getCategory() == category){

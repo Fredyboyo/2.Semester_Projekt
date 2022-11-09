@@ -103,26 +103,26 @@ public class ShopWindow extends Stage implements Observer {
         Label lCreateOrder = new Label("Opret Ordrer:");
         Label lCreateRental = new Label("Opret Udlejning:");
 
-        gridPane.add(lArrangement,1,0);
-        gridPane.add(lCategory,2,0);
-        gridPane.add(lCreateOrder,3,0);
-        gridPane.add(lCreateRental,4,0);
+        gridPane.add(lArrangement,0,0);
+        gridPane.add(lCategory,1,0);
+        gridPane.add(lCreateOrder,2,0);
+        gridPane.add(lCreateRental,3,0);
 
-        gridPane.add(cbArrangement,1,1);
-        gridPane.add(cbCategory,2,1);
-        gridPane.add(bNewOrder,3,1);
-        gridPane.add(bNewRental,4,1);
-        gridPane.add(tbShowRentals,5,1);
-        gridPane.add(bAdministration,7,1);
+        gridPane.add(cbArrangement,0,1);
+        gridPane.add(cbCategory,1,1);
+        gridPane.add(bNewOrder,2,1);
+        gridPane.add(bNewRental,3,1);
+        gridPane.add(tbShowRentals,4,1);
+        gridPane.add(bAdministration,6,1);
 
-        gridPane.add(spProductComps,1,2,2,1);
-        gridPane.add(spOrderLines,3,2,5,1);
+        gridPane.add(spProductComps,0,2,2,1);
+        gridPane.add(spOrderLines,2,2,5,1);
 
-        gridPane.add(lTotalPrice,2,3);
-        gridPane.add(tfTotalPrice,3,3);
-        gridPane.add(lKr,4,3);
-        gridPane.add(bDone,6,3);
-        gridPane.add(bCancel,7,3);
+        gridPane.add(lTotalPrice,1,3);
+        gridPane.add(tfTotalPrice,2,3);
+        gridPane.add(lKr,3,3);
+        gridPane.add(bDone,5,3);
+        gridPane.add(bCancel,6,3);
 
         GridPane.setHalignment(lArrangement,HPos.CENTER);
         GridPane.setHalignment(lCategory,HPos.CENTER);
@@ -229,7 +229,7 @@ public class ShopWindow extends Stage implements Observer {
         hmCategoryProducts.put(all,new ArrayList<>());
         for (Price price : arrangement.getPrices()) {
             Category category = price.getProduct().getCategory();
-            if (!cbCategory.getItems().contains(category) || category.getClass() == DepositCategory.class) {
+            if (!cbCategory.getItems().contains(category) && category.getClass() == DepositCategory.class) {
                 updateProductButtons(category,arrangement);
             }
         }
@@ -251,7 +251,7 @@ public class ShopWindow extends Stage implements Observer {
             }
             bAddProducts.setTextAlignment(TextAlignment.CENTER);
             bAddProducts.setPrefSize(175, 50);
-            bAddProducts.setOnAction(event -> createOrderLine((ToggleButton) event.getSource(),product));
+            bAddProducts.setOnAction(event -> addOrderLine(bAddProducts,product));
             hmCategoryProducts.get(all).add(bAddProducts);
             hmCategoryProducts.get(category).add(bAddProducts);
         }
@@ -307,11 +307,20 @@ public class ShopWindow extends Stage implements Observer {
 
     private final HashMap<OrderLine,ArrayList<Control>> controls = new HashMap<>();
 
-    private void createOrderLine(ToggleButton addButton, ProductComponent product) {
+    private void addOrderLine(ToggleButton addButton, ProductComponent product) {
         if (selectedOrder == null) return;
-
-        OrderLine orderLine = Controller.createOrderLine(selectedOrder,product,1);
-
+        OrderLine orderLine;
+        if (product.getCategory().getName().equals("Rundvisning")) {
+            AddTourOrderLine addTourOrderLine = new AddTourOrderLine(selectedOrder,product,1);
+            addTourOrderLine.showAndWait();
+            orderLine = addTourOrderLine.getTourOrderLine();
+        } else {
+            orderLine = Controller.createOrderLine(selectedOrder,product,1);
+        }
+        if (orderLine == null) {
+            addButton.setSelected(false);
+            return;
+        }
         Label lName = new Label("  (" + orderLine.getAmount() + ") " + orderLine.getProduct().getName());
         lName.setPrefSize(200,30);
         lName.setOpacity(0);
@@ -497,49 +506,32 @@ public class ShopWindow extends Stage implements Observer {
     private void cancelOrder() {
         Controller.getOrders().remove(selectedOrder);
         selectedOrder = null;
-        cbArrangement.setDisable(false);
-        bNewOrder.setDisable(false);
-        bNewOrder.setText("+ Ordre");
-        bNewRental.setDisable(false);
-        bNewRental.setText("+ Udlejning");
-        bAdministration.setDisable(false);
-        tbShowRentals.setDisable(false);
-        controls.clear();
-        gOrderLineDisplay.getChildren().clear();
-        cbCategory.getItems().clear();
-        cbCategory.setDisable(true);
-        hmCategoryProducts.clear();
-        gProductDisplay.getChildren().clear();
-        bCancel.setDisable(true);
-        bDone.setDisable(true);
-        bFinishRental.setDisable(true);
-        tfTotalPrice.clear();
+        exitOrder();
     }
 
     private void finishOrder() {
         if (selectedOrder == null || selectedOrder.getOrderLines().isEmpty()) return;
-
         FinishOrder finishOrder = new FinishOrder(selectedOrder);
         finishOrder.showAndWait();
+        if(finishOrder.isCompleted()) exitOrder();
+    }
 
-        if(!finishOrder.isCompleted()) return;
-
+    public void exitOrder() {
         cbArrangement.setDisable(false);
-        tbShowRentals.setDisable(false);
-        controls.clear();
-        gProductDisplay.getChildren().clear();
-        gOrderLineDisplay.getChildren().clear();
-
+        cbCategory.getItems().clear();
+        cbCategory.setDisable(true);
         bNewOrder.setDisable(false);
         bNewOrder.setText("+ Ordre");
         bNewRental.setDisable(false);
         bNewRental.setText("+ Udlejning");
         bAdministration.setDisable(false);
-        cbCategory.setDisable(true);
+        tbShowRentals.setDisable(false);
+        gOrderLineDisplay.getChildren().clear();
+        gProductDisplay.getChildren().clear();
         bCancel.setDisable(true);
         bDone.setDisable(true);
-        bFinishRental.setDisable(true);
         tfTotalPrice.clear();
+        controls.clear();
     }
 
     private void fadeIn(Control pane, int delay) {
