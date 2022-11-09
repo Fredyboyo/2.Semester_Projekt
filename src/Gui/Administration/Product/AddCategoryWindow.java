@@ -4,16 +4,18 @@ import Controller.Controller;
 import Model.Category;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class AddCategoryWindow extends Stage {
-    private final TextField tfName = new TextField();
-    private final TextField tfMortgage = new TextField();
-    private Category category;
+
+    private final TextField txfName = new TextField();
 
     public AddCategoryWindow(){
         this.initStyle(StageStyle.UTILITY);
@@ -30,59 +32,31 @@ public class AddCategoryWindow extends Stage {
         this.setScene(scene);
     }
 
-    private void initContent(GridPane gridPane) {
-        gridPane.setPadding(new Insets(25));
-        gridPane.setVgap(10);
-        gridPane.setHgap(10);
+    private void initContent(GridPane pane) {
+        pane.setPadding(new Insets(25));
+        pane.setVgap(10);
+        pane.setHgap(10);
 
-        Label lName = new Label("produktkategori: ");
-        RadioButton rbPant = new RadioButton("Pant: ");
-        Button bOk = new Button("Bekræft");
+        Label lblName = new Label("Produktkategori");
+        pane.add(lblName, 1, 1);
 
-        tfMortgage.setDisable(true);
+        pane.add(txfName, 2, 1);
 
-        gridPane.add(lName, 1, 1);
-        gridPane.add(tfName, 2, 1);
-        gridPane.add(rbPant, 1, 2);
-        gridPane.add(tfMortgage, 2, 2);
-        gridPane.add(bOk, 3, 2);
-
-        rbPant.setOnAction(event -> pantAction(rbPant));
-        bOk.setOnAction(event -> okAction());
+        Button btnOK = new Button("Bekræft");
+        pane.add(btnOK, 3, 1);
+        btnOK.setOnAction(event -> okAction());
     }
-
-    private void pantAction(RadioButton bPant) {
-        tfMortgage.setDisable(!bPant.isSelected());
-    }
-
 
     private void okAction() {
-        String name = tfName.getText();
-        if(name.isBlank()) {
+        String name = txfName.getText();
+        if(name.isEmpty()){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText("Fejl");
             alert.setContentText("Kategorien skal have en beskrivelse");
             alert.showAndWait();
+        } else{
+            Controller.createCategory(name);
+            this.close();
         }
-        if (tfMortgage.isDisabled()) {
-            category = Controller.createCategory(name);
-        } else {
-            int mortgage;
-            try {
-                mortgage = Integer.parseInt(tfMortgage.getText());
-            } catch (NumberFormatException ignore) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setHeaderText("Fejl");
-                alert.setContentText("Pant skal være et tal");
-                alert.showAndWait();
-                return;
-            }
-            category = Controller.createRentalCategory(name,mortgage);
-        }
-        this.close();
-    }
-
-    public Category getCategory() {
-        return category;
     }
 }
