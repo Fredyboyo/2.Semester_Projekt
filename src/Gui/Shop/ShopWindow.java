@@ -41,6 +41,7 @@ public class ShopWindow extends Stage implements Observer {
     private final GridPane gProductDisplay = new GridPane();
     private final GridPane gOrderLineDisplay = new GridPane();
     private final TextField tfTotalPrice = new TextField();
+    private final TextField tfTotalClips = new TextField();
     private final ScrollPane spOrderLines = new ScrollPane(gOrderLineDisplay);
     private final ScrollPane spProductComps = new ScrollPane(gProductDisplay);
     private final ListView<Order> lvOpenOrder = new ListView<>();
@@ -69,10 +70,10 @@ public class ShopWindow extends Stage implements Observer {
         gProductDisplay.setVgap(2);
         gProductDisplay.setPadding(new Insets(2));
 
-        spProductComps.setPrefSize(375,500);
+        spProductComps.setPrefSize(385,500);
         spProductComps.setFocusTraversable(false);
 
-        spOrderLines.setPrefSize(650,300);
+        spOrderLines.setPrefSize(725,300);
         spOrderLines.setFocusTraversable(false);
 
         lvOpenOrder.setPrefSize(640,300);
@@ -80,6 +81,9 @@ public class ShopWindow extends Stage implements Observer {
 
         Label lTotalPrice = new Label("Total Cost :");
         Label lKr = new Label("Kr.");
+
+        Label lTotalClips = new Label("Total Clips :");
+        Label lClips = new Label("Clips");
 
         bNewRental.     setPrefSize(125,25);
         bNewOrder.      setPrefSize(125,25);
@@ -96,6 +100,11 @@ public class ShopWindow extends Stage implements Observer {
         tfTotalPrice.setEditable(false);
         tfTotalPrice.setAlignment(Pos.CENTER);
         tfTotalPrice.setFocusTraversable(false);
+
+        tfTotalClips.setPrefSize(125,25);
+        tfTotalClips.setEditable(false);
+        tfTotalClips.setAlignment(Pos.CENTER);
+        tfTotalClips.setFocusTraversable(false);
 
 
         Label lArrangement = new Label("Salgsiturationer:");
@@ -121,8 +130,12 @@ public class ShopWindow extends Stage implements Observer {
         gridPane.add(lTotalPrice,1,3);
         gridPane.add(tfTotalPrice,2,3);
         gridPane.add(lKr,3,3);
-        gridPane.add(bDone,5,3);
-        gridPane.add(bCancel,6,3);
+
+        gridPane.add(lTotalClips,1,4);
+        gridPane.add(tfTotalClips,2,4);
+        gridPane.add(lClips,3,4);
+        gridPane.add(bDone,5,4);
+        gridPane.add(bCancel,6,4);
 
         GridPane.setHalignment(lArrangement,HPos.CENTER);
         GridPane.setHalignment(lCategory,HPos.CENTER);
@@ -133,8 +146,12 @@ public class ShopWindow extends Stage implements Observer {
         GridPane.setHalignment(tbShowRentals, HPos.RIGHT);
         GridPane.setHalignment(cbArrangement, HPos.CENTER);
         GridPane.setHalignment(cbCategory, HPos.CENTER);
+
         GridPane.setHalignment(lTotalPrice, HPos.RIGHT);
         GridPane.setHalignment(lKr, HPos.LEFT);
+
+        GridPane.setHalignment(lTotalClips, HPos.RIGHT);
+        GridPane.setHalignment(lClips, HPos.LEFT);
         GridPane.setHalignment(bDone, HPos.CENTER);
         GridPane.setHalignment(bCancel, HPos.CENTER);
 
@@ -334,6 +351,15 @@ public class ShopWindow extends Stage implements Observer {
         lKr.setPrefSize(25,30);
         lKr.setOpacity(0);
 
+        TextField tfClips = new TextField(orderLine.getClips() + "");
+        tfClips.setPrefSize(40,30);
+        tfClips.setAlignment(Pos.CENTER_RIGHT);
+        tfClips.setOpacity(0);
+
+        Label lClips = new Label(" Clips");
+        lClips.setPrefSize(40,30);
+        lClips.setOpacity(0);
+
         ComboBox<String> cbDiscounts = new ComboBox<>();
         cbDiscounts.getItems().addAll("Beløb rabat","Procentrabat","Køberrabat","Studierabat","Ingen rabat");
         cbDiscounts.setValue(cbDiscounts.getItems().get(4));
@@ -362,14 +388,14 @@ public class ShopWindow extends Stage implements Observer {
         bRemove.setPrefSize(30,30);
         bRemove.setOpacity(0);
 
-        ArrayList<Control> controls = new ArrayList<>(List.of(lName,tfPrice,lKr,cbDiscounts,tfDiscount,lDiscount,bAppend,bDeduct,bRemove));
+        ArrayList<Control> controls = new ArrayList<>(List.of(lName,tfPrice,lKr,tfClips,lClips,cbDiscounts,tfDiscount,lDiscount,bAppend,bDeduct,bRemove));
 
-        tfPrice.    setOnAction(event -> changePrice(tfPrice,orderLine));
-        cbDiscounts.setOnAction(event -> setDiscount(cbDiscounts,orderLine,tfDiscount,lDiscount));
-        tfDiscount.  setOnAction(event -> changeValue(tfDiscount,orderLine,tfPrice));
-        bAppend.    setOnAction(event -> appendProduct(lName,tfPrice,orderLine));
-        bDeduct.    setOnAction(event -> deductProduct(lName,tfPrice,orderLine));
-        bRemove.    setOnAction(event -> removeProduct(addButton,orderLine,controls));
+        tfPrice.    setOnAction(event -> changePrice(orderLine,tfPrice));
+        cbDiscounts.setOnAction(event -> setDiscount(orderLine,cbDiscounts,tfDiscount,lDiscount,tfPrice,tfClips));
+        tfDiscount. setOnAction(event -> changeValue(orderLine,tfDiscount,tfPrice,tfClips));
+        bAppend.    setOnAction(event -> appendProduct(orderLine,lName,tfPrice,tfClips));
+        bDeduct.    setOnAction(event -> deductProduct(orderLine,lName,tfPrice,tfClips));
+        bRemove.    setOnAction(event -> removeProduct(orderLine,addButton,controls));
 
         this.controls.put(orderLine,controls);
         updateList();
@@ -377,12 +403,15 @@ public class ShopWindow extends Stage implements Observer {
         for (Control control : controls) {
             fadeIn(control,5);
         }
-        tfTotalPrice.setText(selectedOrder.getUpdatedPrice()+"");
+        orderLine.updatePrice();
+        selectedOrder.updateCollectedPrices();
+        tfTotalPrice.setText(selectedOrder.getCollectedCost()+"");
+        tfTotalClips.setText(selectedOrder.getCollectedClips()+"");
 
         Platform.runLater(() -> addButton.setDisable(true));
     }
 
-    private void changePrice(TextField tfPrice, OrderLine orderLine) {
+    private void changePrice(OrderLine orderLine, TextField tfPrice) {
         try {
             orderLine.setCost(Double.parseDouble(tfPrice.getText()));
             tfTotalPrice.setText(selectedOrder.getUpdatedPrice()+"");
@@ -392,7 +421,7 @@ public class ShopWindow extends Stage implements Observer {
         root.requestFocus();
     }
 
-    private void setDiscount(ComboBox<String> cbDiscounts, OrderLine orderLine, TextField tfDiscount, Label lDiscount) {
+    private void setDiscount(OrderLine orderLine, ComboBox<String> cbDiscounts, TextField tfDiscount, Label lDiscount,TextField tfPrice, TextField tfClips) {
         int index = cbDiscounts.getSelectionModel().getSelectedIndex();
         if (index < 0) return;
         switch (index) {
@@ -449,11 +478,12 @@ public class ShopWindow extends Stage implements Observer {
                 orderLine.setDiscountStrategy(new NoDiscountStrategy());
             }
         }
+        updatePrice(orderLine,tfPrice,tfClips);
         updateList();
         root.requestFocus();
     }
 
-    private void changeValue(TextField tfPercent, OrderLine orderLine, TextField tfPrice) {
+    private void changeValue(OrderLine orderLine, TextField tfPercent, TextField tfPrice, TextField tfClips) {
         if (tfPercent.getText().isBlank()) {
             orderLine.getDiscountStrategy().setValue(0);
         }
@@ -461,33 +491,42 @@ public class ShopWindow extends Stage implements Observer {
             orderLine.getDiscountStrategy().setValue(Double.parseDouble(tfPercent.getText()));
         } catch (NumberFormatException ignore) {
         }
-        tfPrice.setText(orderLine.getUpdatedPrice()+"");
-        tfTotalPrice.setText(selectedOrder.getUpdatedPrice()+"");
+        updatePrice(orderLine,tfPrice,tfClips);
         root.requestFocus();
     }
 
-    private void appendProduct(Label lName, TextField tfPrice, OrderLine orderLine) {
+    private void appendProduct(OrderLine orderLine, Label lName, TextField tfPrice, TextField tfClips) {
         orderLine.append();
         lName.setText("  (" + orderLine.getAmount() + ") " + orderLine.getProduct().getName());
-        tfPrice.setText(orderLine.getCost()+"");
-        tfTotalPrice.setText(selectedOrder.getUpdatedPrice()+"");
+        updatePrice(orderLine,tfPrice,tfClips);
     }
 
-    private void deductProduct(Label lName, TextField tfPrice, OrderLine orderLine) {
+    private void deductProduct(OrderLine orderLine, Label lName, TextField tfPrice, TextField tfClips) {
         orderLine.deduct();
         lName.setText("  (" + orderLine.getAmount() + ") " + orderLine.getProduct().getName());
-        tfPrice.setText(orderLine.getCost()+"");
-        tfTotalPrice.setText(selectedOrder.getUpdatedPrice()+"");
+        updatePrice(orderLine,tfPrice,tfClips);
     }
 
-    private void removeProduct(ToggleButton addButton, OrderLine orderLine, ArrayList<Control> controls) {
+    private void removeProduct(OrderLine orderLine, ToggleButton addButton, ArrayList<Control> controls) {
         addButton.setDisable(false);
         addButton.setSelected(false);
         Controller.removeOrderLine(selectedOrder,orderLine);
         selectedOrder.getOrderLines().remove(orderLine);
         gOrderLineDisplay.getChildren().removeAll(controls);
+        updateTotalPrices();
         updateList();
-        tfTotalPrice.setText(selectedOrder.getUpdatedPrice()+"");
+    }
+
+    private void updatePrice(OrderLine orderLine, TextField tfPrice, TextField tfClips) {
+        orderLine.updatePrice();
+        tfPrice.setText(orderLine.getCost()+"");
+        tfClips.setText(orderLine.getClips()+"");
+        updateTotalPrices();
+    }
+    private void updateTotalPrices() {
+        selectedOrder.updateCollectedPrices();
+        tfTotalPrice.setText(selectedOrder.getCollectedCost() + "");
+        tfTotalClips.setText(selectedOrder.getCollectedClips() + "");
     }
 
     private void updateList() {

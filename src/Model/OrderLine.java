@@ -1,5 +1,6 @@
 package Model;
 
+import Model.DiscountStrategy.AmountDiscountStrategy;
 import Model.DiscountStrategy.NoDiscountStrategy;
 
 import java.io.Serializable;
@@ -9,27 +10,36 @@ public class OrderLine implements Serializable {
     private final Arrangement arrangement;
     private int amount;
     private double cost;
+    private int clips;
     private Discount discountStrategy = new NoDiscountStrategy();
 
     OrderLine(ProductComponent product, int amount, Arrangement arrangement) {
         this.product = product;
         this.amount = amount;
         this.arrangement = arrangement;
-        updateCost();
+        updatePrice();
     }
 
     public double getUpdatedPrice(){
-        updateCost();
+        updatePrice();
         return cost;
     }
 
-    public void updateCost() {
+    public void updatePrice() {
+        double cost = 0;
         for (Price price : product.getPrices()) {
-           if (price.getArrangement() == arrangement) {
-               cost = price.getPrice() * amount;
+           if (price.getArrangement() != arrangement) continue;
+           cost = price.getPrice() * amount;
+           if (price.getClips() != null) {
+               clips = price.getClips() * amount;
            }
         }
-        cost = discountStrategy.discount(cost);
+        this.cost = discountStrategy.discount(cost);
+        if (discountStrategy.getClass() == AmountDiscountStrategy.class) {
+            clips = (int) (clips * (this.cost / cost));
+        } else {
+            clips = (int) discountStrategy.discount(clips);
+        }
     }
 
     public Discount getDiscountStrategy() {
@@ -48,16 +58,20 @@ public class OrderLine implements Serializable {
         return cost;
     }
 
+    public int getClips() {
+        return clips;
+    }
+
     public void append() {
         amount++;
-        updateCost();
+        updatePrice();
     }
 
     public void deduct() {
         if (amount <= 1)
             return;
         amount--;
-        updateCost();
+        updatePrice();
     }
 
     public int getAmount() {

@@ -71,8 +71,8 @@ public class OrderTest {
         order2.createOrderLine(product2,10);
 
         // Update cost
-        order1.updateCollectedCost();
-        order2.updateCollectedCost();
+        order1.updateCollectedPrices();
+        order2.updateCollectedPrices();
 
         // Order for 0 product
         assertEquals(noOrder.getUpdatedPrice(), 0);

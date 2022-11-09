@@ -1,11 +1,8 @@
 package Model;
 
-import Model.DiscountStrategy.AmountDiscountStrategy;
 import Model.DiscountStrategy.PercentageDiscountStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -36,9 +33,9 @@ public class OrderLineTest {
         OrderLine orderLine3 = order1.createOrderLine(product1, 2);
 
         // Update
-        orderLine1.updateCost();
-        orderLine2.updateCost();
-        orderLine3.updateCost();
+        orderLine1.updatePrice();
+        orderLine2.updatePrice();
+        orderLine3.updatePrice();
 
         // OrderLine with 0 amount
         assertEquals(orderLine1.getUpdatedPrice(),0);
