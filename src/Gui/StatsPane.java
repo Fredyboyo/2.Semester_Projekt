@@ -18,8 +18,9 @@ public class StatsPane extends GridPane implements Observer {
     private final DatePicker startDate = new DatePicker();
     private final DatePicker endDate = new DatePicker();
 
-    public StatsPane() {
 
+    public StatsPane() {
+        Controller.addObserver(this);
         this.setPadding(new Insets(25));
         this.setVgap(10);
         this.setHgap(10);
@@ -111,8 +112,12 @@ public class StatsPane extends GridPane implements Observer {
 
         return orders;
     }
+
+
+
     @Override
     public void update() {
-
+        cbCategories.getItems().setAll(Controller.getCategories());
+        cbArrangements.getItems().setAll(Controller.getArrangements());
     }
 }

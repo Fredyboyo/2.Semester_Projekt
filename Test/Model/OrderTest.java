@@ -1,6 +1,7 @@
 package Model;
 
 import Model.DiscountStrategy.AmountDiscountStrategy;
+import Model.DiscountStrategy.PercentageDiscountStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -65,41 +66,44 @@ public class OrderTest {
         product3.createPrice(fredagsbar, 38,null);
         product4.createPrice(fredagsbar, 599,null);
 
-        // Orderlines
-        OrderLine orderLine2_1 = order2.createOrderLine(product1,8);
+        // OrderLines
+        order2.createOrderLine(product1,8);
+        order2.createOrderLine(product2,10);
 
         // Update cost
         order1.updateCollectedCost();
         order2.updateCollectedCost();
 
-
-
         // Order for 0 product
         assertEquals(noOrder.getUpdatedPrice(), 0);
         // Order for 1 product
-        assertEquals(order1.getUpdatedPrice(), 38);
+        assertEquals(order1.getUpdatedPrice(), 304);
         // Order for 2 products
         assertEquals(order2.getUpdatedPrice(), 684);
-
 
         // Amount discount
         Discount amountDiscount = new AmountDiscountStrategy(50);
         // Order for 0 product
+        noOrder.setDiscountStrategy(amountDiscount);
         assertEquals(noOrder.getUpdatedPrice(), 0);
         // Order for 1 product
         order1.setDiscountStrategy(amountDiscount);
-        assertEquals(order1.getUpdatedPrice(), 38);
+        assertEquals(order1.getUpdatedPrice(), 254);
         // Order for 2 products
         order2.setDiscountStrategy(amountDiscount);
-        assertEquals(order2.getUpdatedPrice(), 684);
+        assertEquals(order2.getUpdatedPrice(), 634);
 
-
+        // Percentage discount
+        Discount percentageDiscount = new PercentageDiscountStrategy(10);
         // Order for 0 product
+        noOrder.setDiscountStrategy(percentageDiscount);
         assertEquals(noOrder.getUpdatedPrice(), 0);
         // Order for 1 product
-        assertEquals(order1.getUpdatedPrice(), 38);
+        order1.setDiscountStrategy(percentageDiscount);
+        assertEquals(order1.getUpdatedPrice(), 273.6);
         // Order for 2 products
-        assertEquals(order2.getUpdatedPrice(), 684);
+        order2.setDiscountStrategy(percentageDiscount);
+        assertEquals(order2.getUpdatedPrice(), 615.6);
 
     }
 
@@ -113,25 +117,30 @@ public class OrderTest {
 
     @Test
     public void shouldCountOrders(){
+        // Category
         Category spiritus = new Category("Spiritus");
-        
+
+        // Products
         Product product2 = new Product("Celebration", fadøl);
         Product product3 = new Product("Jazz Classic", fadøl);
         Product product4 = new Product("Whisky", spiritus);
 
+        // Order
         Order order2 = new Order(fredagsbar);
 
+        // Prices
         product2.createPrice(fredagsbar, 38,null);
         product3.createPrice(fredagsbar, 38,null);
         product4.createPrice(fredagsbar, 599,null);
 
+        // OrderLines
         order1.createOrderLine(product2, 10);
-
         order2.createOrderLine(product1, 8);
         order2.createOrderLine(product2, 10);
         order2.createOrderLine(product3, 2);
         order2.createOrderLine(product4, 1);
 
+        // Hashmap
         HashMap<ProductComponent, Integer> map = order1.countSoldProduct(fadøl, fredagsbar);
 
         assertEquals(map.get(product2), 10);
