@@ -11,6 +11,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
@@ -65,11 +67,12 @@ public class ShopWindow extends Stage implements Observer {
 
         gOrderLineDisplay.setHgap(2);
         gOrderLineDisplay.setPadding(new Insets(2));
+
         gProductDisplay.setHgap(2);
         gProductDisplay.setVgap(2);
         gProductDisplay.setPadding(new Insets(2));
 
-        spProductComps.setPrefSize(360,500);
+        spProductComps.setPrefSize(375,500);
         spProductComps.setFocusTraversable(false);
 
         spOrderLines.setPrefSize(640,300);
@@ -156,15 +159,14 @@ public class ShopWindow extends Stage implements Observer {
             buttons.get(i).setFocusTraversable(false);
             buttons.get(i).setDisable(selectedOrder == null);
             gProductDisplay.add(buttons.get(i),(int)(i % 2.),i / 2);
-            fadeIn(buttons.get(i),i * 5);
+            fadeIn(buttons.get(i),i * 2);
         }
     }
 
     private void createNewOrder() {
         Arrangement arrangement = cbArrangement.getValue();
-        if (arrangement == null) {
-            return;
-        }
+        if (arrangement == null) return;
+
         selectedOrder = Controller.createOrder(arrangement);
         bNewOrder.setText("Ordre : " + arrangement);
         bNewOrder.setDisable(true);
@@ -183,12 +185,13 @@ public class ShopWindow extends Stage implements Observer {
         hmCategoryProducts.put(all,new ArrayList<>());
         for (Price price : arrangement.getPrices()) {
             Category category = price.getProduct().getCategory();
-            if (cbCategory.getItems().contains(category)) {
+            if (cbCategory.getItems().contains(category) || category.getClass() == RentalCategory.class) {
                 continue;
             }
             cbCategory.getItems().add(category);
             hmCategoryProducts.put(category,new ArrayList<>());
             for (ProductComponent product : category.getProducts()) {
+                if (product.getPrices().isEmpty()) continue;
                 ToggleButton bAddProducts = new ToggleButton(product.getName() + "\n" + Controller.getProductPrice(product, arrangement) + " Kr.");
                 bAddProducts.setTextAlignment(TextAlignment.CENTER);
                 bAddProducts.setPrefSize(175, 50);
@@ -204,7 +207,7 @@ public class ShopWindow extends Stage implements Observer {
         Arrangement arrangement = cbArrangement.getValue();
         if (arrangement == null) return;
 
-        selectedOrder = Controller.createRental(arrangement,null,null,null,0);
+        selectedOrder = Controller.createRental(arrangement,null,null,new Customer("foo","",12345678,""),0);
         bNewRental.setText("Udlejning : " + arrangement);
         bNewRental.setDisable(true);
         bNewOrder.setDisable(true);
@@ -215,23 +218,27 @@ public class ShopWindow extends Stage implements Observer {
         bDone.setDisable(false);
         bCancel.setDisable(false);
 
+        cbCategory.setDisable(false);
+        cbCategory.getItems().add(all);
+        cbCategory.setValue(all);
+
         hmCategoryProducts.clear();
-        ArrayList<Price> prices = arrangement.getPrices();
-
-        hmCategoryProducts.put(all, new ArrayList<>());
-        for (Price price : prices) {
-            ProductComponent product = price.getProduct();
-
-            ToggleButton bAddProducts = new ToggleButton(product.getName() + "\n" + price.getPrice() + " Kr.");
-            bAddProducts.setTextAlignment(TextAlignment.CENTER);
-            bAddProducts.setPrefSize(175, 50);
-            bAddProducts.setOnAction(event -> createOrderLine((ToggleButton) event.getSource(),product));
-
-            hmCategoryProducts.get(all).add(bAddProducts);
-            if (hmCategoryProducts.containsKey(product.getCategory())) {
-                hmCategoryProducts.get(product.getCategory()).add(bAddProducts);
-            } else {
-                hmCategoryProducts.put(product.getCategory(),new ArrayList<>(List.of(bAddProducts)));
+        hmCategoryProducts.put(all,new ArrayList<>());
+        for (Price price : arrangement.getPrices()) {
+            Category category = price.getProduct().getCategory();
+            if (cbCategory.getItems().contains(category) || category.getClass() == Category.class) {
+                continue;
+            }
+            cbCategory.getItems().add(category);
+            hmCategoryProducts.put(category,new ArrayList<>());
+            for (ProductComponent product : category.getProducts()) {
+                if (product.getPrices().isEmpty()) continue;
+                ToggleButton bAddProducts = new ToggleButton(product.getName() + "\n" + Controller.getProductPrice(product, arrangement) + " Kr.");
+                bAddProducts.setTextAlignment(TextAlignment.CENTER);
+                bAddProducts.setPrefSize(175, 50);
+                bAddProducts.setOnAction(event -> createOrderLine((ToggleButton) event.getSource(),product));
+                hmCategoryProducts.get(all).add(bAddProducts);
+                hmCategoryProducts.get(category).add(bAddProducts);
             }
         }
         choseCategory();
@@ -255,7 +262,7 @@ public class ShopWindow extends Stage implements Observer {
             }
 
             root.getChildren().remove(spOrderLines);
-            root.add(lvOpenOrder,3,2,4,1);
+            root.add(lvOpenOrder,3,2,5,1);
             root.add(bFinishRental,4,3);
         } else {
             bNewOrder.setDisable(false);
@@ -267,7 +274,7 @@ public class ShopWindow extends Stage implements Observer {
 
             root.getChildren().remove(bFinishRental);
             root.getChildren().remove(lvOpenOrder);
-            root.add(spOrderLines,3,2,4,1);
+            root.add(spOrderLines,3,2,5,1);
         }
     }
 
@@ -282,7 +289,6 @@ public class ShopWindow extends Stage implements Observer {
             }
         }
     }
-
 
     //----------------------- OrderLine --------------------------------------------------------------------------------
 
@@ -315,9 +321,12 @@ public class ShopWindow extends Stage implements Observer {
         TextField tfDiscount = new TextField();
         tfDiscount.setPrefSize(60,30);
         tfDiscount.setAlignment(Pos.CENTER_RIGHT);
+        tfDiscount.setDisable(true);
+        tfDiscount.setVisible(false);
 
         Label lDiscount = new Label();
         lDiscount.setPrefSize(25,30);
+        lDiscount.setVisible(false);
 
         Button bAppend = new Button("+");
         bAppend.setPrefSize(30,30);
@@ -331,7 +340,7 @@ public class ShopWindow extends Stage implements Observer {
         bRemove.setPrefSize(30,30);
         bRemove.setOpacity(0);
 
-        ArrayList<Control> controls = new ArrayList<>(List.of(lName,tfPrice,lKr,cbDiscounts,bAppend,bDeduct,bRemove));
+        ArrayList<Control> controls = new ArrayList<>(List.of(lName,tfPrice,lKr,cbDiscounts,tfDiscount,lDiscount,bAppend,bDeduct,bRemove));
 
         tfPrice.    setOnAction(event -> changePrice(tfPrice,orderLine));
         cbDiscounts.setOnAction(event -> setDiscount(cbDiscounts,orderLine,tfDiscount,lDiscount));
@@ -365,26 +374,59 @@ public class ShopWindow extends Stage implements Observer {
     private void setDiscount(ComboBox<String> cbDiscounts, OrderLine orderLine, TextField tfDiscount, Label lDiscount) {
         int index = cbDiscounts.getSelectionModel().getSelectedIndex();
         if (index < 0) return;
-        controls.get(orderLine).remove(tfDiscount);
-        controls.get(orderLine).remove(lDiscount);
         switch (index) {
             case 0 -> {
                 orderLine.setDiscountStrategy(new AmountDiscountStrategy(0));
+                tfDiscount.setOpacity(0);
+                lDiscount.setOpacity(0);
+                if (!tfDiscount.isVisible()) {
+                    fadeIn(tfDiscount,0);
+                    fadeIn(lDiscount,0);
+                } else {
+                    tfDiscount.setOpacity(1);
+                    lDiscount.setOpacity(1);
+                }
                 tfDiscount.clear();
-                controls.get(orderLine).add(4,tfDiscount);
+                tfDiscount.setDisable(false);
+                tfDiscount.setVisible(true);
                 lDiscount.setText(" Kr.");
-                controls.get(orderLine).add(5,lDiscount);
+                lDiscount.setVisible(true);
             }
             case 1 -> {
                 orderLine.setDiscountStrategy(new PercentageDiscountStrategy(0));
+                tfDiscount.setOpacity(0);
+                lDiscount.setOpacity(0);
+                if (!tfDiscount.isVisible()) {
+                    fadeIn(tfDiscount,0);
+                    fadeIn(lDiscount,0);
+                } else {
+                    tfDiscount.setOpacity(1);
+                    lDiscount.setOpacity(1);
+                }
                 tfDiscount.clear();
-                controls.get(orderLine).add(4,tfDiscount);
+                tfDiscount.setDisable(false);
+                tfDiscount.setVisible(true);
                 lDiscount.setText(" %");
-                controls.get(orderLine).add(5,lDiscount);
+                lDiscount.setVisible(true);
             }
-            case 2 -> orderLine.setDiscountStrategy(new StudentDiscountStrategy());
-            case 3 -> orderLine.setDiscountStrategy(new RegCustomerDiscountStrategy());
-            default -> orderLine.setDiscountStrategy(new NoDiscountStrategy());
+            case 2 -> {
+                tfDiscount.setDisable(true);
+                tfDiscount.setVisible(false);
+                lDiscount.setVisible(false);
+                orderLine.setDiscountStrategy(new StudentDiscountStrategy());
+            }
+            case 3 -> {
+                tfDiscount.setDisable(true);
+                tfDiscount.setVisible(false);
+                lDiscount.setVisible(false);
+                orderLine.setDiscountStrategy(new RegCustomerDiscountStrategy());
+            }
+            default -> {
+                tfDiscount.setDisable(true);
+                tfDiscount.setVisible(false);
+                lDiscount.setVisible(false);
+                orderLine.setDiscountStrategy(new NoDiscountStrategy());
+            }
         }
         updateList();
         root.requestFocus();

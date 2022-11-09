@@ -3,11 +3,13 @@ package Gui.Administration.Product;
 import Controller.Controller;
 import Gui.Observer;
 import Model.*;
+import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -117,27 +119,27 @@ public class AddOrUpdateProductWindow extends Stage implements Observer {
         if (cbCategories.getValue() == createNewCategoryCategory) {
             AddCategoryWindow newCategoryWindow = new AddCategoryWindow();
             newCategoryWindow.showAndWait();
-            String name = newCategoryWindow.getName();
-            if (name == null) {
-                cbCategories.setValue(null);
+            Category category = newCategoryWindow.getCategory();
+            if (category == null) {
+                cbCategories.setValue(cbCategories.getItems().get(0));
                 return;
             }
-            Category category = Controller.createCategory(name);
+            cbCategories.getItems().add(category);
             cbCategories.setValue(category);
-            System.out.println("Test");
         }
     }
 
     private void selectionChangedArrangement(ComboBox<Arrangement> cbArrangement) {
-        if (cbArrangement.getSelectionModel().getSelectedItem() == createNewArrangementArrangement) {
+        if (cbArrangement.getValue() == createNewArrangementArrangement) {
             AddArrangementWindow newArrangementWindow = new AddArrangementWindow();
             newArrangementWindow.showAndWait();
-            String name = newArrangementWindow.getName();
-            if (name == null) {
-                cbArrangement.setValue(null);
+            Arrangement arrangement = newArrangementWindow.getArrangment();
+            if (arrangement == null) {
+                cbArrangement.setValue(cbArrangement.getItems().get(0));
                 return;
             }
-            cbArrangement.setValue(Controller.createArrangement(name));
+            cbArrangement.getItems().add(arrangement);
+            cbArrangement.setValue(arrangement);
         }
     }
 

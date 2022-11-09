@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class Category implements Serializable {
     private final String name;
-    ArrayList<ProductComponent> products = new ArrayList<>();
+    private final ArrayList<ProductComponent> products = new ArrayList<>();
 
     public Category(String name) {
         this.name = name;

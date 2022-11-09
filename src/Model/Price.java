@@ -15,9 +15,6 @@ public class Price implements Serializable {
         this.clips = clips;
     }
 
-    public void setClips(Integer clips) {
-        this.clips = clips;
-    }
 
     public double getPrice() {
         return price;
@@ -30,6 +27,8 @@ public class Price implements Serializable {
     public void setPrice(double price) {
         this.price = price;
     }
+
+    public void setClips(Integer clips) {this.clips = clips;}
 
     public ProductComponent getProduct() {
         return product;

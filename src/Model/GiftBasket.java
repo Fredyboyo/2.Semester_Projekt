@@ -14,7 +14,7 @@ public class GiftBasket implements ProductComponent {
             ArrayList<ProductComponent> products) {
         this.name = name;
         this.category = category;
-        category.products.add(this);
+        category.getProducts().add(this);
         this.products = products;
     }
 

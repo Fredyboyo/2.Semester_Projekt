@@ -65,6 +65,13 @@ public abstract class Controller {
         return category;
     }
 
+    public static RentalCategory createRentalCategory(String name, int mortgage) {
+        RentalCategory rentalCategory = new RentalCategory(name,mortgage);
+        storage.storeCategory(rentalCategory);
+        notifyObservers();
+        return rentalCategory;
+    }
+
     public static ArrayList<Category> getCategories() {
         return storage.getCategories();
     }
@@ -178,8 +185,8 @@ public abstract class Controller {
         Category flaske = Controller.createCategory("Flaske");
         Category fadøl = Controller.createCategory("Fadøl");
         Category spiritus = Controller.createCategory("Spiritus");
-        Category fustage = Controller.createCategory("Fustage");
-        Category kulsyre = Controller.createCategory("Kulsyre");
+        Category fustage = Controller.createRentalCategory("Fustage",200);
+        Category kulsyre = Controller.createRentalCategory("Kulsyre",1000);
         Category malt = Controller.createCategory("Malt");
         Category beklædning = Controller.createCategory("Beklædning");
         Category anlæg =  Controller.createCategory("Anlæg");
@@ -224,12 +231,13 @@ public abstract class Controller {
 
         Product whisky = Controller.createProduct("Whisky 45% 50 cl rør",spiritus);
         Product whisky1 = Controller.createProduct("Whisky 4 cl.",spiritus);
-        Product whisky2 = Controller.createProduct("u/ egesplint",spiritus);
-        Product whisky3 = Controller.createProduct("m/ egesplint",spiritus);
-        Product whisky4 = Controller.createProduct("2*whisky glas + brikker",spiritus);
-        Product whisky5 = Controller.createProduct("Liquor of Aarhus",spiritus);
-        Product whisky6 = Controller.createProduct("Lyng gin 50 cl",spiritus);
-        Product whisky7 = Controller.createProduct("Lyng gin 4 cl",spiritus);
+        Product whisky2 = Controller.createProduct("Whisky 43% 50 cl rør",spiritus);
+        Product whisky3 = Controller.createProduct("u/ egesplint",spiritus);
+        Product whisky4 = Controller.createProduct("m/ egesplint",spiritus);
+        Product whisky5 = Controller.createProduct("2*whisky glas + brikker",spiritus);
+        Product whisky6 = Controller.createProduct("Liquor of Aarhus",spiritus);
+        Product whisky7 = Controller.createProduct("Lyng gin 50 cl",spiritus);
+        Product whisky8 = Controller.createProduct("Lyng gin 4 cl",spiritus);
 
         Product KlosterbrygFustage = Controller.createProduct("Klosterbryg, 20 liter",fustage);
         Product jazz_ClassicFustage = Controller.createProduct("Jazz Classic, 25 liter",fustage);
@@ -245,7 +253,7 @@ public abstract class Controller {
         Product kulsyre4kg = Controller.createProduct("4 kg",kulsyre);
         Product kulsyre10kg = Controller.createProduct("10 kg",kulsyre);
 
-        Product malt1 = Controller.createProduct("25 kg sæk",malt);
+        Product malt_25kg_sæk = Controller.createProduct("25 kg sæk",malt);
 
         Product t_shirt = Controller.createProduct("T-shirt",beklædning);
         Product polo = Controller.createProduct("Polo",beklædning);
@@ -257,7 +265,7 @@ public abstract class Controller {
         Product levering = Controller.createProduct("Levering",anlæg);
         Product krus = Controller.createProduct("Krus",anlæg);
 
-        Product glas1 = Controller.createProduct("glas",glas);
+        Product glas_uanset_størelse = Controller.createProduct("glas",glas);
 
         Product gaveæske1 = Controller.createProduct("gaveæske 2 øl, 2 glas",sampakninger);
         Product gaveæske2 = Controller.createProduct("gaveæske 4 øl",sampakninger);
@@ -267,62 +275,125 @@ public abstract class Controller {
         Product gaveæske6 = Controller.createProduct("trækasse 12 øl",sampakninger);
         Product gaveæske7 = Controller.createProduct("papkasse 12 øl",sampakninger);
 
-        Product rundvisning1 = Controller.createProduct("pr person dag",sampakninger);
+        Product rundvisning_pr_person = Controller.createProduct("pr person dag",sampakninger);
 
         // ------------------------------------  Priser ----------------------------------------
 
-        Controller.createProductPrice(klosterbrygFlaske,fredagsbar,70,2);
+        Controller.createProductPrice(klosterbrygFlaske,        fredagsbar,70,2);
         Controller.createProductPrice(sweet_georgia_brownFlaske,fredagsbar,70,2);
-        Controller.createProductPrice(extra_pilsnerFlaske,fredagsbar,70,2);
-        Controller.createProductPrice(celebrationFlaske,fredagsbar,70,2);
-        Controller.createProductPrice(blondieFlaske,fredagsbar,70,2);
-        Controller.createProductPrice(forårsbrygFlaske,fredagsbar,70,2);
-        Controller.createProductPrice(india_pale_aleFlaske,fredagsbar,70,2);
-        Controller.createProductPrice(julebrygFlaske,fredagsbar,70,2);
-        Controller.createProductPrice(juletøndenFlaske,fredagsbar,70,2);
-        Controller.createProductPrice(old_strong_aleFlaske,fredagsbar,70,2);
-        Controller.createProductPrice(fregatten_jyllandFlaske,fredagsbar,70,2);
-        Controller.createProductPrice(imperial_stoutFlaske,fredagsbar,70,2);
-        Controller.createProductPrice(tributeFlaske,fredagsbar,70,2);
-        Controller.createProductPrice(black_monsterFlaske,fredagsbar,100,3);
+        Controller.createProductPrice(extra_pilsnerFlaske,      fredagsbar,70,2);
+        Controller.createProductPrice(celebrationFlaske,        fredagsbar,70,2);
+        Controller.createProductPrice(blondieFlaske,            fredagsbar,70,2);
+        Controller.createProductPrice(forårsbrygFlaske,         fredagsbar,70,2);
+        Controller.createProductPrice(india_pale_aleFlaske,     fredagsbar,70,2);
+        Controller.createProductPrice(julebrygFlaske,           fredagsbar,70,2);
+        Controller.createProductPrice(juletøndenFlaske,         fredagsbar,70,2);
+        Controller.createProductPrice(old_strong_aleFlaske,     fredagsbar,70,2);
+        Controller.createProductPrice(fregatten_jyllandFlaske,  fredagsbar,70,2);
+        Controller.createProductPrice(imperial_stoutFlaske,     fredagsbar,70,2);
+        Controller.createProductPrice(tributeFlaske,            fredagsbar,70,2);
+        Controller.createProductPrice(black_monsterFlaske,      fredagsbar,100,3);
 
-        Controller.createProductPrice(klosterbrygFlaske,butik,36,null);
+        Controller.createProductPrice(klosterbrygFlaske,        butik,36,null);
         Controller.createProductPrice(sweet_georgia_brownFlaske,butik,36,null);
-        Controller.createProductPrice(extra_pilsnerFlaske,butik,36,null);
-        Controller.createProductPrice(celebrationFlaske,butik,36,null);
-        Controller.createProductPrice(blondieFlaske,butik,36,null);
-        Controller.createProductPrice(forårsbrygFlaske,butik,36,null);
-        Controller.createProductPrice(india_pale_aleFlaske,butik,36,null);
-        Controller.createProductPrice(julebrygFlaske,butik,36,null);
-        Controller.createProductPrice(juletøndenFlaske,butik,36,null);
-        Controller.createProductPrice(old_strong_aleFlaske,butik,36,null);
-        Controller.createProductPrice(fregatten_jyllandFlaske,butik,36,null);
-        Controller.createProductPrice(imperial_stoutFlaske,butik,36,null);
-        Controller.createProductPrice(tributeFlaske,butik,36,null);
-        Controller.createProductPrice(black_monsterFlaske,butik,60,null);
+        Controller.createProductPrice(extra_pilsnerFlaske,      butik,36,null);
+        Controller.createProductPrice(celebrationFlaske,        butik,36,null);
+        Controller.createProductPrice(blondieFlaske,            butik,36,null);
+        Controller.createProductPrice(forårsbrygFlaske,         butik,36,null);
+        Controller.createProductPrice(india_pale_aleFlaske,     butik,36,null);
+        Controller.createProductPrice(julebrygFlaske,           butik,36,null);
+        Controller.createProductPrice(juletøndenFlaske,         butik,36,null);
+        Controller.createProductPrice(old_strong_aleFlaske,     butik,36,null);
+        Controller.createProductPrice(fregatten_jyllandFlaske,  butik,36,null);
+        Controller.createProductPrice(imperial_stoutFlaske,     butik,36,null);
+        Controller.createProductPrice(tributeFlaske,            butik,36,null);
+        Controller.createProductPrice(black_monsterFlaske,      butik,60,null);
 
-        Controller.createProductPrice(klosterbrygFadøl,fredagsbar,38,1);
-        Controller.createProductPrice(jazz_classicFadøl,fredagsbar,38,1);
-        Controller.createProductPrice(extra_pilsnerFadøl,fredagsbar,38,1);
-        Controller.createProductPrice(celebrationFadøl,fredagsbar,38,1);
-        Controller.createProductPrice(blondieFadøl,fredagsbar,38,1);
-        Controller.createProductPrice(forårsbrygFadøl,fredagsbar,38,1);
+        Controller.createProductPrice(klosterbrygFadøl,   fredagsbar,38,1);
+        Controller.createProductPrice(jazz_classicFadøl,  fredagsbar,38,1);
+        Controller.createProductPrice(extra_pilsnerFadøl, fredagsbar,38,1);
+        Controller.createProductPrice(celebrationFadøl,   fredagsbar,38,1);
+        Controller.createProductPrice(blondieFadøl,       fredagsbar,38,1);
+        Controller.createProductPrice(forårsbrygFadøl,    fredagsbar,38,1);
         Controller.createProductPrice(india_pale_aleFadøl,fredagsbar,38,1);
-        Controller.createProductPrice(julebrygFadøl,fredagsbar,38,1);
+        Controller.createProductPrice(julebrygFadøl,      fredagsbar,38,1);
         Controller.createProductPrice(imperial_stoutFadøl,fredagsbar,38,1);
-        Controller.createProductPrice(specialFadøl,fredagsbar,38,1);
-        Controller.createProductPrice(æblebrusFadøl,fredagsbar,15,null);
-        Controller.createProductPrice(chipsFadøl,fredagsbar,10,null);
-        Controller.createProductPrice(peanutsFadøl,fredagsbar,15,null);
-        Controller.createProductPrice(colaFadøl,fredagsbar,15,null);
-        Controller.createProductPrice(nikolineFadøl,fredagsbar,15,null);
-        Controller.createProductPrice(Seven_upFadøl,fredagsbar,15,null);
-        Controller.createProductPrice(vandFadøl,fredagsbar,10,null);
-        Controller.createProductPrice(ølpølserFadøl,fredagsbar,30,1);
+        Controller.createProductPrice(specialFadøl,       fredagsbar,38,1);
+        Controller.createProductPrice(æblebrusFadøl,      fredagsbar,15,null);
+        Controller.createProductPrice(chipsFadøl,         fredagsbar,10,null);
+        Controller.createProductPrice(peanutsFadøl,       fredagsbar,15,null);
+        Controller.createProductPrice(colaFadøl,          fredagsbar,15,null);
+        Controller.createProductPrice(nikolineFadøl,      fredagsbar,15,null);
+        Controller.createProductPrice(Seven_upFadøl,      fredagsbar,15,null);
+        Controller.createProductPrice(vandFadøl,          fredagsbar,10,null);
+        Controller.createProductPrice(ølpølserFadøl,      fredagsbar,30,1);
 
+        Controller.createProductPrice(whisky, fredagsbar,599,null);
+        Controller.createProductPrice(whisky1,fredagsbar,50,null);
+        Controller.createProductPrice(whisky2,fredagsbar,499,null);
+        Controller.createProductPrice(whisky3,fredagsbar,300,null);
+        Controller.createProductPrice(whisky4,fredagsbar,350,null);
+        Controller.createProductPrice(whisky5,fredagsbar,80,null);
+        Controller.createProductPrice(whisky6,fredagsbar,175,null);
+        Controller.createProductPrice(whisky7,fredagsbar,350,null);
+        Controller.createProductPrice(whisky8,fredagsbar,40,null);
 
-        // To be continued...
+        Controller.createProductPrice(whisky, butik,599,null);
+        Controller.createProductPrice(whisky2,butik,499,null);
+        Controller.createProductPrice(whisky3,butik,300,null);
+        Controller.createProductPrice(whisky4,butik,350,null);
+        Controller.createProductPrice(whisky5,butik,80,null);
+        Controller.createProductPrice(whisky6,butik,175,null);
+        Controller.createProductPrice(whisky7,butik,350,null);
 
+        Controller.createProductPrice(KlosterbrygFustage,   butik,775,null);
+        Controller.createProductPrice(jazz_ClassicFustage,  butik,625,null);
+        Controller.createProductPrice(Extra_PilsnerFustage, butik,575,null);
+        Controller.createProductPrice(celebrationFustage,   butik,775,null);
+        Controller.createProductPrice(blondieFustage,       butik,700,null);
+        Controller.createProductPrice(forårsbrygFustage,    butik,775,null);
+        Controller.createProductPrice(india_pale_aleFustage,butik,775,null);
+        Controller.createProductPrice(julebrygFustage,      butik,775,null);
+        Controller.createProductPrice(imperial_StoutFustage,butik,775,null);
 
+        Controller.createProductPrice(kulsyre6kg,fredagsbar,400,null);
+
+        Controller.createProductPrice(kulsyre6kg,butik,400,null);
+
+        Controller.createProductPrice(malt_25kg_sæk,butik,300,null);
+
+        Controller.createProductPrice(t_shirt,fredagsbar,70,null);
+        Controller.createProductPrice(polo,   fredagsbar,100,null);
+        Controller.createProductPrice(cap,    fredagsbar,30,null);
+
+        Controller.createProductPrice(t_shirt,butik,70,null);
+        Controller.createProductPrice(polo,   butik,100,null);
+        Controller.createProductPrice(cap,    butik,30,null);
+
+        Controller.createProductPrice(en_hane,            butik,250,null);
+        Controller.createProductPrice(to_haner,           butik,400,null);
+        Controller.createProductPrice(bar_med_flere_haner,butik,500,null);
+        Controller.createProductPrice(levering,           butik,500,null);
+        Controller.createProductPrice(krus,               butik,60,null);
+
+        Controller.createProductPrice(glas_uanset_størelse,butik,15,null);
+
+        Controller.createProductPrice(gaveæske1,fredagsbar,110,null);
+        Controller.createProductPrice(gaveæske2,fredagsbar,140,null);
+        Controller.createProductPrice(gaveæske3,fredagsbar,260,null);
+        Controller.createProductPrice(gaveæske4,fredagsbar,260,null);
+        Controller.createProductPrice(gaveæske5,fredagsbar,350,null);
+        Controller.createProductPrice(gaveæske6,fredagsbar,410,null);
+        Controller.createProductPrice(gaveæske7,fredagsbar,370,null);
+
+        Controller.createProductPrice(gaveæske1,butik,110,null);
+        Controller.createProductPrice(gaveæske2,butik,140,null);
+        Controller.createProductPrice(gaveæske3,butik,260,null);
+        Controller.createProductPrice(gaveæske4,butik,260,null);
+        Controller.createProductPrice(gaveæske5,butik,350,null);
+        Controller.createProductPrice(gaveæske6,butik,410,null);
+        Controller.createProductPrice(gaveæske7,butik,370,null);
+
+        Controller.createProductPrice(rundvisning_pr_person,butik,100,null);
     }
 }

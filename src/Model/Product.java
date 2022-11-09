@@ -13,7 +13,7 @@ public class Product implements ProductComponent, Serializable {
             String name,
             Category category) {
         this.category = category;
-        category.products.add(this);
+        category.getProducts().add(this);
         this.name = name;
     }
 

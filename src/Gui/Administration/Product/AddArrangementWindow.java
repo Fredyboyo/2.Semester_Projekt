@@ -15,7 +15,7 @@ import javafx.stage.StageStyle;
 
 public class AddArrangementWindow extends Stage {
     private final TextField txfName = new TextField();
-    private String name;
+    private Arrangement arrangement;
 
     public AddArrangementWindow(){
         this.initStyle(StageStyle.UTILITY);
@@ -48,18 +48,19 @@ public class AddArrangementWindow extends Stage {
     }
 
     private void okAction() {
-        name = txfName.getText();
+        String name = txfName.getText();
         if(name.isBlank()) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText("Fejl");
             alert.setContentText("Salgssituationen skal have en beskrivelse");
             alert.showAndWait();
         } else {
+            arrangement = Controller.createArrangement(name);
             this.close();
         }
     }
 
-    public String getName() {
-        return name;
+    public Arrangement getArrangment() {
+        return arrangement;
     }
 }
