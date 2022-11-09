@@ -1,5 +1,6 @@
 package Model;
 
+import Model.DiscountStrategy.AmountDiscountStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -47,25 +48,31 @@ public class OrderTest {
 
     @Test
     public void shouldCalculateCost(){
+        // Category
         Category spiritus = new Category("Spiritus");
 
+        // Products
         Product product2 = new Product("Celebration", fadøl);
         Product product3 = new Product("Jazz Classic", fadøl);
         Product product4 = new Product("Whisky", spiritus);
 
+        // Orders
+        Order noOrder = new Order(fredagsbar);
         Order order2 = new Order(fredagsbar);
-        Order order3 = new Order(fredagsbar);
 
+        // Prices
         product2.createPrice(fredagsbar, 38,null);
         product3.createPrice(fredagsbar, 38,null);
         product4.createPrice(fredagsbar, 599,null);
 
-        order1.createOrderLine(product2, 10);
+        // Orderlines
+        OrderLine orderLine2_1 = order2.createOrderLine(product1,8);
 
-        Order noOrder = new Order(fredagsbar);
-
+        // Update cost
         order1.updateCollectedCost();
         order2.updateCollectedCost();
+
+
 
         // Order for 0 product
         assertEquals(noOrder.getUpdatedPrice(), 0);
@@ -73,6 +80,27 @@ public class OrderTest {
         assertEquals(order1.getUpdatedPrice(), 38);
         // Order for 2 products
         assertEquals(order2.getUpdatedPrice(), 684);
+
+
+        // Amount discount
+        Discount amountDiscount = new AmountDiscountStrategy(50);
+        // Order for 0 product
+        assertEquals(noOrder.getUpdatedPrice(), 0);
+        // Order for 1 product
+        order1.setDiscountStrategy(amountDiscount);
+        assertEquals(order1.getUpdatedPrice(), 38);
+        // Order for 2 products
+        order2.setDiscountStrategy(amountDiscount);
+        assertEquals(order2.getUpdatedPrice(), 684);
+
+
+        // Order for 0 product
+        assertEquals(noOrder.getUpdatedPrice(), 0);
+        // Order for 1 product
+        assertEquals(order1.getUpdatedPrice(), 38);
+        // Order for 2 products
+        assertEquals(order2.getUpdatedPrice(), 684);
+
     }
 
     @Test
