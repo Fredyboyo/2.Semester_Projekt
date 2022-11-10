@@ -16,6 +16,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AddGiftBasketWindow extends Stage implements Observer {
@@ -23,7 +24,7 @@ public class AddGiftBasketWindow extends Stage implements Observer {
     private final TextField txfName = new TextField();
     private final Button btnAddPrice = new Button("Tilføj endnu en pris");
     private final VBox vBoxPrices = new VBox();
-    private HashMap<TextField[], ComboBox<Arrangement>> priceMap = new HashMap<>();
+    private final ArrayList<PriceLineComponents> priceLineComponents = new ArrayList<>();
     private final Arrangement createNewArrangementArrangement = new Arrangement("Tilføj ny salgssituation");
     private final Button btnAddProduct = new Button("Tilføj endnu et produkt");
     private final VBox vBoxProducts = new VBox();
@@ -82,7 +83,8 @@ public class AddGiftBasketWindow extends Stage implements Observer {
     }
 
     private void populateComboBoxes() {
-        for (ComboBox<Arrangement> cbArrangements : priceMap.values()) {
+        for (PriceLineComponents priceLineComponents : priceLineComponents) {
+            ComboBox<Arrangement> cbArrangements = priceLineComponents.getCbArrangements();
             int index = cbArrangements.getSelectionModel().getSelectedIndex();
             cbArrangements.getItems().clear();
             cbArrangements.getItems().addAll(Controller.getArrangements());
@@ -102,6 +104,7 @@ public class AddGiftBasketWindow extends Stage implements Observer {
         if (source.getSelectionModel().getSelectedItem() == createNewArrangementArrangement) {
             AddArrangementWindow newArrangementWindow = new AddArrangementWindow();
             newArrangementWindow.showAndWait();
+            source.getSelectionModel().select(source.getItems().size() - 2);
         }
     }
 
@@ -109,10 +112,7 @@ public class AddGiftBasketWindow extends Stage implements Observer {
         TextField txfPrice = new TextField();
         TextField txfClip = new TextField();
         ComboBox<Arrangement> cbArrangements = new ComboBox<>();
-        TextField[] textArray = new TextField[2];
-        textArray[0] = txfPrice;
-        textArray[1] = txfClip;
-        priceMap.put(textArray, cbArrangements);
+        priceLineComponents.add(new PriceLineComponents(txfPrice, txfClip, cbArrangements));
 
         HBox hBox = new HBox();
         hBox.setSpacing(10);
@@ -156,31 +156,25 @@ public class AddGiftBasketWindow extends Stage implements Observer {
         String productName = txfName.getText();
 
         boolean isAllArrangementsSpecified = true;
-        for (var entry : priceMap.entrySet()) {
-            String priceFromTextField = entry.getKey()[0].getText();
-            String clipsFromTextField = entry.getKey()[1].getText();
+        for (PriceLineComponents priceLineComponents : priceLineComponents) {
+            String priceFromTextField = priceLineComponents.getTxfPrice().getText();
+            String clipsFromTextField = priceLineComponents.getTxfClips().getText();
 
             try {
                 Double.parseDouble(priceFromTextField);
             } catch (NumberFormatException ex) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setHeaderText("Fejl");
-                alert.setContentText("Prisen skal være et tal");
-                alert.showAndWait();
+                showAlert("Prisen skal være et tal");
                 return;
             }
 
             try {
                 Integer.parseInt(clipsFromTextField);
             } catch (NumberFormatException ex) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setHeaderText("Fejl");
-                alert.setContentText("Antal klip skal være et tal");
-                alert.showAndWait();
+                showAlert("Antal klip skal være et tal");
                 return;
             }
 
-            Arrangement selectedArrangement = entry.getValue().getSelectionModel().getSelectedItem();
+            Arrangement selectedArrangement = priceLineComponents.getCbArrangements().getSelectionModel().getSelectedItem();
             if (selectedArrangement == null) {
                 isAllArrangementsSpecified = false;
             }
@@ -206,10 +200,7 @@ public class AddGiftBasketWindow extends Stage implements Observer {
         }
 
         if (productName.isEmpty() || !isAllArrangementsSpecified) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setHeaderText("Fejl");
-            alert.setContentText("Alle felterne skal udfyldes");
-            alert.showAndWait();
+            showAlert("Alle felterne skal udfyldes");
         } else {
             Category category = null;
             for (Category giftBasketCategory : Controller.getCategories()) {
@@ -220,12 +211,12 @@ public class AddGiftBasketWindow extends Stage implements Observer {
 
             GiftBasket giftBasket = Controller.createGiftBasket(productName, category);
 
-            for (var entry : priceMap.entrySet()) {
-                String priceFromTextField = entry.getKey()[0].getText();
+            for (PriceLineComponents priceLineComponents : priceLineComponents) {
+                String priceFromTextField = priceLineComponents.getTxfPrice().getText();
                 double price = Double.parseDouble(priceFromTextField);
-                String clipsFromTextField = entry.getKey()[1].getText();
-                Integer clips = Integer.parseInt(clipsFromTextField);
-                Arrangement selectedArrangement = entry.getValue().getSelectionModel().getSelectedItem();
+                String clipsFromTextField = priceLineComponents.getTxfClips().getText();
+                Integer clips = clipsFromTextField.isBlank() ? null : Integer.parseInt(clipsFromTextField);
+                Arrangement selectedArrangement = priceLineComponents.getCbArrangements().getSelectionModel().getSelectedItem();
                 Controller.createProductPrice(giftBasket, selectedArrangement, price, clips);
             }
 
@@ -246,8 +237,42 @@ public class AddGiftBasketWindow extends Stage implements Observer {
         this.close();
     }
 
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setHeaderText("Fejl");
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
     @Override
     public void update() {
         populateComboBoxes();
+    }
+
+    private class PriceLineComponents {
+        private final TextField txfPrice;
+        private final TextField txfClips;
+        private final ComboBox<Arrangement> cbArrangements;
+
+        private PriceLineComponents(
+                TextField txfPrice,
+                TextField txfClips,
+                ComboBox<Arrangement> cbArrangements) {
+            this.txfPrice = txfPrice;
+            this.txfClips = txfClips;
+            this.cbArrangements = cbArrangements;
+        }
+
+        public TextField getTxfPrice() {
+            return txfPrice;
+        }
+
+        public TextField getTxfClips() {
+            return txfClips;
+        }
+
+        public ComboBox<Arrangement> getCbArrangements() {
+            return cbArrangements;
+        }
     }
 }

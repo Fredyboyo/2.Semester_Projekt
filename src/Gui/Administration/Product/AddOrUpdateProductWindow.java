@@ -115,6 +115,7 @@ public class AddOrUpdateProductWindow extends Stage implements Observer {
         if (source.getSelectionModel().getSelectedItem() == createNewArrangementArrangement) {
             AddArrangementWindow newArrangementWindow = new AddArrangementWindow();
             newArrangementWindow.showAndWait();
+            source.getSelectionModel().select(source.getItems().size() - 2);
         }
     }
 
