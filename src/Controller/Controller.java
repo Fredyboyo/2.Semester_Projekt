@@ -417,21 +417,5 @@ public abstract class Controller {
         Controller.createPaymentMethod("Klippekort");
 
     }
-
-    public HashMap<ProductComponent, Integer> countSoldProduct(Category category, Arrangement arrangement) {
-        HashMap<ProductComponent, Integer> map = new HashMap<>();
-        for (Order order : storage.getOrders()) {
-            for (OrderLine ol : order.getOrderLines()) {
-                if (ol.getArrangement() == arrangement && ol.getProduct().getCategory() == category) {
-                    if (map.containsKey(ol.getProduct())) {
-                        map.put(ol.getProduct(), map.get(ol.getProduct()) + ol.getAmount());
-                    } else
-                        map.put(ol.getProduct(), ol.getAmount());
-                }
-            }
-        }
-        notifyObservers();
-        return map;
-    }
 }
 
