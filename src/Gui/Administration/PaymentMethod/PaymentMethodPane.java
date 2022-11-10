@@ -128,7 +128,7 @@ public class PaymentMethodPane extends GridPane implements Observer {
             if (paymentMethod != null && paymentMethod == ticketCouponPaymentMethod) {
                 LocalDate date = order.getTimestamp().toLocalDate();
                 if (date.isEqual(start) || date.isAfter(start) && date.isEqual(end) || date.isBefore(end)) {
-                    usedCount += order.getCollectedCost();
+                    usedCount += order.getCollectedClips();
                 }
             }
         }
