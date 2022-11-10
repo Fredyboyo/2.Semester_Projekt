@@ -74,6 +74,8 @@ public class FinishOrder extends Stage {
         Label lNumber = new Label("Telefonummer:");
         Label lAddress = new Label("Adresse:");
 
+        lNumber.setPrefWidth(100);
+
         Button bFinish = new Button("Færdig");
 
         bFinish.setOnAction(event -> finish(order));
