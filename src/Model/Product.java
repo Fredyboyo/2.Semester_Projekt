@@ -8,9 +8,7 @@ public class Product implements ProductComponent, Serializable {
     private Category category;
     private final ArrayList<Price> prices = new ArrayList<>();
 
-    public Product(
-            String name,
-            Category category) {
+    public Product(String name, Category category) {
         this.category = category;
         category.products.add(this);
         this.name = name;

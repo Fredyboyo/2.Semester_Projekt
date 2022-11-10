@@ -14,6 +14,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
+import javax.sound.sampled.Clip;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +48,7 @@ public class ShopWindow extends Stage implements Observer {
     private final ListView<Order> lvOpenOrder = new ListView<>();
 
     private final HashMap<Category, ArrayList<ToggleButton>> hmCategoryProducts = new HashMap<>();
-    private final Category all = new Category("* Alle");
+    private final Category all = Controller.createCategory("* Alle");
     private final GridPane root = this.initContentOrderScene();
 
     public GridPane initContentOrderScene() {
@@ -76,7 +77,7 @@ public class ShopWindow extends Stage implements Observer {
         spOrderLines.setPrefSize(725,300);
         spOrderLines.setFocusTraversable(false);
 
-        lvOpenOrder.setPrefSize(640,300);
+        lvOpenOrder.setPrefSize(725,300);
         lvOpenOrder.setFocusTraversable(false);
 
         Label lTotalPrice = new Label("Samlet beløb :");
@@ -106,8 +107,7 @@ public class ShopWindow extends Stage implements Observer {
         tfTotalClips.setAlignment(Pos.CENTER);
         tfTotalClips.setFocusTraversable(false);
 
-
-        Label lArrangement = new Label("Salgssituationer:");
+        Label lArrangement = new Label("Salgsiturationer:");
         Label lCategory = new Label("Kategorier:");
         Label lCreateOrder = new Label("Opret Ordre:");
         Label lCreateRental = new Label("Opret Udlejning:");
@@ -153,7 +153,7 @@ public class ShopWindow extends Stage implements Observer {
         GridPane.setHalignment(lTotalClips, HPos.RIGHT);
         GridPane.setHalignment(lClips, HPos.LEFT);
         GridPane.setHalignment(bDone, HPos.CENTER);
-        GridPane.setHalignment(bCancel, HPos.CENTER);
+        GridPane.setHalignment(bCancel, HPos.RIGHT);
 
         cbCategory.     setOnAction(actionEvent -> choseCategory());
         bNewOrder.      setOnAction(actionEvent -> createNewOrder());
@@ -185,6 +185,7 @@ public class ShopWindow extends Stage implements Observer {
         }
 
         ArrayList<ToggleButton> buttons = hmCategoryProducts.get(category);
+
         for (int i = 0; i < buttons.size(); i++) {
             buttons.get(i).setOpacity(0);
             buttons.get(i).setFocusTraversable(false);
@@ -257,15 +258,11 @@ public class ShopWindow extends Stage implements Observer {
         cbCategory.getItems().add(category);
         hmCategoryProducts.put(category,new ArrayList<>());
         for (ProductComponent product : category.getProducts()) {
-            Price price1 = Controller.getProductPrice(product,arrangement);
-            if (price1 == null) continue;
-            Integer clip = price1.getClips();
-            ToggleButton bAddProducts;
-            if (clip != null) {
-                bAddProducts = new ToggleButton(product.getName() + "\n" + price1.getPrice() + " Kr.  " + clip + " Clips");
-            } else {
-                bAddProducts = new ToggleButton(product.getName() + "\n" + price1.getPrice() + " Kr.");
-            }
+            Price price = Controller.getProductPrice(product,arrangement);
+            if (price == null) continue;
+            Integer clip = price.getClips();
+            ToggleButton bAddProducts = new ToggleButton(product.getName() + "\n" + price.getPrice() + " Kr.  " + (clip != null ? clip + " Clips" : ""));
+
             bAddProducts.setTextAlignment(TextAlignment.CENTER);
             bAddProducts.setPrefSize(175, 50);
             bAddProducts.setOnAction(event -> addOrderLine(bAddProducts,product));
@@ -281,30 +278,26 @@ public class ShopWindow extends Stage implements Observer {
             bAdministration.setDisable(true);
             cbArrangement.setDisable(true);
             cbArrangement.setDisable(true);
-            bDone.setDisable(true);
-            bCancel.setDisable(true);
 
             lvOpenOrder.getItems().clear();
-            for (Order soonToBeRental : Controller.getOrders()) {
-                if (soonToBeRental.getClass() == Rental.class && !soonToBeRental.isFinished()) {
-                    lvOpenOrder.getItems().add(soonToBeRental);
+            for (Order order : Controller.getOrders()) {
+                if (order.getClass() == Rental.class && !order.isFinished()) {
+                    lvOpenOrder.getItems().add(order);
                 }
             }
 
             root.getChildren().remove(spOrderLines);
-            root.add(lvOpenOrder,3,2,5,1);
+            root.add(lvOpenOrder, 2,2,5,1);
             root.add(bFinishRental,5,3);
         } else {
             bNewOrder.setDisable(false);
             bNewRental.setDisable(false);
             bAdministration.setDisable(false);
             cbArrangement.setDisable(false);
-            bDone.setDisable(false);
-            bCancel.setDisable(false);
 
             root.getChildren().remove(bFinishRental);
             root.getChildren().remove(lvOpenOrder);
-            root.add(spOrderLines,3,2,5,1);
+            root.add(spOrderLines,2,2,5,1);
         }
     }
 
@@ -338,6 +331,7 @@ public class ShopWindow extends Stage implements Observer {
             addButton.setSelected(false);
             return;
         }
+
         Label lName = new Label("  (" + orderLine.getAmount() + ") " + orderLine.getProduct().getName());
         lName.setPrefSize(200,30);
         lName.setOpacity(0);
@@ -523,6 +517,7 @@ public class ShopWindow extends Stage implements Observer {
         tfClips.setText(orderLine.getClips()+"");
         updateTotalPrices();
     }
+
     private void updateTotalPrices() {
         selectedOrder.updateCollectedPrices();
         tfTotalPrice.setText(selectedOrder.getCollectedCost() + "");
@@ -570,6 +565,7 @@ public class ShopWindow extends Stage implements Observer {
         bCancel.setDisable(true);
         bDone.setDisable(true);
         tfTotalPrice.clear();
+        tfTotalClips.clear();
         controls.clear();
     }
 
@@ -595,7 +591,7 @@ public class ShopWindow extends Stage implements Observer {
     public void update() {
         cbArrangement.getItems().clear();
         cbArrangement.getItems().addAll(Controller.getArrangements());
-        if (cbArrangement.getItems().size() > 0) {
+        if (!cbArrangement.getItems().isEmpty()) {
             cbArrangement.setValue(cbArrangement.getItems().get(0));
         }
     }

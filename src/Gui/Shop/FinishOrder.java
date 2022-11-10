@@ -47,19 +47,26 @@ public class FinishOrder extends Stage {
         Label lStartDate = new Label("Start dato: ");
         lStartDate.setPrefSize(150,25);
 
-
         Label lEndDate = new Label("Slut dato: ");
         lEndDate.setPrefSize(150,25);
 
-        Label lPrice = new Label("Slut Pris: ");
+        Label lPrice = new Label("Slut pris: ");
         lPrice.setPrefSize(150,25);
 
-        TextField tfPrice = new TextField(order.getUpdatedPrice()+"");
+        order.updateCollectedPrices();
+        TextField tfPrice = new TextField(order.getCollectedCost()+"");
         tfPrice.setPrefSize(150,25);
-        tfPrice.setEditable(false);
+
+        Label lClip = new Label("Slut klip pris: ");
+        lPrice.setPrefSize(150,25);
+
+        TextField tfClip = new TextField(order.getCollectedClips()+"");
+        tfClip.setPrefSize(150,25);
+        tfClip.setEditable(false);
 
         Button bFinish = new Button("Færdig");
-        bFinish.setOnAction(actionEvent -> finish(order));
+
+        bFinish.setOnAction(event -> finish(order));
 
         gridPane.add(lDate,0,0);
         gridPane.add(lDateValue,1,0);
@@ -74,11 +81,15 @@ public class FinishOrder extends Stage {
 
             gridPane.add(lPrice,0,4);
             gridPane.add(tfPrice,1,4);
+            gridPane.add(lClip,0,5);
+            gridPane.add(tfClip,1,5);
             gridPane.add(bFinish,1,5);
         } else {
             gridPane.add(lPrice,0,2);
             gridPane.add(tfPrice,1,2);
-            gridPane.add(bFinish,1,3);
+            gridPane.add(lClip,0,3);
+            gridPane.add(tfClip,1,3);
+            gridPane.add(bFinish,1,4);
         }
 
         this.setScene(new Scene(gridPane));

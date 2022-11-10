@@ -37,7 +37,6 @@ public class AddTourOrderLine extends Stage {
         Label lNumber = new Label("Telefonummer:");
         Label lAddress = new Label("Adresse:");
 
-
         DatePicker tfDate = new DatePicker(LocalDate.now());
         TextField tfName = new TextField();
         TextField tfEmail = new TextField();

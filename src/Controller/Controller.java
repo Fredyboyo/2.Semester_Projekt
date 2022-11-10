@@ -195,102 +195,109 @@ public abstract class Controller {
         Arrangement butik = Controller.createArrangement("Butik");
         Arrangement fredagsbar = Controller.createArrangement("Fredagsbar");
 
-        Category flaske = Controller.createCategory("Flaske");
-        Category fadøl = Controller.createCategory("Fadøl");
-        Category spiritus = Controller.createCategory("Spiritus");
-        Category fustage = Controller.createRentalCategory("Fustage", 200);
-        Category kulsyre = Controller.createRentalCategory("Kulsyre", 1000);
-        Category malt = Controller.createCategory("Malt");
-        Category beklædning = Controller.createCategory("Beklædning");
-        Category anlæg = Controller.createCategory("Anlæg");
-        Category glas = Controller.createCategory("Glas");
-        Category sampakninger = Controller.createCategory("Sampakninger");
-        Category rundvisning = Controller.createCategory("Rundvisning");
+        Category klippekortKategori = Controller.createCategory("Klippekort");
+        Category flaskeKategori = Controller.createCategory("Flaske");
+        Category fadølKategori = Controller.createCategory("Fadøl");
+        Category spiritusKategori = Controller.createCategory("Spiritus");
+        Category fustageKategori = Controller.createRentalCategory("Fustage", 200);
+        Category kulsyreKategori = Controller.createRentalCategory("Kulsyre", 1000);
+        Category maltKategori = Controller.createCategory("Malt");
+        Category beklædningKategori = Controller.createCategory("Beklædning");
+        Category anlægKategori = Controller.createCategory("Anlæg");
+        Category glasKategori = Controller.createCategory("Glas");
+        Category sampakningerKategori = Controller.createCategory("Sampakninger");
+        Category rundvisningKategori = Controller.createCategory("Rundvisning");
 
-        Product klosterbrygFlaske = Controller.createProduct("Klosterbryg", flaske);
-        Product sweet_georgia_brownFlaske = Controller.createProduct("Sweet Georgia Brown", flaske);
-        Product extra_pilsnerFlaske = Controller.createProduct("Extra Pilsner", flaske);
-        Product celebrationFlaske = Controller.createProduct("Celebration", flaske);
-        Product blondieFlaske = Controller.createProduct("Blondie", flaske);
-        Product forårsbrygFlaske = Controller.createProduct("Forårsbryg", flaske);
-        Product india_pale_aleFlaske = Controller.createProduct("India Pale Ale", flaske);
-        Product julebrygFlaske = Controller.createProduct("Julebryg", flaske);
-        Product juletøndenFlaske = Controller.createProduct("Juletønden", flaske);
-        Product old_strong_aleFlaske = Controller.createProduct("Old Strong Ale", flaske);
-        Product fregatten_jyllandFlaske = Controller.createProduct("Fregatten Jylland", flaske);
-        Product imperial_stoutFlaske = Controller.createProduct("Imperial Stout", flaske);
-        Product tributeFlaske = Controller.createProduct("Tribute", flaske);
-        Product black_monsterFlaske = Controller.createProduct("Black Monster", flaske);
+        Product klippekort = Controller.createProduct("Klippekort x4", klippekortKategori);
 
-        Product klosterbrygFadøl = Controller.createProduct("Klosterbryg", fadøl);
-        Product jazz_classicFadøl = Controller.createProduct("Jazz Classic", fadøl);
-        Product extra_pilsnerFadøl = Controller.createProduct("Extra Pilsner", fadøl);
-        Product celebrationFadøl = Controller.createProduct("Celebration", fadøl);
-        Product blondieFadøl = Controller.createProduct("Blondie", fadøl);
-        Product forårsbrygFadøl = Controller.createProduct("Forårsbryg", fadøl);
-        Product india_pale_aleFadøl = Controller.createProduct("India Pale Ale", fadøl);
-        Product julebrygFadøl = Controller.createProduct("Julebryg", fadøl);
-        Product imperial_stoutFadøl = Controller.createProduct("Imperial Stout", fadøl);
-        Product specialFadøl = Controller.createProduct("Special", fadøl);
+        Product klosterbrygFlaske = Controller.createProduct("Klosterbryg", flaskeKategori);
+        Product sweet_georgia_brownFlaske = Controller.createProduct("Sweet Georgia Brown", flaskeKategori);
+        Product extra_pilsnerFlaske = Controller.createProduct("Extra Pilsner", flaskeKategori);
+        Product celebrationFlaske = Controller.createProduct("Celebration", flaskeKategori);
+        Product blondieFlaske = Controller.createProduct("Blondie", flaskeKategori);
+        Product forårsbrygFlaske = Controller.createProduct("Forårsbryg", flaskeKategori);
+        Product india_pale_aleFlaske = Controller.createProduct("India Pale Ale", flaskeKategori);
+        Product julebrygFlaske = Controller.createProduct("Julebryg", flaskeKategori);
+        Product juletøndenFlaske = Controller.createProduct("Juletønden", flaskeKategori);
+        Product old_strong_aleFlaske = Controller.createProduct("Old Strong Ale", flaskeKategori);
+        Product fregatten_jyllandFlaske = Controller.createProduct("Fregatten Jylland", flaskeKategori);
+        Product imperial_stoutFlaske = Controller.createProduct("Imperial Stout", flaskeKategori);
+        Product tributeFlaske = Controller.createProduct("Tribute", flaskeKategori);
+        Product black_monsterFlaske = Controller.createProduct("Black Monster", flaskeKategori);
 
-        Product æblebrusFadøl = Controller.createProduct("Æblebrus", fadøl);
-        Product chipsFadøl = Controller.createProduct("chips", fadøl);
-        Product peanutsFadøl = Controller.createProduct("peanuts", fadøl);
-        Product colaFadøl = Controller.createProduct("cola", fadøl);
-        Product nikolineFadøl = Controller.createProduct("Nikoline", fadøl);
-        Product Seven_upFadøl = Controller.createProduct("7-Up", fadøl);
-        Product vandFadøl = Controller.createProduct("vand", fadøl);
-        Product ølpølserFadøl = Controller.createProduct("Ølpølser", fadøl);
+        Product klosterbrygFadøl = Controller.createProduct("Klosterbryg", fadølKategori);
+        Product jazz_classicFadøl = Controller.createProduct("Jazz Classic", fadølKategori);
+        Product extra_pilsnerFadøl = Controller.createProduct("Extra Pilsner", fadølKategori);
+        Product celebrationFadøl = Controller.createProduct("Celebration", fadølKategori);
+        Product blondieFadøl = Controller.createProduct("Blondie", fadølKategori);
+        Product forårsbrygFadøl = Controller.createProduct("Forårsbryg", fadølKategori);
+        Product india_pale_aleFadøl = Controller.createProduct("India Pale Ale", fadølKategori);
+        Product julebrygFadøl = Controller.createProduct("Julebryg", fadølKategori);
+        Product imperial_stoutFadøl = Controller.createProduct("Imperial Stout", fadølKategori);
+        Product specialFadøl = Controller.createProduct("Special", fadølKategori);
 
-        Product whisky = Controller.createProduct("Whisky 45% 50 cl rør", spiritus);
-        Product whisky1 = Controller.createProduct("Whisky 4 cl.", spiritus);
-        Product whisky2 = Controller.createProduct("Whisky 43% 50 cl rør", spiritus);
-        Product whisky3 = Controller.createProduct("u/ egesplint", spiritus);
-        Product whisky4 = Controller.createProduct("m/ egesplint", spiritus);
-        Product whisky5 = Controller.createProduct("2*whisky glas + brikker", spiritus);
-        Product whisky6 = Controller.createProduct("Liquor of Aarhus", spiritus);
-        Product whisky7 = Controller.createProduct("Lyng gin 50 cl", spiritus);
-        Product whisky8 = Controller.createProduct("Lyng gin 4 cl", spiritus);
+        Product æblebrusFadøl = Controller.createProduct("Æblebrus", fadølKategori);
+        Product chipsFadøl = Controller.createProduct("chips", fadølKategori);
+        Product peanutsFadøl = Controller.createProduct("peanuts", fadølKategori);
+        Product colaFadøl = Controller.createProduct("cola", fadølKategori);
+        Product nikolineFadøl = Controller.createProduct("Nikoline", fadølKategori);
+        Product Seven_upFadøl = Controller.createProduct("7-Up", fadølKategori);
+        Product vandFadøl = Controller.createProduct("vand", fadølKategori);
+        Product ølpølserFadøl = Controller.createProduct("Ølpølser", fadølKategori);
 
-        Product KlosterbrygFustage = Controller.createProduct("Klosterbryg, 20 liter", fustage);
-        Product jazz_ClassicFustage = Controller.createProduct("Jazz Classic, 25 liter", fustage);
-        Product Extra_PilsnerFustage = Controller.createProduct("Extra Pilsner, 25 liter", fustage);
-        Product celebrationFustage = Controller.createProduct("Celebration, 20 liter", fustage);
-        Product blondieFustage = Controller.createProduct("Blondie, 25 liter", fustage);
-        Product forårsbrygFustage = Controller.createProduct("Forårsbryg, 20 liter", fustage);
-        Product india_pale_aleFustage = Controller.createProduct("India Pale Ale, 20 liter", fustage);
-        Product julebrygFustage = Controller.createProduct("Julebryg, 20 liter", fustage);
-        Product imperial_StoutFustage = Controller.createProduct("Imperial Stout, 20 liter", fustage);
+        Product whisky = Controller.createProduct("Whisky 45% 50 cl rør", spiritusKategori);
+        Product whisky1 = Controller.createProduct("Whisky 4 cl.", spiritusKategori);
+        Product whisky2 = Controller.createProduct("Whisky 43% 50 cl rør", spiritusKategori);
+        Product whisky3 = Controller.createProduct("u/ egesplint", spiritusKategori);
+        Product whisky4 = Controller.createProduct("m/ egesplint", spiritusKategori);
+        Product whisky5 = Controller.createProduct("2*whisky glas + brikker", spiritusKategori);
+        Product whisky6 = Controller.createProduct("Liquor of Aarhus", spiritusKategori);
+        Product whisky7 = Controller.createProduct("Lyng gin 50 cl", spiritusKategori);
+        Product whisky8 = Controller.createProduct("Lyng gin 4 cl", spiritusKategori);
 
-        Product kulsyre6kg = Controller.createProduct("6 kg", kulsyre);
-        Product kulsyre4kg = Controller.createProduct("4 kg", kulsyre);
-        Product kulsyre10kg = Controller.createProduct("10 kg", kulsyre);
+        Product KlosterbrygFustage = Controller.createProduct("Klosterbryg, 20 liter", fustageKategori);
+        Product jazz_ClassicFustage = Controller.createProduct("Jazz Classic, 25 liter", fustageKategori);
+        Product Extra_PilsnerFustage = Controller.createProduct("Extra Pilsner, 25 liter", fustageKategori);
+        Product celebrationFustage = Controller.createProduct("Celebration, 20 liter", fustageKategori);
+        Product blondieFustage = Controller.createProduct("Blondie, 25 liter", fustageKategori);
+        Product forårsbrygFustage = Controller.createProduct("Forårsbryg, 20 liter", fustageKategori);
+        Product india_pale_aleFustage = Controller.createProduct("India Pale Ale, 20 liter", fustageKategori);
+        Product julebrygFustage = Controller.createProduct("Julebryg, 20 liter", fustageKategori);
+        Product imperial_StoutFustage = Controller.createProduct("Imperial Stout, 20 liter", fustageKategori);
 
-        Product malt_25kg_sæk = Controller.createProduct("25 kg sæk", malt);
+        Product kulsyre6kg = Controller.createProduct("6 kg", kulsyreKategori);
+        Product kulsyre4kg = Controller.createProduct("4 kg", kulsyreKategori);
+        Product kulsyre10kg = Controller.createProduct("10 kg", kulsyreKategori);
 
-        Product t_shirt = Controller.createProduct("T-shirt", beklædning);
-        Product polo = Controller.createProduct("Polo", beklædning);
-        Product cap = Controller.createProduct("Cap", beklædning);
+        Product malt_25kg_sæk = Controller.createProduct("25 kg sæk", maltKategori);
 
-        Product en_hane = Controller.createProduct("1-hane", anlæg);
-        Product to_haner = Controller.createProduct("2-haner", anlæg);
-        Product bar_med_flere_haner = Controller.createProduct("Bar med flere haner", anlæg);
-        Product levering = Controller.createProduct("Levering", anlæg);
-        Product krus = Controller.createProduct("Krus", anlæg);
+        Product t_shirt = Controller.createProduct("T-shirt", beklædningKategori);
+        Product polo = Controller.createProduct("Polo", beklædningKategori);
+        Product cap = Controller.createProduct("Cap", beklædningKategori);
 
-        Product glas_uanset_størelse = Controller.createProduct("Glas", glas);
+        Product en_hane = Controller.createProduct("1-hane", anlægKategori);
+        Product to_haner = Controller.createProduct("2-haner", anlægKategori);
+        Product bar_med_flere_haner = Controller.createProduct("Bar med flere haner", anlægKategori);
+        Product levering = Controller.createProduct("Levering", anlægKategori);
+        Product krus = Controller.createProduct("Krus", anlægKategori);
 
-        GiftBasket gaveæske1 = Controller.createGiftBasket("Gaveæske 2 øl, 2 glas", sampakninger);
-        GiftBasket gaveæske2 = Controller.createGiftBasket("Gaveæske 4 øl", sampakninger);
-        GiftBasket gaveæske3 = Controller.createGiftBasket("Trækasse 6 øl", sampakninger);
-        GiftBasket gaveæske4 = Controller.createGiftBasket("Gavekurv 6 øl, 2 glas", sampakninger);
-        GiftBasket gaveæske5 = Controller.createGiftBasket("Trækasse 6 øl, 6 glas", sampakninger);
-        GiftBasket gaveæske6 = Controller.createGiftBasket("Trækasse 12 øl", sampakninger);
-        GiftBasket gaveæske7 = Controller.createGiftBasket("Papkasse 12 øl", sampakninger);
+        Product glas_uanset_størelse = Controller.createProduct("Glas", glasKategori);
 
-        Product rundvisning_pr_person = Controller.createProduct("Rundvisning", rundvisning);
+        GiftBasket gaveæske1 = Controller.createGiftBasket("Gaveæske 2 øl, 2 glas", sampakningerKategori);
+        GiftBasket gaveæske2 = Controller.createGiftBasket("Gaveæske 4 øl", sampakningerKategori);
+        GiftBasket gaveæske3 = Controller.createGiftBasket("Trækasse 6 øl", sampakningerKategori);
+        GiftBasket gaveæske4 = Controller.createGiftBasket("Gavekurv 6 øl, 2 glas", sampakningerKategori);
+        GiftBasket gaveæske5 = Controller.createGiftBasket("Trækasse 6 øl, 6 glas", sampakningerKategori);
+        GiftBasket gaveæske6 = Controller.createGiftBasket("Trækasse 12 øl", sampakningerKategori);
+        GiftBasket gaveæske7 = Controller.createGiftBasket("Papkasse 12 øl", sampakningerKategori);
+
+        Product rundvisning_pr_person = Controller.createProduct("Rundvisning", rundvisningKategori);
 
         // ------------------------------------ Prices ----------------------------------------
+
+        Controller.createProductPrice(klippekort, fredagsbar, 130, null);
+
+        Controller.createProductPrice(klippekort, butik, 130, null);
 
         Controller.createProductPrice(klosterbrygFlaske, fredagsbar, 70, 2);
         Controller.createProductPrice(sweet_georgia_brownFlaske, fredagsbar, 70, 2);
