@@ -105,8 +105,8 @@ public abstract class Controller {
             LocalDate startDate,
             LocalDate endDate,
             Customer customer,
-            double payedMortgage) {
-        Rental rental = new Rental(arrangement, startDate, endDate, customer, payedMortgage);
+            double payedDeposit) {
+        Rental rental = new Rental(arrangement, startDate, endDate, customer, payedDeposit);
         storage.storeOrder(rental);
         notifyObservers();
         return rental;
