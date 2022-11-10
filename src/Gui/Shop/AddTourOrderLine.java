@@ -18,6 +18,12 @@ import java.time.LocalDate;
 public class AddTourOrderLine extends Stage {
     private TourOrderLine tour;
 
+    private final DatePicker tfDate = new DatePicker(LocalDate.now());
+    private final TextField tfName = new TextField();
+    private final TextField tfEmail = new TextField();
+    private final TextField tfNumber = new TextField();
+    private final TextField tfAddress = new TextField();
+
     public AddTourOrderLine(Order order, ProductComponent product, int amount) {
         this.initStyle(StageStyle.UTILITY);
         this.initModality(Modality.APPLICATION_MODAL);
@@ -37,11 +43,7 @@ public class AddTourOrderLine extends Stage {
         Label lNumber = new Label("Telefonummer:");
         Label lAddress = new Label("Adresse:");
 
-        DatePicker tfDate = new DatePicker(LocalDate.now());
-        TextField tfName = new TextField();
-        TextField tfEmail = new TextField();
-        TextField tfNumber = new TextField();
-        TextField tfAddress = new TextField();
+
         Button finished = new Button("Færdig");
 
         gridPane.add(lDate,0,0);
@@ -60,12 +62,12 @@ public class AddTourOrderLine extends Stage {
 
         GridPane.setHalignment(lCostumer, HPos.CENTER);
 
-        finished.setOnAction(actionEvent -> actionEvent(order,product,amount,tfDate,tfName,tfEmail,tfNumber,tfAddress));
+        finished.setOnAction(actionEvent -> actionEvent(order,product,amount));
 
         this.setScene(new Scene(gridPane));
     }
 
-    private void actionEvent(Order order, ProductComponent product, int amount, DatePicker tfDate, TextField tfName, TextField tfEmail, TextField tfNumber, TextField tfAddress) {
+    private void actionEvent(Order order, ProductComponent product, int amount) {
         LocalDate date = tfDate.getValue();
         Customer customer;
         try {

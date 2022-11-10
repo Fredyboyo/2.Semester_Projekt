@@ -261,7 +261,13 @@ public class ShopWindow extends Stage implements Observer {
             Price price = Controller.getProductPrice(product,arrangement);
             if (price == null) continue;
             Integer clip = price.getClips();
-            ToggleButton bAddProducts = new ToggleButton(product.getName() + "\n" + price.getPrice() + " Kr.  " + (clip != null ? clip + " Clips" : ""));
+            double cost;
+            if (product.getCategory().getClass() == DepositCategory.class) {
+                cost = price.getPrice() + ((DepositCategory)product.getCategory()).getDeposit();
+            } else {
+                cost = price.getPrice();
+            }
+            ToggleButton bAddProducts = new ToggleButton(product.getName() + "\n" + cost + " Kr.  " + (clip != null ? clip + " Clips" : ""));
 
             bAddProducts.setTextAlignment(TextAlignment.CENTER);
             bAddProducts.setPrefSize(175, 50);
@@ -281,7 +287,7 @@ public class ShopWindow extends Stage implements Observer {
 
             lvOpenOrder.getItems().clear();
             for (Order order : Controller.getOrders()) {
-                if (order.getClass() == Rental.class && !order.isFinished()) {
+                if (!order.isFinished()) {
                     lvOpenOrder.getItems().add(order);
                 }
             }
@@ -305,12 +311,7 @@ public class ShopWindow extends Stage implements Observer {
         Order openOrder = lvOpenOrder.getSelectionModel().getSelectedItem();
         if (openOrder == null) return;
         openOrder.finishOrder();
-        lvOpenOrder.getItems().clear();
-        for (Order order : Controller.getOrders()) {
-            if (order.getClass() == Rental.class && !order.isFinished()) {
-                lvOpenOrder.getItems().add(order);
-            }
-        }
+        lvOpenOrder.getItems().remove(openOrder);
     }
 
     //----------------------- OrderLine --------------------------------------------------------------------------------

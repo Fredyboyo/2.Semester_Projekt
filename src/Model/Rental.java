@@ -5,7 +5,7 @@ import java.time.LocalDate;
 public class Rental extends Order {
     private LocalDate startDate;
     private LocalDate endDate;
-    private final Customer customer;
+    private Customer customer;
     private final double payedDeposit;
 
     public Rental(Arrangement arrangement, LocalDate startDate, LocalDate endDate, Customer customer, double payedDeposit) {
@@ -44,5 +44,9 @@ public class Rental extends Order {
     @Override
     public String toString() {
         return startDate + " - " + endDate + " (" + customer + " har betalt " + payedDeposit + ")";
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 }

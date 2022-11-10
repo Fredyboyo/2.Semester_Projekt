@@ -28,7 +28,11 @@ public class OrderLine implements Serializable {
         double cost = 0;
         for (Price price : product.getPrices()) {
            if (price.getArrangement() != arrangement) continue;
-           cost = price.getPrice() * amount;
+           if (product.getCategory().getClass() == DepositCategory.class) {
+               cost = (price.getPrice() + ((DepositCategory)product.getCategory()).getDeposit()) * amount;
+           } else {
+               cost = price.getPrice() * amount;
+           }
            if (price.getClips() != null) {
                clips = price.getClips() * amount;
            }
