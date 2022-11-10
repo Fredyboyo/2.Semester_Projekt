@@ -15,7 +15,6 @@ public class Price implements Serializable {
         this.clips = clips;
     }
 
-
     public double getPrice() {
         return price;
     }

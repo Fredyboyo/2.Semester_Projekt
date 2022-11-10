@@ -1,5 +1,6 @@
 package Model;
 
+import Model.DiscountStrategy.AmountDiscountStrategy;
 import Model.DiscountStrategy.NoDiscountStrategy;
 
 import java.io.Serializable;
@@ -13,6 +14,7 @@ public class Order implements Serializable {
     private final ArrayList<OrderLine> orderLines = new ArrayList<>();
     private final Arrangement arrangement;
     private double collectedCost;
+    private int collectedClips;
     private PaymentMethod paymentMethod;
     private Discount discountStrategy = new NoDiscountStrategy();
     private boolean isFinished = false;
@@ -22,7 +24,7 @@ public class Order implements Serializable {
     }
 
     public double getUpdatedPrice() {
-        updateCollectedCost();
+        updateCollectedPrices();
         return collectedCost;
     }
 
@@ -48,17 +50,21 @@ public class Order implements Serializable {
         this.isFinished = true;
     }
 
-    public double getPrice(){
-        return collectedCost;
-    }
+    public void updateCollectedPrices(){
+        double collectedCost = 0;
+        int collectedClips = 0;
 
-    public void updateCollectedCost(){
-        collectedCost = 0;
         for (OrderLine orderLine : orderLines) {
+            orderLine.updatePrice();
             collectedCost += orderLine.getCost();
+            collectedClips += orderLine.getClips();
         }
-
-        collectedCost = discountStrategy.discount(collectedCost);
+        this.collectedCost = discountStrategy.discount(collectedCost);
+        if (discountStrategy.getClass() == AmountDiscountStrategy.class) {
+            this.collectedClips = (int) (collectedClips * (this.collectedCost / collectedCost));
+        } else {
+            this.collectedClips = (int) discountStrategy.discount(collectedClips);
+        }
     }
 
     public HashMap<ProductComponent, Integer> countSoldProduct(Category category, Arrangement arrangement){
@@ -68,8 +74,7 @@ public class Order implements Serializable {
                 if (map.containsKey(ol.getProduct())){
                     map.put(ol.getProduct(), map.get(ol.getProduct()) + ol.getAmount());
                 }
-                else
-                    map.put(ol.getProduct(), ol.getAmount());
+                else map.put(ol.getProduct(), ol.getAmount());
             }
         }
         return map;
@@ -89,6 +94,10 @@ public class Order implements Serializable {
 
     public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
+    }
+
+    public int getCollectedClips() {
+        return collectedClips;
     }
 
     public double getCollectedCost() {
