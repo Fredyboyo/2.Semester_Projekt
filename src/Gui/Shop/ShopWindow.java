@@ -33,10 +33,10 @@ public class ShopWindow extends Stage implements Observer {
     private final Button bNewRental = new Button("+ Udlejning");
     private final Button bNewOrder = new Button("+ Ordre");
     private final Button bAdministration = new Button("Administration");
-    private final Button bCancel = new Button("Anuller");
+    private final Button bCancel = new Button("Annuller");
     private final Button bDone = new Button("Færdig");
-    private final Button bFinishRental = new Button("Remove");
-    private final ToggleButton tbShowRentals = new ToggleButton("Vis udlejnings ordre");
+    private final Button bFinishRental = new Button("Fjern");
+    private final ToggleButton tbShowRentals = new ToggleButton("Vis udlejningsordre");
 
     private final GridPane gProductDisplay = new GridPane();
     private final GridPane gOrderLineDisplay = new GridPane();
@@ -79,11 +79,11 @@ public class ShopWindow extends Stage implements Observer {
         lvOpenOrder.setPrefSize(640,300);
         lvOpenOrder.setFocusTraversable(false);
 
-        Label lTotalPrice = new Label("Total Cost :");
+        Label lTotalPrice = new Label("Samlet beløb :");
         Label lKr = new Label("Kr.");
 
-        Label lTotalClips = new Label("Total Clips :");
-        Label lClips = new Label("Clips");
+        Label lTotalClips = new Label("Totale antal klip :");
+        Label lClips = new Label("Klip");
 
         bNewRental.     setPrefSize(125,25);
         bNewOrder.      setPrefSize(125,25);
@@ -107,9 +107,9 @@ public class ShopWindow extends Stage implements Observer {
         tfTotalClips.setFocusTraversable(false);
 
 
-        Label lArrangement = new Label("Salgsiturationer:");
+        Label lArrangement = new Label("Salgssituationer:");
         Label lCategory = new Label("Kategorier:");
-        Label lCreateOrder = new Label("Opret Ordrer:");
+        Label lCreateOrder = new Label("Opret Ordre:");
         Label lCreateRental = new Label("Opret Udlejning:");
 
         gridPane.add(lArrangement,0,0);
@@ -356,7 +356,7 @@ public class ShopWindow extends Stage implements Observer {
         tfClips.setAlignment(Pos.CENTER_RIGHT);
         tfClips.setOpacity(0);
 
-        Label lClips = new Label(" Clips");
+        Label lClips = new Label(" Klip");
         lClips.setPrefSize(40,30);
         lClips.setOpacity(0);
 
@@ -416,7 +416,7 @@ public class ShopWindow extends Stage implements Observer {
             orderLine.setCost(Double.parseDouble(tfPrice.getText()));
             tfTotalPrice.setText(selectedOrder.getUpdatedPrice()+"");
         } catch (NumberFormatException e) {
-            System.out.println("Ikke et number");
+            System.out.println("Ikke et tal");
         }
         root.requestFocus();
     }
