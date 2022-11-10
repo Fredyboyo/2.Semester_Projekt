@@ -414,6 +414,7 @@ public abstract class Controller {
         Controller.createPaymentMethod("Kontant");
         Controller.createPaymentMethod("Credit-kort");
         Controller.createPaymentMethod("MobilePay");
+        Controller.createPaymentMethod("Klippekort");
 
     }
 
