@@ -1,6 +1,5 @@
 package Model;
 
-import javax.sound.sampled.Clip;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -13,7 +12,7 @@ public class Product implements ProductComponent, Serializable {
             String name,
             Category category) {
         this.category = category;
-        category.getProducts().add(this);
+        category.products.add(this);
         this.name = name;
     }
 

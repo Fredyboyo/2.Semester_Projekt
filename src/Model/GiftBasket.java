@@ -14,7 +14,7 @@ public class GiftBasket implements ProductComponent, Serializable {
             Category category) {
         this.name = name;
         this.category = category;
-        category.getProducts().add(this);
+        category.products.add(this);
     }
 
     @Override

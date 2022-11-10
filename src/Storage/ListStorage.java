@@ -76,27 +76,27 @@ public class ListStorage implements Storage, Serializable {
 
     @Override
     public ArrayList<ProductComponent> getProducts() {
-        return products;
+        return new ArrayList<>(products);
     }
     @Override
     public ArrayList<Order> getOrders() {
-        return orders;
+        return new ArrayList<>(orders);
     }
     @Override
     public ArrayList<Arrangement> getArrangements() {
-        return arrangements;
+        return new ArrayList<>(arrangements);
     }
     @Override
     public ArrayList<Category> getCategories() {
-        return categories;
+        return new ArrayList<>(categories);
     }
     @Override
     public ArrayList<PaymentMethod> getPaymentMethods() {
-        return paymentMethods;
+        return new ArrayList<>(paymentMethods);
     }
     @Override
     public ArrayList<Price> getPrices() {
-        return prices;
+        return new ArrayList<>(prices);
     }
     @Override
     public void storeDiscount(Discount discount){

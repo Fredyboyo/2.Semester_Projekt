@@ -17,7 +17,6 @@ public class OrderLine implements Serializable {
         this.product = product;
         this.amount = amount;
         this.arrangement = arrangement;
-        updatePrice();
     }
 
     public double getUpdatedPrice(){
