@@ -126,7 +126,7 @@ public class Order implements Serializable {
 
     @Override
     public String toString() {
-        return timestamp + " | " + arrangement + " | " + collectedCost + " Kr. | " + paymentMethod;
+        return timestamp.toLocalDate() + " | " + arrangement + " | " + collectedCost + " Kr. | " + paymentMethod;
     }
 
 }
