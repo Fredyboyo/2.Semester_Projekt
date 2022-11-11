@@ -12,12 +12,4 @@ public class TourOrderLine extends OrderLine {
         this.customer = customer;
         customer.tours.add(this);
     }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public Customer getCustomer() {
-        return customer;
-    }
 }

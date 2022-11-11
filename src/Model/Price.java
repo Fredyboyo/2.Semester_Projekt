@@ -19,15 +19,13 @@ public class Price implements Serializable {
         return price;
     }
 
+    public Integer getClips() {
+        return clips;
+    }
+
     public Arrangement getArrangement() {
         return arrangement;
     }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public void setClips(Integer clips) {this.clips = clips;}
 
     public ProductComponent getProduct() {
         return product;
@@ -36,9 +34,5 @@ public class Price implements Serializable {
     @Override
     public String toString() {
         return price + " kr i " + arrangement;
-    }
-
-    public Integer getClips() {
-        return clips;
     }
 }

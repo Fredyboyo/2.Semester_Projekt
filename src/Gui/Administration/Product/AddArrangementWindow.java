@@ -1,7 +1,6 @@
 package Gui.Administration.Product;
 
 import Controller.Controller;
-import Model.Arrangement;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;

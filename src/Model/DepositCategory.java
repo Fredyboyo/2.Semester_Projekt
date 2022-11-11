@@ -11,8 +11,4 @@ public class DepositCategory extends Category {
     public int getDeposit() {
         return deposit;
     }
-
-    public void setDeposit(int deposit) {
-        this.deposit = deposit;
-    }
 }

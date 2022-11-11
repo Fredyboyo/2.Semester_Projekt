@@ -10,10 +10,6 @@ public class PercentageDiscountStrategy implements Discount {
         this.percentage = percentage;
     }
 
-    public double getPercentage() {
-        return percentage;
-    }
-
     @Override
     public double discount(double collectedCost) {
         if (collectedCost != 0)

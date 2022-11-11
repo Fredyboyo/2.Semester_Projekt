@@ -22,18 +22,6 @@ public class Customer implements Serializable {
         return name;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public int getTelephoneNumber() {
-        return telephoneNumber;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
     @Override
     public String toString() {
         return name + "  addr: " + address;

@@ -15,20 +15,12 @@ public class Arrangement implements Serializable {
         return name;
     }
 
-    public void addPrice(Price price){
-        prices.add(price);
-    }
-
-    public void removePrice(Price price){
-        prices.remove(price);
-    }
-
     public ArrayList<Price> getPrices() {
         return new ArrayList<>(prices);
     }
 
     @Override
     public String toString() {
-        return name + "";
+        return name;
     }
 }

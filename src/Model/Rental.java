@@ -25,28 +25,12 @@ public class Rental extends Order {
         this.endDate = endDate;
     }
 
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public double getPayedDeposit() {
-        return payedDeposit;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     @Override
     public String toString() {
         return startDate + " - " + endDate + " (" + customer + " har betalt " + payedDeposit + ")";
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
     }
 }
