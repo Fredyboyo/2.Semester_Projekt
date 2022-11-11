@@ -34,7 +34,7 @@ public class Gui extends Application {
         TabPane tabPane = new TabPane();
         this.initTabPane(tabPane);
         pane.getChildren().add(tabPane);
-        tabPane.setPrefWidth(1100);
+        tabPane.setPrefWidth(1300);
 
         Button btnBack = new Button("Tilbage til Køb");
         btnBack.setOnAction(event -> shopWindow());
