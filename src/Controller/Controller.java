@@ -2,6 +2,7 @@ package Controller;
 
 import Gui.Observer;
 import Model.*;
+import Model.DiscountStrategy.*;
 import Storage.ListStorage;
 
 import java.time.LocalDate;
@@ -422,6 +423,32 @@ public abstract class Controller {
         Controller.createPaymentMethod("MobilePay");
         Controller.createPaymentMethod("Klippekort");
 
+    }
+
+    public static NoDiscountStrategy createNoDiscountStrategy() {
+        NoDiscountStrategy noDiscountStrategy = new NoDiscountStrategy();
+        storage.storeDiscount(noDiscountStrategy);
+        return noDiscountStrategy;
+    }
+    public static AmountDiscountStrategy createAmountDiscountStrategy() {
+        AmountDiscountStrategy amountDiscountStrategy = new AmountDiscountStrategy();
+        storage.storeDiscount(amountDiscountStrategy);
+        return amountDiscountStrategy;
+    }
+    public static PercentageDiscountStrategy createPercentageDiscountStrategy() {
+        PercentageDiscountStrategy percentageDiscountStrategy = new PercentageDiscountStrategy();
+        storage.storeDiscount(percentageDiscountStrategy);
+        return percentageDiscountStrategy;
+    }
+    public static StudentDiscountStrategy createStudentDiscountStrategy() {
+        StudentDiscountStrategy amountDiscountStrategy = new StudentDiscountStrategy();
+        storage.storeDiscount(amountDiscountStrategy);
+        return amountDiscountStrategy;
+    }
+    public static RegCustomerDiscountStrategy createRegCustomerDiscountStrategy() {
+        RegCustomerDiscountStrategy regCustomerDiscountStrategy = new RegCustomerDiscountStrategy();
+        storage.storeDiscount(regCustomerDiscountStrategy);
+        return regCustomerDiscountStrategy;
     }
 }
 

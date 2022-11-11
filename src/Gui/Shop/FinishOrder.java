@@ -66,18 +66,18 @@ public class FinishOrder extends Stage {
         cbDiscounts.setValue(cbDiscounts.getItems().get(0));
         cbDiscounts.setPrefWidth(125);
         
-        lDiscountSign.setPrefWidth(125);
+        lDiscountSign.setPrefWidth(50);
         lDiscountValue.setPrefWidth(125);
         tfDiscountValue.setPrefWidth(125);
 
-        Label lPrice = new Label("pris: ");
+        Label lPrice = new Label("Pris: ");
         lPrice.setPrefWidth(125);
 
         order.updateCollectedPrices();
         tfPrice.setText(order.getCollectedCost()+"");
         tfPrice.setPrefWidth(125);
 
-        Label lClip = new Label("klip pris: ");
+        Label lClip = new Label("Klip pris: ");
         lPrice.setPrefWidth(125);
 
         TextField tfClip = new TextField(order.getCollectedClips()+"");
@@ -142,7 +142,7 @@ public class FinishOrder extends Stage {
             gridPane.add(lAddress,2,7);
             gridPane.add(tfAddress,3,7);
         } else {
-            scene = new Scene(gridPane,350,325);
+            scene = new Scene(gridPane, 400,300);
             gridPane.add(lPrice,0,4);
             gridPane.add(tfPrice,1,4);
             gridPane.add(lClip,0,5);
@@ -161,7 +161,7 @@ public class FinishOrder extends Stage {
         gridPane.getChildren().removeAll(lDiscountValue,lDiscountSign,tfDiscountValue);
         switch (index) {
             case 1 -> {
-                order.setDiscountStrategy(new AmountDiscountStrategy(0));
+                order.setDiscountStrategy(Controller.createAmountDiscountStrategy());
                 lDiscountSign.setText("Kr.");
                 tfDiscountValue.clear();
                 gridPane.add(lDiscountValue,0,3);
@@ -169,16 +169,16 @@ public class FinishOrder extends Stage {
                 gridPane.add(tfDiscountValue,1,3);
             }
             case 2 -> {
-                order.setDiscountStrategy(new PercentageDiscountStrategy(0));
+                order.setDiscountStrategy(Controller.createAmountDiscountStrategy());
                 lDiscountSign.setText("%");
                 tfDiscountValue.clear();
                 gridPane.add(lDiscountValue,0,3);
                 gridPane.add(lDiscountSign,2,3);
                 gridPane.add(tfDiscountValue,1,3);
             }
-            case 3 -> order.setDiscountStrategy(new StudentDiscountStrategy());
-            case 4 -> order.setDiscountStrategy(new RegCustomerDiscountStrategy());
-            default -> order.setDiscountStrategy(new NoDiscountStrategy());
+            case 3 -> order.setDiscountStrategy(Controller.createStudentDiscountStrategy());
+            case 4 -> order.setDiscountStrategy(Controller.createRegCustomerDiscountStrategy());
+            default -> order.setDiscountStrategy(Controller.createNoDiscountStrategy());
         }
     }
 

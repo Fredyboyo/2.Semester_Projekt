@@ -29,7 +29,7 @@ public class ShopWindow extends Stage implements Observer {
     private Order selectedOrder = null;
 
     private final ComboBox<Arrangement> cbArrangement = new ComboBox<>();
-    private final ComboBox<Category> cbCategory = new ComboBox<>();
+    private final ComboBox<String> cbCategory = new ComboBox<>();
 
     private final Button bNewRental = new Button("+ Udlejning");
     private final Button bNewOrder = new Button("+ Ordre");
@@ -47,8 +47,8 @@ public class ShopWindow extends Stage implements Observer {
     private final ScrollPane spProductComps = new ScrollPane(gProductDisplay);
     private final ListView<Order> lvOpenOrder = new ListView<>();
 
-    private final HashMap<Category, ArrayList<ToggleButton>> hmCategoryProducts = new HashMap<>();
-    private final Category all = Controller.createCategory("* Alle");
+    private final HashMap<String, ArrayList<ToggleButton>> hmCategoryProducts = new HashMap<>();
+    private final String all = "* Alle";
     private final GridPane root = this.initContentOrderScene();
 
     public GridPane initContentOrderScene() {
@@ -176,15 +176,15 @@ public class ShopWindow extends Stage implements Observer {
     }
 
     private void choseCategory() {
-        Category category = cbCategory.getSelectionModel().getSelectedItem();
+        Category category = Controller.getCategories().get(cbCategory.getSelectionModel().getSelectedIndex());
         if (category == null)
             return;
         gProductDisplay.getChildren().clear();
-        if (!hmCategoryProducts.containsKey(category)) {
+        if (!hmCategoryProducts.containsKey(category.getName())) {
             return;
         }
 
-        ArrayList<ToggleButton> buttons = hmCategoryProducts.get(category);
+        ArrayList<ToggleButton> buttons = hmCategoryProducts.get(category.getName());
 
         for (int i = 0; i < buttons.size(); i++) {
             buttons.get(i).setOpacity(0);
@@ -217,7 +217,7 @@ public class ShopWindow extends Stage implements Observer {
         hmCategoryProducts.put(all,new ArrayList<>());
         for (Price price : arrangement.getPrices()) {
             Category category = price.getProduct().getCategory();
-            if (!cbCategory.getItems().contains(category) && category.getClass() == Category.class) {
+            if (!cbCategory.getItems().contains(category.getName()) && category.getClass() == Category.class) {
                 updateProductButtons(category,arrangement);
             }
         }
@@ -228,7 +228,7 @@ public class ShopWindow extends Stage implements Observer {
         Arrangement arrangement = cbArrangement.getValue();
         if (arrangement == null) return;
 
-        selectedOrder = Controller.createRental(arrangement,null,null,new Customer("foo","",12345678,""),0);
+        selectedOrder = Controller.createRental(arrangement,null,null,null,0);
         bNewRental.setText("Udlejning : " + arrangement);
         bNewRental.setDisable(true);
         bNewOrder.setDisable(true);
@@ -247,7 +247,7 @@ public class ShopWindow extends Stage implements Observer {
         hmCategoryProducts.put(all,new ArrayList<>());
         for (Price price : arrangement.getPrices()) {
             Category category = price.getProduct().getCategory();
-            if (!cbCategory.getItems().contains(category) && category.getClass() == DepositCategory.class) {
+            if (!cbCategory.getItems().contains(category.getName()) && category.getClass() == DepositCategory.class) {
                 updateProductButtons(category,arrangement);
             }
         }
@@ -255,8 +255,8 @@ public class ShopWindow extends Stage implements Observer {
     }
 
     private void updateProductButtons(Category category, Arrangement arrangement) {
-        cbCategory.getItems().add(category);
-        hmCategoryProducts.put(category,new ArrayList<>());
+        cbCategory.getItems().add(category.getName());
+        hmCategoryProducts.put(category.getName(),new ArrayList<>());
         for (ProductComponent product : category.getProducts()) {
             Price price = Controller.getProductPrice(product,arrangement);
             if (price == null) continue;
@@ -273,7 +273,7 @@ public class ShopWindow extends Stage implements Observer {
             bAddProducts.setPrefSize(175, 50);
             bAddProducts.setOnAction(event -> addOrderLine(bAddProducts,product));
             hmCategoryProducts.get(all).add(bAddProducts);
-            hmCategoryProducts.get(category).add(bAddProducts);
+            hmCategoryProducts.get(category.getName()).add(bAddProducts);
         }
     }
 
@@ -357,7 +357,7 @@ public class ShopWindow extends Stage implements Observer {
 
         ComboBox<String> cbDiscounts = new ComboBox<>();
         cbDiscounts.getItems().addAll("Ingen rabat","Beløb rabat","Procent rabat");
-        cbDiscounts.setValue(cbDiscounts.getItems().get(2));
+        cbDiscounts.setValue(cbDiscounts.getItems().get(0));
         cbDiscounts.setPrefSize(150,30);
         cbDiscounts.setOpacity(0);
 
@@ -421,7 +421,7 @@ public class ShopWindow extends Stage implements Observer {
         if (index < 0) return;
         switch (index) {
             case 1 -> {
-                orderLine.setDiscountStrategy(new AmountDiscountStrategy(0));
+                orderLine.setDiscountStrategy(Controller.createAmountDiscountStrategy());
                 tfDiscount.setOpacity(0);
                 lDiscount.setOpacity(0);
                 if (!tfDiscount.isVisible()) {
@@ -438,7 +438,7 @@ public class ShopWindow extends Stage implements Observer {
                 lDiscount.setVisible(true);
             }
             case 2 -> {
-                orderLine.setDiscountStrategy(new PercentageDiscountStrategy(0));
+                orderLine.setDiscountStrategy(Controller.createPercentageDiscountStrategy());
                 tfDiscount.setOpacity(0);
                 lDiscount.setOpacity(0);
                 if (!tfDiscount.isVisible()) {
@@ -454,7 +454,7 @@ public class ShopWindow extends Stage implements Observer {
                 lDiscount.setText(" %");
                 lDiscount.setVisible(true);
             }
-            default -> orderLine.setDiscountStrategy(new NoDiscountStrategy());
+            default -> orderLine.setDiscountStrategy(Controller.createNoDiscountStrategy());
         }
         updatePrice(orderLine,tfPrice,tfClips);
         updateList();

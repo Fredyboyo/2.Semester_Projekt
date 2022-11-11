@@ -122,7 +122,7 @@ public class Order implements Serializable {
 
     @Override
     public String toString() {
-        return arrangement + " - " + collectedCost + " - " + paymentMethod;
+        return timestamp + " | " + arrangement + " | " + collectedCost + " Kr. | " + paymentMethod;
     }
 
 }

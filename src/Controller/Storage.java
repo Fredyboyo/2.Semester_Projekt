@@ -5,24 +5,22 @@ import Model.*;
 import java.util.ArrayList;
 
 public interface Storage {
-    public void storeOrder(Order order);
-    public void storePrice(Price price);
-    public void storeCategory(Category category);
-    public void storeProduct(ProductComponent product);
-    public void removeProduct(ProductComponent product);
-    public void storeArrangement(Arrangement arrangement);
-    public void storePaymentMethod(PaymentMethod paymentMethod);
-    public void removePaymentMethod(PaymentMethod paymentMethod);
-    public void storeDiscount(Discount discount);
-    public void deleteDiscount(Discount discount);
+    void storeOrder(Order order);
+    void storePrice(Price price);
+    void storeCategory(Category category);
+    void storeProduct(ProductComponent product);
+    void removeProduct(ProductComponent product);
+    void storeArrangement(Arrangement arrangement);
+    void storePaymentMethod(PaymentMethod paymentMethod);
+    void removePaymentMethod(PaymentMethod paymentMethod);
+    void storeDiscount(Discount discount);
+    void deleteDiscount(Discount discount);
 
-    public ArrayList<Order> getOrders();
-    public ArrayList<Price> getPrices();
-    public ArrayList<Category> getCategories();
-    public ArrayList<Arrangement> getArrangements();
-    public ArrayList<ProductComponent> getProducts();
-    public ArrayList<PaymentMethod> getPaymentMethods();
-    public ArrayList<Discount> getDiscounts();
-
-
+    ArrayList<Order> getOrders();
+    ArrayList<Price> getPrices();
+    ArrayList<Category> getCategories();
+    ArrayList<Arrangement> getArrangements();
+    ArrayList<ProductComponent> getProducts();
+    ArrayList<PaymentMethod> getPaymentMethods();
+    ArrayList<Discount> getDiscounts();
 }
