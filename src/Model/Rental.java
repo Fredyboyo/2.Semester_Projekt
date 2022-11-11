@@ -6,15 +6,10 @@ public class Rental extends Order {
     private LocalDate startDate;
     private LocalDate endDate;
     private Customer customer;
-    private final double payedDeposit;
+    private double payedDeposit;
 
-    public Rental(Arrangement arrangement, LocalDate startDate, LocalDate endDate, Customer customer, double payedDeposit) {
+    public Rental(Arrangement arrangement) {
         super(arrangement);
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.customer = customer;
-        customer.rentals.add(this);
-        this.payedDeposit = payedDeposit;
     }
 
     public void setStartDate(LocalDate startDate) {
@@ -27,6 +22,11 @@ public class Rental extends Order {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+        customer.rentals.add(this);
+    }
+
+    public void setPayedDeposit(double payedDeposit) {
+        this.payedDeposit = payedDeposit;
     }
 
     @Override

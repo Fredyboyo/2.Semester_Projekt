@@ -109,13 +109,8 @@ public abstract class Controller {
     }
 
 
-    public static Rental createRental(
-            Arrangement arrangement,
-            LocalDate startDate,
-            LocalDate endDate,
-            Customer customer,
-            double payedDeposit) {
-        Rental rental = new Rental(arrangement, startDate, endDate, customer, payedDeposit);
+    public static Rental createRental(Arrangement arrangement) {
+        Rental rental = new Rental(arrangement);
         storage.storeOrder(rental);
         notifyObservers();
         return rental;
