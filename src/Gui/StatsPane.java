@@ -73,7 +73,10 @@ public class StatsPane extends GridPane implements Observer {
 
 
         if (!map.isEmpty())
-            lvwProducts.getItems().addAll(map.keySet() + ", " + map.values());
+            for (ProductComponent product : map.keySet()){
+                lvwProducts.getItems().add(product.getName() + ", antal solgte: " + map.get(product));
+            }
+
     }
 
     private HashMap<ProductComponent, Integer> addProducts(Category selectedCategory, Arrangement selectedArrangement) {
