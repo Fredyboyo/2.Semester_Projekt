@@ -133,6 +133,14 @@ public abstract class Controller {
         return storage.getOrders();
     }
 
+    public static void updateOrderLine(OrderLine orderLine) {
+        orderLine.updatePrice();
+    }
+
+    public static void updateOrderPrices(Order order) {
+        order.updateCollectedPrices();
+    }
+
     public static ArrayList<Order> getOrdersNotRental() {
         ArrayList<Order> ordersNotRental = new ArrayList<>();
         for (Order order : storage.getOrders()) {
@@ -208,7 +216,6 @@ public abstract class Controller {
     }
 
     public static void init() {
-        storage = new ListStorage();
         Arrangement butik = Controller.createArrangement("Butik");
         Arrangement fredagsbar = Controller.createArrangement("Fredagsbar");
 
@@ -468,8 +475,8 @@ public abstract class Controller {
         return regCustomerDiscountStrategy;
     }
 
-    public static void updateOrderLine(OrderLine orderLine) {
-        orderLine.updatePrice();
+    public static ArrayList<OrderLine> getOrderLine(Order order) {
+        return order.getOrderLines();
     }
 }
 

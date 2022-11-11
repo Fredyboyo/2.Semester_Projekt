@@ -397,7 +397,7 @@ public class ShopWindow extends Stage implements Observer {
             fadeIn(control,5);
         }
         Controller.updateOrderLine(orderLine);
-        selectedOrder.updateCollectedPrices();
+        Controller.updateOrderPrices(selectedOrder);
         tfTotalPrice.setText(selectedOrder.getCollectedCost()+"");
         tfTotalClips.setText(selectedOrder.getCollectedClips()+"");
 
@@ -491,7 +491,6 @@ public class ShopWindow extends Stage implements Observer {
         addButton.setDisable(false);
         addButton.setSelected(false);
         Controller.removeOrderLine(selectedOrder,orderLine);
-        selectedOrder.getOrderLines().remove(orderLine);
         gOrderLineDisplay.getChildren().removeAll(controls);
         updateTotalPrices();
         updateList();
@@ -505,7 +504,7 @@ public class ShopWindow extends Stage implements Observer {
     }
 
     private void updateTotalPrices() {
-        selectedOrder.updateCollectedPrices();
+        Controller.updateOrderPrices(selectedOrder);
         tfTotalPrice.setText(selectedOrder.getCollectedCost() + "");
         tfTotalClips.setText(selectedOrder.getCollectedClips() + "");
     }
@@ -513,7 +512,7 @@ public class ShopWindow extends Stage implements Observer {
     private void updateList() {
         gOrderLineDisplay.getChildren().clear();
         for (OrderLine orderLine : selectedOrder.getOrderLines()) {
-            int y = selectedOrder.getOrderLines().indexOf(orderLine);
+            int y = Controller.getOrderLine(selectedOrder).indexOf(orderLine);
             ArrayList<Control> controls = this.controls.get(orderLine);
             for (int x = 0; x < controls.size(); x++) {
                 gOrderLineDisplay.add(controls.get(x),x,y);
