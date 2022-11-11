@@ -100,6 +100,10 @@ public class Order implements Serializable {
         return collectedClips;
     }
 
+    public void setCollectedCost(double price) {
+        collectedCost = price;
+    }
+
     public double getCollectedCost() {
         return collectedCost;
     }

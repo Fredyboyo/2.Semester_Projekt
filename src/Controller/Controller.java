@@ -100,6 +100,15 @@ public abstract class Controller {
         return order;
     }
 
+    public static void setOrderPrice(Order order, double price) {
+        order.setCollectedCost(price);
+    }
+
+    public static void setOrderPaymentMethod(Order order, PaymentMethod paymentMethod) {
+        order.setPaymentMethod(paymentMethod);
+    }
+
+
     public static Rental createRental(
             Arrangement arrangement,
             LocalDate startDate,
@@ -110,6 +119,14 @@ public abstract class Controller {
         storage.storeOrder(rental);
         notifyObservers();
         return rental;
+    }
+
+    public static void setRentalStartDate(Rental rental, LocalDate startDate) {
+        rental.setStartDate(startDate);
+    }
+
+    public static void setRentalEndDate(Rental rental, LocalDate endDate) {
+        rental.setEndDate(endDate);
     }
 
     public static ArrayList<Order> getOrders() {
@@ -449,6 +466,10 @@ public abstract class Controller {
         RegCustomerDiscountStrategy regCustomerDiscountStrategy = new RegCustomerDiscountStrategy();
         storage.storeDiscount(regCustomerDiscountStrategy);
         return regCustomerDiscountStrategy;
+    }
+
+    public static void updateOrderLine(OrderLine orderLine) {
+        orderLine.updatePrice();
     }
 }
 

@@ -241,9 +241,10 @@ public class FinishOrder extends Stage {
                 alert.showAndWait();
                 return;
             }
-            order.setPaymentMethod(paymentMethod);
-            rental.setStartDate(startDate);
-            rental.setEndDate(endDate);
+            Controller.setOrderPrice(rental, Double.parseDouble(tfPrice.getText()));
+            Controller.setOrderPaymentMethod(rental, paymentMethod);
+            Controller.setRentalStartDate(rental, startDate);
+            Controller.setRentalEndDate(rental, endDate);
 
         } else {
             if (paymentMethod == null) {
@@ -253,7 +254,7 @@ public class FinishOrder extends Stage {
                 alert.showAndWait();
                 return;
             }
-            order.setPaymentMethod(paymentMethod);
+            Controller.setOrderPaymentMethod(order, paymentMethod);
         }
         completed = true;
         this.close();

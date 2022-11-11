@@ -82,7 +82,8 @@ public class OrderTest {
         assertEquals(order2.getUpdatedPrice(), 684);
 
         // Amount discount
-        Discount amountDiscount = new AmountDiscountStrategy(50);
+        Discount amountDiscount = new AmountDiscountStrategy();
+        amountDiscount.setValue(50);
         // Order for 0 product
         noOrder.setDiscountStrategy(amountDiscount);
         assertEquals(noOrder.getUpdatedPrice(), 0);
@@ -94,7 +95,8 @@ public class OrderTest {
         assertEquals(order2.getUpdatedPrice(), 634);
 
         // Percentage discount
-        Discount percentageDiscount = new PercentageDiscountStrategy(10);
+        Discount percentageDiscount = new PercentageDiscountStrategy();
+        percentageDiscount.setValue(10);
         // Order for 0 product
         noOrder.setDiscountStrategy(percentageDiscount);
         assertEquals(noOrder.getUpdatedPrice(), 0);

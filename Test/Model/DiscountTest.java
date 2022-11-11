@@ -16,8 +16,10 @@ public class DiscountTest {
         Product product1 = new Product("Klosterbryg", fadøl);
         Order order1 = new Order(fredagsbar);
         Order order2 = new Order(fredagsbar);
-        Discount discount1 = new AmountDiscountStrategy(8);
-        Discount discount2 = new AmountDiscountStrategy(40);
+        Discount discount1 = new AmountDiscountStrategy();
+        discount1.setValue(8);
+        Discount discount2 = new AmountDiscountStrategy();
+        discount2.setValue(40);
 
         product1.createPrice(fredagsbar,38,null);
 

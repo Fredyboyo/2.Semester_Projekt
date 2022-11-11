@@ -4,7 +4,6 @@ import Controller.Controller;
 import Gui.Gui;
 import Gui.Observer;
 import Model.*;
-import Model.DiscountStrategy.*;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -14,7 +13,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
-import javax.sound.sampled.Clip;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -176,15 +174,14 @@ public class ShopWindow extends Stage implements Observer {
     }
 
     private void choseCategory() {
-        Category category = Controller.getCategories().get(cbCategory.getSelectionModel().getSelectedIndex());
-        if (category == null)
-            return;
+        String category = cbCategory.getSelectionModel().getSelectedItem();
+        if (category == null || category.isBlank()) return;
         gProductDisplay.getChildren().clear();
-        if (!hmCategoryProducts.containsKey(category.getName())) {
+        if (!hmCategoryProducts.containsKey(category)) {
             return;
         }
 
-        ArrayList<ToggleButton> buttons = hmCategoryProducts.get(category.getName());
+        ArrayList<ToggleButton> buttons = hmCategoryProducts.get(category);
 
         for (int i = 0; i < buttons.size(); i++) {
             buttons.get(i).setOpacity(0);
@@ -217,7 +214,7 @@ public class ShopWindow extends Stage implements Observer {
         hmCategoryProducts.put(all,new ArrayList<>());
         for (Price price : arrangement.getPrices()) {
             Category category = price.getProduct().getCategory();
-            if (!cbCategory.getItems().contains(category.getName()) && category.getClass() == Category.class) {
+            if (!cbCategory.getItems().contains(category.getName()) && !category.getName().equals(all) && category.getClass() == Category.class) {
                 updateProductButtons(category,arrangement);
             }
         }
@@ -247,7 +244,7 @@ public class ShopWindow extends Stage implements Observer {
         hmCategoryProducts.put(all,new ArrayList<>());
         for (Price price : arrangement.getPrices()) {
             Category category = price.getProduct().getCategory();
-            if (!cbCategory.getItems().contains(category.getName()) && category.getClass() == DepositCategory.class) {
+            if (!cbCategory.getItems().contains(category.getName()) && !category.getName().equals(all) && category.getClass() == DepositCategory.class) {
                 updateProductButtons(category,arrangement);
             }
         }
@@ -255,6 +252,7 @@ public class ShopWindow extends Stage implements Observer {
     }
 
     private void updateProductButtons(Category category, Arrangement arrangement) {
+        //categoryList.add(category.getName());
         cbCategory.getItems().add(category.getName());
         hmCategoryProducts.put(category.getName(),new ArrayList<>());
         for (ProductComponent product : category.getProducts()) {
@@ -398,7 +396,7 @@ public class ShopWindow extends Stage implements Observer {
         for (Control control : controls) {
             fadeIn(control,5);
         }
-        orderLine.updatePrice();
+        Controller.updateOrderLine(orderLine);
         selectedOrder.updateCollectedPrices();
         tfTotalPrice.setText(selectedOrder.getCollectedCost()+"");
         tfTotalClips.setText(selectedOrder.getCollectedClips()+"");
@@ -411,7 +409,11 @@ public class ShopWindow extends Stage implements Observer {
             orderLine.setCost(Double.parseDouble(tfPrice.getText()));
             tfTotalPrice.setText(selectedOrder.getUpdatedPrice()+"");
         } catch (NumberFormatException e) {
-            System.out.println("Ikke et tal");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText("Fejl");
+            alert.setContentText("Pris skal være et tal");
+            alert.showAndWait();
+            return;
         }
         root.requestFocus();
     }

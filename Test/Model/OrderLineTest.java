@@ -45,7 +45,8 @@ public class OrderLineTest {
         assertEquals(orderLine3.getUpdatedPrice(),76);
 
         // Percentage discount - 5%
-        Discount percentage = new PercentageDiscountStrategy(5);
+        Discount percentage = new PercentageDiscountStrategy();
+        percentage.setValue(5);
         // OrderLine with 0 amount
         orderLine1.setDiscountStrategy(percentage);
         assertEquals(orderLine1.getUpdatedPrice(),0);
