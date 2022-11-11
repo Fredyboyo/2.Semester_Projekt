@@ -102,13 +102,4 @@ public class ListStorage implements Storage, Serializable {
     public void storeDiscount(Discount discount){
         discounts.add(discount);
     }
-    @Override
-    public void deleteDiscount(Discount discount){
-        discounts.remove(discount);
-    }
-    @Override
-    public ArrayList<Discount> getDiscounts() {
-        return new ArrayList<>(discounts);
-    }
-
 }

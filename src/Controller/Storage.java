@@ -14,7 +14,6 @@ public interface Storage {
     void storePaymentMethod(PaymentMethod paymentMethod);
     void removePaymentMethod(PaymentMethod paymentMethod);
     void storeDiscount(Discount discount);
-    void deleteDiscount(Discount discount);
 
     ArrayList<Order> getOrders();
     ArrayList<Price> getPrices();
@@ -22,5 +21,4 @@ public interface Storage {
     ArrayList<Arrangement> getArrangements();
     ArrayList<ProductComponent> getProducts();
     ArrayList<PaymentMethod> getPaymentMethods();
-    ArrayList<Discount> getDiscounts();
 }
