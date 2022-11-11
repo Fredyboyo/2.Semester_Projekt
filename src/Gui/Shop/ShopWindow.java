@@ -356,8 +356,8 @@ public class ShopWindow extends Stage implements Observer {
         lClips.setOpacity(0);
 
         ComboBox<String> cbDiscounts = new ComboBox<>();
-        cbDiscounts.getItems().addAll("Beløb rabat","Procentrabat","Køberrabat","Studierabat","Ingen rabat");
-        cbDiscounts.setValue(cbDiscounts.getItems().get(4));
+        cbDiscounts.getItems().addAll("Ingen rabat","Beløb rabat","Procent rabat");
+        cbDiscounts.setValue(cbDiscounts.getItems().get(2));
         cbDiscounts.setPrefSize(150,30);
         cbDiscounts.setOpacity(0);
 
@@ -420,7 +420,7 @@ public class ShopWindow extends Stage implements Observer {
         int index = cbDiscounts.getSelectionModel().getSelectedIndex();
         if (index < 0) return;
         switch (index) {
-            case 0 -> {
+            case 1 -> {
                 orderLine.setDiscountStrategy(new AmountDiscountStrategy(0));
                 tfDiscount.setOpacity(0);
                 lDiscount.setOpacity(0);
@@ -437,7 +437,7 @@ public class ShopWindow extends Stage implements Observer {
                 lDiscount.setText(" Kr.");
                 lDiscount.setVisible(true);
             }
-            case 1 -> {
+            case 2 -> {
                 orderLine.setDiscountStrategy(new PercentageDiscountStrategy(0));
                 tfDiscount.setOpacity(0);
                 lDiscount.setOpacity(0);
@@ -454,24 +454,7 @@ public class ShopWindow extends Stage implements Observer {
                 lDiscount.setText(" %");
                 lDiscount.setVisible(true);
             }
-            case 2 -> {
-                tfDiscount.setDisable(true);
-                tfDiscount.setVisible(false);
-                lDiscount.setVisible(false);
-                orderLine.setDiscountStrategy(new StudentDiscountStrategy());
-            }
-            case 3 -> {
-                tfDiscount.setDisable(true);
-                tfDiscount.setVisible(false);
-                lDiscount.setVisible(false);
-                orderLine.setDiscountStrategy(new RegCustomerDiscountStrategy());
-            }
-            default -> {
-                tfDiscount.setDisable(true);
-                tfDiscount.setVisible(false);
-                lDiscount.setVisible(false);
-                orderLine.setDiscountStrategy(new NoDiscountStrategy());
-            }
+            default -> orderLine.setDiscountStrategy(new NoDiscountStrategy());
         }
         updatePrice(orderLine,tfPrice,tfClips);
         updateList();
