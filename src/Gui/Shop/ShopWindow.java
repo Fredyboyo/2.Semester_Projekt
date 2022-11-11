@@ -225,7 +225,7 @@ public class ShopWindow extends Stage implements Observer {
         Arrangement arrangement = cbArrangement.getValue();
         if (arrangement == null) return;
 
-        selectedOrder = Controller.createRental(arrangement,null,null,null,0);
+        selectedOrder = Controller.createRental(arrangement);
         bNewRental.setText("Udlejning : " + arrangement);
         bNewRental.setDisable(true);
         bNewOrder.setDisable(true);
